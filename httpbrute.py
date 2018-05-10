@@ -69,9 +69,6 @@ class BruteForcing(object):
 
 			proc = mechanize.Browser()
 			proc.addheaders = [('User-Agent', self.varUserAgent)]
-			proc.set_handle_redirect(True)
-			proc.set_handle_referer(True)
-			proc.set_handle_refresh(mechanize._http.HTTPRefreshProcessor(), max_time=2)
 			proc.set_handle_robots(False)
 			proc.open(self.varTargetURL)
 
