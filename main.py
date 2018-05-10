@@ -104,7 +104,6 @@ processBruteForcing = httpbrute.BruteForcing(varTargetURL, userlist, passlist)
 utils.printf("Starting...\n")
 timeStarting = time.time()
 #	get result
-#creds = processBruteForcing.actBruteForce()
 processBruteForcing.run()
 creds = processBruteForcing.actGetResult()
 

