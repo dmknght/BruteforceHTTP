@@ -1,5 +1,22 @@
 import random, sys, utils, re
 
+'''
+def subaction_getFileLineNumber(srcFilePath):
+	############################################
+	#	Return number of lines / wordlist count
+	#	Need to be tested more
+	#	Can not use File Object as Argv, return None Object
+	#	Comparing len() and count() performance?
+	#
+	##################################################
+
+	objFileRead = open(srcFilePath, 'r')
+	#retNumberOfLines = len(objFileRead.read().split('\n'))
+	retNumberOfLines = len(objFileRead.readlines())
+	objFileRead.close()
+	return retNumberOfLines
+'''
+
 def subaction_countListSize(lstListData):
 	return len(lstListData)
 
@@ -40,7 +57,7 @@ def action_getFormInformation(objBrowserForm):
 			retFormID += 1
 	sys.exit(utils.craft_msg("Can not find login form", "bad"))
 
-def actionGetDataList(varUsername):
+def actionGetListData(varUsername):
 	#################################
 	#	split input username to a list
 	#	username -> [username]
@@ -50,7 +67,7 @@ def actionGetDataList(varUsername):
 
 	return varUsername.split(':')
 
-def actionGetDataFile(srcDataPath):
+def actionGetFileData(srcDataPath):
 	###################################
 	#	Read and return data file
 	#
