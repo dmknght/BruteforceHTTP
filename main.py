@@ -73,7 +73,7 @@ else:
 				infUserOptions = infUserOptions.replace("userlist: DEFAULT", "userlist: %s" %(sys.argv[idxArgOpt + 1]))
 				idxArgOpt += 1
 			elif sys.argv[idxArgOpt] == '-p':
-				infUserOptions = infUserOptions.replace("passlist: DEFAULT", "userlist: %s" %(sys.argv[idxArgOpt + 1]))
+				infUserOptions = infUserOptions.replace("passlist: DEFAULT", "passlist: %s" %(sys.argv[idxArgOpt + 1]))
 				passlist = actions.actionGetFileData(sys.argv[idxArgOpt + 1])
 				idxArgOpt += 1
 			else:
@@ -93,26 +93,35 @@ if not varTargetURL:
 ###########################################
 #	print option information before running
 ###########################################
+try:
+	infUserOptions = infUserOptions.replace('TARGETURL', varTargetURL)
+	print(infUserOptions)
 
-infUserOptions = infUserOptions.replace('TARGETURL', varTargetURL)
-print(infUserOptions)
+	#	create object
+	processBruteForcing = httpbrute.BruteForcing(varTargetURL, userlist, passlist)
+	#	create start time
 
-#	create object
-processBruteForcing = httpbrute.BruteForcing(varTargetURL, userlist, passlist)
-#	create start time
-
-utils.printf("Starting...\n")
-timeStarting = time.time()
+	utils.printf("Starting...\n")
+	timeStarting = time.time()
 #	get result
-processBruteForcing.run()
-creds = processBruteForcing.actGetResult()
+	processBruteForcing.run()
+	creds = processBruteForcing.actGetResult()
 
-utils.printf("Completed. Run time: %0.5s [s]\n" %(time.time() - timeStarting), "good")
+	#	check result
+	if len(creds) == 0:
+		utils.printf("Password not found!", "bad")
+	else:
+		utils.print_table(("Username", "Password"), *creds)
 
-#	check result
-if len(creds) == 0:
-	utils.printf("Password not found!", "bad")
-else:
-	utils.print_table(("Username", "Password"), *creds)
+except KeyboardInterrupt:
+	utils.printf("Terminated!!!", "bad")
 
-sys.exit(0)
+finally:
+	utils.printf("Completed. Run time: %0.5s [s]\n" %(time.time() - timeStarting), "good")
+
+	passlist.close()
+	try:
+		userlist.close()
+	except:
+		pass
+	sys.exit(0)

@@ -55,7 +55,13 @@ def action_getFormInformation(objBrowserForm):
 			return retFormID, retTextField, retPassField
 		except:
 			retFormID += 1
-	sys.exit(utils.craft_msg("Can not find login form", "bad"))
+	return None
+
+def action_testFormInformation(objBrowserForm):
+	retData = action_getFormInformation(objBrowserForm)
+	if not retData:
+		sys.exit(utils.craft_msg("Can not find login form", "bad"))
+	return retData
 
 def actionGetListData(varUsername):
 	#################################
@@ -74,8 +80,8 @@ def actionGetFileData(srcDataPath):
 	###################################
 	try:
 		objOpenFileData = open(srcDataPath, 'r')
-		retData = objOpenFileData.readlines()
-		objOpenFileData.close()
-		return retData
+		#retData = objOpenFileData.readlines()
+		#objOpenFileData.close()
+		return objOpenFileData
 	except:
 		sys.exit(utils.craft_msg("Can not read file %s" %(srcDataPath), 'bad'))

