@@ -33,7 +33,7 @@ Options:
  ```
  -u <word_list> : Add word list for username field
  -p <word_list> : Add word list for password field
- -u
+ -U <username>: user1:user2:user3
  ```
 
 ## How this tool work
