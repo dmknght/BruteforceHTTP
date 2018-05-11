@@ -12,8 +12,8 @@ Requirements
 |-------------|
 | python2     |
 | python2-pip |
-| re          |
-| mechanize   |
+| re         |
+| python-mechanize   |
 
 1. Clone this repo
 ```
