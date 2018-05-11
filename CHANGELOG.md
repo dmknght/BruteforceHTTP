@@ -1,3 +1,6 @@
+## 1.2e
+* Improve exception logic
+
 ## 1.2d
 * Create new function for single authenticate task
 * Edit code struct

@@ -95,7 +95,6 @@ else:
 			#	Possible URL
 			else:
 				varTargetURL = sys.argv[idxArgOpt]
-				infUserOptions = infUserOptions.replace('TARGETURL', varTargetURL)
 			idxArgOpt += 1
 
 	except:
@@ -108,6 +107,9 @@ else:
 
 if not varTargetURL:
 	sys.exit(utils.craft_msg("An URL is required", "bad"))
+else:
+	infUserOptions = infUserOptions.replace('TARGETURL', varTargetURL)
+
 
 ###########################################
 #	print option information before running
@@ -130,9 +132,6 @@ try:
 except KeyboardInterrupt:
 	utils.printf("Terminated!!!", "bad")
 
-except:
-	utils.printf("Error while running", "bad")
-
 finally:
 	############################################
 	#	Get result
@@ -149,7 +148,8 @@ finally:
 			utils.printf("")
 			utils.print_table(("Username", "Password"), *creds)
 	except:
-		utils.printf("\nError while getting result\n", "bad")
+		#utils.printf("\nCan not get result.\n", "bad")
+		pass
 
 	utils.printf("\nCompleted. Run time: %0.5s [s]\n" %(time.time() - timeStarting), "good")
 

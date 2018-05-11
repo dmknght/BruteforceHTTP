@@ -57,13 +57,16 @@ class BruteForcing(object):
 			process.open(self.varTargetURL)
 			utils.printf("Connected to URL. Gathering login form information...\n", "good")
 			self.frmLoginID, self.frmUserField, self.frmPassField = actions.action_getFormInformation(process.forms())
+			utils.printf("Found login form", "good")
 			process.close()
 
 		except TypeError:
-			sys.exit(utils.craft_msg("Can not find any login form in %s" %(self.varTargetURL), "bad"))
+			utils.printf("Can not find any login form in %s" %(self.varTargetURL), "bad")
+			sys.exit(1)
 
 		except mechanize.HTTPError as error:
-			sys.exit(utils.craft_msg(error, "bad"))
+			utils.printf(error, "bad")
+			sys.exit(1)
 
 	def actGetResult(self):
 		return self.fndData
@@ -94,7 +97,8 @@ class BruteForcing(object):
 			return False
 
 		except mechanize.HTTPError as error:
-			sys.exit(utils.craf_msg(error, "bad"))
+			utils.printf(error, "bad")
+			sys.exit(1)
 
 	def run(self):
 		#Start brute forcing

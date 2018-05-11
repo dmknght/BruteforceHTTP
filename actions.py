@@ -66,4 +66,5 @@ def actionGetFileData(srcDataPath):
 		objOpenFileData = open(srcDataPath, 'r')
 		return objOpenFileData
 	except:
-		sys.exit(utils.craft_msg("Can not read file %s" %(srcDataPath), 'bad'))
+		utils.printf("Can not read file %s" %(srcDataPath), 'bad')
+		sys.exit(1)
