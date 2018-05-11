@@ -93,10 +93,10 @@ if not varTargetURL:
 ###########################################
 #	print option information before running
 ###########################################
-try:
-	infUserOptions = infUserOptions.replace('TARGETURL', varTargetURL)
-	print(infUserOptions)
+infUserOptions = infUserOptions.replace('TARGETURL', varTargetURL)
+print(infUserOptions)
 
+try:
 	#	create object
 	processBruteForcing = httpbrute.BruteForcing(varTargetURL, userlist, passlist)
 	#	create start time
@@ -105,19 +105,21 @@ try:
 	timeStarting = time.time()
 #	get result
 	processBruteForcing.run()
+
+except KeyboardInterrupt:
+	utils.printf("Terminated!!!", "bad")
+
+finally:
 	creds = processBruteForcing.actGetResult()
 
 	#	check result
 	if len(creds) == 0:
 		utils.printf("Password not found!", "bad")
 	else:
+		utils.printf("")
 		utils.print_table(("Username", "Password"), *creds)
 
-except KeyboardInterrupt:
-	utils.printf("Terminated!!!", "bad")
-
-finally:
-	utils.printf("Completed. Run time: %0.5s [s]\n" %(time.time() - timeStarting), "good")
+	utils.printf("\nCompleted. Run time: %0.5s [s]\n" %(time.time() - timeStarting), "good")
 
 	passlist.close()
 	try:

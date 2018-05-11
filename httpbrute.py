@@ -95,4 +95,3 @@ class BruteForcing(object):
 			if count == self.szPassword:
 				utils.printf("%s: No match found." %(idxUsername), "bad")
 			proc.close()
-
