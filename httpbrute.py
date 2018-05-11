@@ -109,7 +109,7 @@ class BruteForcing(object):
 				idxPasswd = idxPasswd.replace('\n', '')
 
 				count += 1
-				if self.TryTargetLogin(proc, idxUsername, idxPasswd, count):
+				if self.actTryTargetLogin(proc, idxUsername, idxPasswd, count):
 					break
 
 			if count == self.szPassword:
