@@ -1,3 +1,7 @@
+## 1.2d
+* Create new function for single authenticate task
+* Edit code struct
+
 ## 1.2c
 * print result now in finally block
 

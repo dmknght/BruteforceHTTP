@@ -8,12 +8,11 @@
 #
 #############################################3
 
-import sys, actions, httpbrute, utils, time, threading
+import sys, actions, httpbrute, utils, time
 
 srcUsrList = 'userlist.txt'
 srcPassList = 'passlist.txt'
 varTargetURL = ''
-varThreads = 4
 
 infUserOptions = '''
 Target: TARGETURL
@@ -96,34 +95,55 @@ if not varTargetURL:
 infUserOptions = infUserOptions.replace('TARGETURL', varTargetURL)
 print(infUserOptions)
 
+
 try:
 	#	create object
 	processBruteForcing = httpbrute.BruteForcing(varTargetURL, userlist, passlist)
-	#	create start time
 
 	utils.printf("Starting...\n")
 	timeStarting = time.time()
-#	get result
+
+	# Calling method
 	processBruteForcing.run()
 
 except KeyboardInterrupt:
 	utils.printf("Terminated!!!", "bad")
 
-finally:
-	creds = processBruteForcing.actGetResult()
+except:
+	utils.printf("Error while running", "bad")
 
-	#	check result
-	if len(creds) == 0:
-		utils.printf("Password not found!", "bad")
-	else:
-		utils.printf("")
-		utils.print_table(("Username", "Password"), *creds)
+finally:
+	############################################
+	#	Get result
+	#
+	############################################
+
+	try:
+		creds = processBruteForcing.actGetResult()
+
+		#	check result
+		if len(creds) == 0:
+			utils.printf("Password not found!", "bad")
+		else:
+			utils.printf("")
+			utils.print_table(("Username", "Password"), *creds)
+	except:
+		utils.printf("\nError while getting result\n", "bad")
 
 	utils.printf("\nCompleted. Run time: %0.5s [s]\n" %(time.time() - timeStarting), "good")
 
-	passlist.close()
+	########################################
+	#	Clean resources
+	#
+	########################################
+
+	try:
+		passlist.close()
+	except:
+		pass
 	try:
 		userlist.close()
 	except:
 		pass
+
 	sys.exit(0)
