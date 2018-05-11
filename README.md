@@ -60,7 +60,7 @@ Further improvement:
 - [@Ic3W4ll](https://github.com/dmknght)
 
 ## Maintainers
-- [@dmknght](https://github.com/dmknght)
+- [@Ic3W4ll](https://github.com/dmknght)
 - [@ZeroX-DG](https://github.com/ZeroX-DG)
 
 ## Additional information
