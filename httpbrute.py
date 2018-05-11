@@ -56,7 +56,7 @@ class BruteForcing(object):
 		try:
 			process.open(self.varTargetURL)
 			utils.printf("Connected to URL. Gathering login form information...\n", "good")
-			self.frmLoginID, self.frmUserField, self.frmPassField = actions.action_testFormInformation(process.forms())
+			self.frmLoginID, self.frmUserField, self.frmPassField = actions.action_getFormInformation(process.forms())
 			process.close()
 
 		except TypeError:
