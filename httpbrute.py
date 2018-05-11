@@ -1,4 +1,4 @@
-import actions, utils, sys, time, mechanize
+import actions, utils, sys, mechanize
 
 ##################################################################
 #
