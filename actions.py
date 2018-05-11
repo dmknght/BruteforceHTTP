@@ -1,23 +1,8 @@
 import random, sys, utils, re
 
-'''
-def subaction_getFileLineNumber(srcFilePath):
-	############################################
-	#	Return number of lines / wordlist count
-	#	Need to be tested more
-	#	Can not use File Object as Argv, return None Object
-	#	Comparing len() and count() performance?
-	#
-	##################################################
-
-	objFileRead = open(srcFilePath, 'r')
-	#retNumberOfLines = len(objFileRead.read().split('\n'))
-	retNumberOfLines = len(objFileRead.readlines())
-	objFileRead.close()
-	return retNumberOfLines
-'''
-
 def subaction_countListSize(lstListData):
+	#	Return length of a list
+
 	return len(lstListData)
 
 def action_getUserAgent(path = "user_agents.txt"):
@@ -39,6 +24,8 @@ def action_getFormInformation(objBrowserForm):
 	#	Username field's name for submiting
 	#	Password field's name for submiting
 	#
+	#	*** NEED IMPROVE ***
+	#
 	###########################################
 
 	# Using for loop for getting
@@ -46,22 +33,18 @@ def action_getFormInformation(objBrowserForm):
 
 	regTextField = r"TextControl\W(.*)="
 	regPassField = r"PasswordControl\W(.*)="
-	# Start counting forms loop
+
+	# Find login form
 	for idxSingleForm in objBrowserForm:
 		try:
 			retTextField = re.findall(regTextField, str(idxSingleForm), re.MULTILINE)[0]
 			retPassField = re.findall(regPassField, str(idxSingleForm), re.MULTILINE)[0]
-			objBrowserForm.close()
+
+			#objBrowserForm.close() #This is seems useless
 			return retFormID, retTextField, retPassField
 		except:
 			retFormID += 1
 	return None
-
-def action_testFormInformation(objBrowserForm):
-	retData = action_getFormInformation(objBrowserForm)
-	if not retData:
-		sys.exit(utils.craft_msg("Can not find login form", "bad"))
-	return retData
 
 def actionGetListData(varUsername):
 	#################################
@@ -76,12 +59,11 @@ def actionGetListData(varUsername):
 def actionGetFileData(srcDataPath):
 	###################################
 	#	Read and return data file
+	#	Return file object instead of list
 	#
 	###################################
 	try:
 		objOpenFileData = open(srcDataPath, 'r')
-		#retData = objOpenFileData.readlines()
-		#objOpenFileData.close()
 		return objOpenFileData
 	except:
 		sys.exit(utils.craft_msg("Can not read file %s" %(srcDataPath), 'bad'))

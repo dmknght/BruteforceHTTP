@@ -1,14 +1,21 @@
 #!/usr/bin/python
 
 ###############################################
-#	parse user's options from Argv
-#	Argv information to Brute Forcing object
-#	Best analysis options for using?
-#	automatically something, optional options
+#	Parse user's options from Argv
+#	Create Brute forcing object
+#	Start method
+#	Clear object
+#	Print result
 #
-#############################################3
+##############################################
 
 import sys, actions, httpbrute, utils, time
+
+
+##############################################
+#	Create default options
+#
+############################################
 
 srcUsrList = 'userlist.txt'
 srcPassList = 'passlist.txt'
@@ -20,8 +27,7 @@ userlist: DEFAULT
 passlist: DEFAULT
 '''
 ################################
-#	Parsing user's arguments
-#	Gathering options
+#	Get user's options
 #
 ################################
 
@@ -30,14 +36,19 @@ if len(sys.argv) == 1:
 	#	If there is no options:
 	#	print help and show how to use this script
 	##############################
+
 	utils.print_help()
 	sys.exit(0)
 
 elif len(sys.argv) == 2:
-	######################
-	#	if there is an options:
-	#	need help or run script automatically
-	######################
+	############################################
+	#	if 1 option only:
+	#		calling help
+	#	else:
+	#		run process with default options
+	#
+	############################################
+
 	if sys.argv[1] == '-h' or sys.argv[1] == '--help':
 		utils.print_help()
 		sys.exit(0)
@@ -52,7 +63,7 @@ elif len(sys.argv) == 2:
 else:
 	###########################################
 	#	Get user options
-	#	User option will replace default option
+	#	Replace default options
 	#	**NEED IMPROVE**
 	#
 	###########################################
@@ -60,24 +71,33 @@ else:
 	userlist = actions.actionGetFileData(srcUsrList)
 	passlist = actions.actionGetFileData(srcPassList)
 	try:
-		"if len(sys.argv) %2 != 0: Error arguments?"
 		idxArgOpt = 1
 		while idxArgOpt < len(sys.argv):
+
+			#	Choose custom username
 			if sys.argv[idxArgOpt] == '-U':
 				userlist = actions.actionGetListData(sys.argv[idxArgOpt + 1])
 				infUserOptions = infUserOptions.replace("userlist: DEFAULT", "userlist: %s" %(userlist))
 				idxArgOpt += 1
+
+			#	Choose custom userlist
 			elif sys.argv[idxArgOpt] == '-u':
 				userlist = actions.actionGetFileData(sys.argv[idxArgOpt + 1])
 				infUserOptions = infUserOptions.replace("userlist: DEFAULT", "userlist: %s" %(sys.argv[idxArgOpt + 1]))
 				idxArgOpt += 1
+
+			#	Choose custom passlist
 			elif sys.argv[idxArgOpt] == '-p':
 				infUserOptions = infUserOptions.replace("passlist: DEFAULT", "passlist: %s" %(sys.argv[idxArgOpt + 1]))
 				passlist = actions.actionGetFileData(sys.argv[idxArgOpt + 1])
 				idxArgOpt += 1
+
+			#	Possible URL
 			else:
 				varTargetURL = sys.argv[idxArgOpt]
+				infUserOptions = infUserOptions.replace('TARGETURL', varTargetURL)
 			idxArgOpt += 1
+
 	except:
 		sys.exit(utils.craft_msg("Parsing arguments error", "bad"))
 
@@ -91,17 +111,18 @@ if not varTargetURL:
 
 ###########################################
 #	print option information before running
+#
 ###########################################
-infUserOptions = infUserOptions.replace('TARGETURL', varTargetURL)
+
 print(infUserOptions)
 
+timeStarting = time.time()
 
 try:
 	#	create object
 	processBruteForcing = httpbrute.BruteForcing(varTargetURL, userlist, passlist)
 
 	utils.printf("Starting...\n")
-	timeStarting = time.time()
 
 	# Calling method
 	processBruteForcing.run()
@@ -133,7 +154,7 @@ finally:
 	utils.printf("\nCompleted. Run time: %0.5s [s]\n" %(time.time() - timeStarting), "good")
 
 	########################################
-	#	Clean resources
+	#	Clear resources
 	#
 	########################################
 

@@ -22,8 +22,7 @@ def craft_msg(mtext, mtype = 'warn'):
 	#	bad: red
 	#	warn: yellow
 	#	good: light green
-	#	DO NOT use this function when you are in windows
-	#	This functions is support Linux terminal only
+	#	This functions is using for Linux terminal only
 	####################################################
 
 	mtext = {
@@ -76,6 +75,9 @@ def print_table(headers, *args, **kwargs):
 		print(content_line)
 
 def print_help():
+
+	#	Print project's help table
+
 	print('Usage: %s [options] url\n\nOptions:\n' %(sys.argv[0]))
 	title = ("Format", "Example")
 	menu_options = [
