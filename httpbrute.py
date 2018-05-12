@@ -71,15 +71,15 @@ class BruteForcing(object):
 	def actGetResult(self):
 		return self.fndData
 
-	def actTryTargetLogin(self, browserObject, tryUsername, tryPassowrd, count):
+	def actTryTargetLogin(self, browserObject, tryUsername, tryPassword, count):
 		try:
 			#	Fill Login field Information
 			browserObject.select_form(nr = self.frmLoginID)
 			browserObject.form[self.frmUserField] = tryUsername
-			browserObject.form[self.frmPassField] = tryPassowrd
+			browserObject.form[self.frmPassField] = tryPassword
 
 			#	Print progress bar
-			utils.prints("%10s : %20s%12s%10s / %10s" %(tryUsername, tryPassowrd, '=' * 6, count, self.szPassword))
+			utils.prints("%10s : %20s%12s%10s / %10s" %(tryUsername, tryPassword, '=' * 6, count, self.szPassword))
 
 			#	Send request
 			browserObject.submit()
@@ -91,8 +91,8 @@ class BruteForcing(object):
 			#		add login information to fndData, return True
 
 			if not actions.action_getFormInformation(browserObject.forms()):
-				utils.printf("Found: %s:%s" %(tryUsername, tryPassowrd), "good")
-				self.fndData.append([tryUsername, tryPassowrd])
+				utils.printf("Found: %s:%s" %(tryUsername, tryPassword), "good")
+				self.fndData.append([tryUsername, tryPassword])
 				return True
 			return False
 
