@@ -46,7 +46,7 @@ Problems:
 
 ## Todo list:
 
-- [ ] Reading huge file
+- [v] Reading huge file
 - [ ] Multi threading
 - [ ] Better form detecting and parsing
 - [ ] Better automatic login condition - gmail, etc..
