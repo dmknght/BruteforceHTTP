@@ -71,9 +71,9 @@ Problems:
 Further improvement:
 
 - [ ] Captcha
-- [ ] Proxy support, brute forcing with multi proxies
+- [ ] Multiple Proxies brute forcing
 - [ ] Generating password
-- [ ] sock 5, tor support
+- [ ] Support Tor network
 
 ## Author
 - [@Ic3W4ll](https://github.com/dmknght)
