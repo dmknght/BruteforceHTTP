@@ -63,7 +63,7 @@ Further improvement:
 - [@ZeroX-DG](https://github.com/ZeroX-DG)
 
 ## Additional information
-This tool was created in Parrot Security OS 3.11, python 2.7.15rc1
+This tool was created in Parrot Security OS 3.11, python 2.7.15rc1.
 Windows platform is unsupported
 
 ## Credit
