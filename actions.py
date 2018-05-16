@@ -13,9 +13,9 @@ def action_getUserAgent(path = "user_agents.txt"):
 	#
 	##########################################
 
-	objFileUserAgent = open(path, 'r')
-	retUserAgent = random.choice(objFileUserAgent.read().split('\n'))
-	objFileUserAgent.close()
+	objDataUserAgent = open(path, 'r')
+	retUserAgent = random.choice(objDataUserAgent.read().split('\n'))
+	objDataUserAgent.close()
 	return retUserAgent
 
 
@@ -39,8 +39,8 @@ def action_getFormInformation(objBrowserForm):
 	# Find login form
 	for idxSingleForm in objBrowserForm:
 		try:
-			retTextField = re.findall(regTextField, str(idxSingleForm), re.MULTILINE)[0]
-			retPassField = re.findall(regPassField, str(idxSingleForm), re.MULTILINE)[0]
+			retTextField = re.findall(regTextField, str(idxSingleForm).encode('utf-8'), re.MULTILINE)[0]
+			retPassField = re.findall(regPassField, str(idxSingleForm).encode('utf-8'), re.MULTILINE)[0]
 
 			#objBrowserForm.close() #This is seems useless
 			return retFormID, retTextField, retPassField
@@ -48,7 +48,7 @@ def action_getFormInformation(objBrowserForm):
 			retFormID += 1
 	return None
 
-def actionGetListData(varUsername):
+def actionGetListData(optListUsername):
 	#################################
 	#	split input username to a list
 	#	username -> [username]
@@ -56,17 +56,17 @@ def actionGetListData(varUsername):
 	#
 	##################################
 
-	return varUsername.split(':')
+	return optListUsername.split(':')
 
-def actionGetFileData(srcDataPath):
+def actionGetFileData(pathFileLocation):
 	###################################
 	#	Read and return data file
 	#	Return file object instead of list
 	#
 	###################################
 	try:
-		objOpenFileData = open(srcDataPath, 'r')
-		return objOpenFileData
+		objFileRead = open(pathFileLocation, 'r')
+		return objFileRead
 	except:
-		utils.printf("Can not read file %s" %(srcDataPath), 'bad')
+		utils.printf("Can not read file %s" %(pathFileLocation), 'bad')
 		sys.exit(1)

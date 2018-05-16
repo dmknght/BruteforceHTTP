@@ -2,7 +2,7 @@
 <p align='center'><i>An automated brute forcing tool</i></p>
 
 ## About this project
-This project focusing on Brute Forcing HTTP protocol AUTOMATICALLY with minimal options. Unlike hydra, which requires you to fill tons of options, this tool needs as less option as it can.
+This project focusing on Brute Forcing HTTP protocol AUTOMATICALLY.
 
 ## Installation
 
@@ -25,7 +25,7 @@ sudo apt install python python-mechanize python-regex git
 git clone https://github.com/dmknght/BruteforceHTTP.git
 ```
 
-## Usage
+## Options
 ```
 Usage: main.py [options] <url>
 ```
@@ -36,6 +36,24 @@ Options:
  -p <word_list> : Add word list for password field
  -U <username>: user1:user2:user3
  ```
+
+## Usage
+
+Use default userlist and passlit:
+```
+python main.py <Target URL>
+```
+
+Use default passlist for user `admin` (for multiple usernames, use `user1:user2:user3`):
+```
+python main.py -U admin <Target URL>
+```
+
+Use custom userlist and custom passlist:
+```
+python main.py -u <path to userlist> -p <path to passlist> <Target URL>
+```
+
 
 ## How this tool work
 This tool will detect form field automatically, collect information and submit data therefor it can handle csrf token.

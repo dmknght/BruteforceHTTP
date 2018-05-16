@@ -17,14 +17,14 @@ import sys, actions, httpbrute, utils, time
 #
 ############################################
 
-srcUsrList = 'userlist.txt'
-srcPassList = 'passlist.txt'
-varTargetURL = ''
+pathDefaultUserlist = 'userlist.txt'
+pathDefaultPasslist = 'passlist.txt'
+optionTargetURL = ''
 
-infUserOptions = '''
+infoUserOptions = '''
 Target: TARGETURL
-userlist: DEFAULT
-passlist: DEFAULT
+optionUserlist: DEFAULT
+optionPasslist: DEFAULT
 '''
 ################################
 #	Get user's options
@@ -53,12 +53,12 @@ elif len(sys.argv) == 2:
 		utils.print_help()
 		sys.exit(0)
 	else:
-		varTargetURL = sys.argv[1]
+		optionTargetURL = sys.argv[1]
 		#############################################
 		#	open file here -> no delay for print help
 		#############################################
-		userlist = actions.actionGetFileData(srcUsrList)
-		passlist = actions.actionGetFileData(srcPassList)
+		optionUserlist = actions.actionGetFileData(pathDefaultUserlist)
+		optionPasslist = actions.actionGetFileData(pathDefaultPasslist)
 
 else:
 	###########################################
@@ -68,34 +68,40 @@ else:
 	#
 	###########################################
 
-	userlist = actions.actionGetFileData(srcUsrList)
-	passlist = actions.actionGetFileData(srcPassList)
+	optionUserlist = actions.actionGetFileData(pathDefaultUserlist)
+	optionPasslist = actions.actionGetFileData(pathDefaultPasslist)
 	try:
-		idxArgOpt = 1
-		while idxArgOpt < len(sys.argv):
+		index = 1
+		while index < len(sys.argv):
 
 			#	Choose custom username
-			if sys.argv[idxArgOpt] == '-U':
-				userlist = actions.actionGetListData(sys.argv[idxArgOpt + 1])
-				infUserOptions = infUserOptions.replace("userlist: DEFAULT", "userlist: %s" %(userlist))
-				idxArgOpt += 1
+			if sys.argv[index] == '-U':
+				optionUserlist = actions.actionGetListData(sys.argv[index + 1])
+				infoUserOptions = infoUserOptions.replace(
+					"optionUserlist: DEFAULT", "optionUserlist: %s" %(optionUserlist)
+				)
+				index += 1
 
-			#	Choose custom userlist
-			elif sys.argv[idxArgOpt] == '-u':
-				userlist = actions.actionGetFileData(sys.argv[idxArgOpt + 1])
-				infUserOptions = infUserOptions.replace("userlist: DEFAULT", "userlist: %s" %(sys.argv[idxArgOpt + 1]))
-				idxArgOpt += 1
+			#	Choose custom optionUserlist
+			elif sys.argv[index] == '-u':
+				optionUserlist = actions.actionGetFileData(sys.argv[index + 1])
+				infoUserOptions = infoUserOptions.replace(
+					"optionUserlist: DEFAULT", "optionUserlist: %s" %(sys.argv[index + 1])
+				)
+				index += 1
 
-			#	Choose custom passlist
-			elif sys.argv[idxArgOpt] == '-p':
-				infUserOptions = infUserOptions.replace("passlist: DEFAULT", "passlist: %s" %(sys.argv[idxArgOpt + 1]))
-				passlist = actions.actionGetFileData(sys.argv[idxArgOpt + 1])
-				idxArgOpt += 1
+			#	Choose custom optionPasslist
+			elif sys.argv[index] == '-p':
+				infoUserOptions = infoUserOptions.replace(
+					"optionPasslist: DEFAULT", "optionPasslist: %s" %(sys.argv[index + 1])
+				)
+				optionPasslist = actions.actionGetFileData(sys.argv[index + 1])
+				index += 1
 
 			#	Possible URL
 			else:
-				varTargetURL = sys.argv[idxArgOpt]
-			idxArgOpt += 1
+				optionTargetURL = sys.argv[index]
+			index += 1
 
 	except:
 		sys.exit(utils.craft_msg("Parsing arguments error", "bad"))
@@ -105,10 +111,10 @@ else:
 #
 ##########################
 
-if not varTargetURL:
+if not optionTargetURL:
 	sys.exit(utils.craft_msg("An URL is required", "bad"))
 else:
-	infUserOptions = infUserOptions.replace('TARGETURL', varTargetURL)
+	infoUserOptions = infoUserOptions.replace('TARGETURL', optionTargetURL)
 
 
 ###########################################
@@ -116,13 +122,13 @@ else:
 #
 ###########################################
 
-print(infUserOptions)
+print(infoUserOptions)
 
 timeStarting = time.time()
 
 try:
 	#	create object
-	processBruteForcing = httpbrute.BruteForcing(varTargetURL, userlist, passlist)
+	processBruteForcing = httpbrute.BruteForcing(optionTargetURL, optionUserlist, optionPasslist)
 
 	utils.printf("Starting...\n")
 
@@ -139,14 +145,14 @@ finally:
 	############################################
 
 	try:
-		creds = processBruteForcing.actGetResult()
+		credentials = processBruteForcing.actGetResult()
 
 		#	check result
-		if len(creds) == 0:
+		if len(credentials) == 0:
 			utils.printf("Password not found!", "bad")
 		else:
 			utils.printf("")
-			utils.print_table(("Username", "Password"), *creds)
+			utils.print_table(("Username", "Password"), *credentials)
 	except:
 		#utils.printf("\nCan not get result.\n", "bad")
 		pass
@@ -159,11 +165,11 @@ finally:
 	########################################
 
 	try:
-		passlist.close()
+		optionPasslist.close()
 	except:
 		pass
 	try:
-		userlist.close()
+		optionUserlist.close()
 	except:
 		pass
 
