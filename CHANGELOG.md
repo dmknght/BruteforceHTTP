@@ -1,3 +1,8 @@
+## 1.2f
+* Edit variable names
+* Rework actions.subaction_countListSize
+* Rework action.action_getUserAgent
+
 ## 1.2e
 * Improve exception logic
 

@@ -1,9 +1,11 @@
 import random, sys, utils, re
 
-def subaction_countListSize(lstListData):
-	#	Return length of a list
-
-	return len(lstListData)
+def subaction_countListSize(objInputData):
+	#	Return length of a file object or list
+	if type(objInputData) == file:
+		return len(objInputData.readlines())
+	elif type(objInputData) == list:
+		return len(objInputData)
 
 def action_getUserAgent(path = "user_agents.txt"):
 	##########################################
@@ -11,10 +13,10 @@ def action_getUserAgent(path = "user_agents.txt"):
 	#
 	##########################################
 
-	objGetUserAgent = open(path, 'r')
-	listUserAgent = objGetUserAgent.read().split('\n')
-	objGetUserAgent.close()
-	return random.choice(listUserAgent)
+	objFileUserAgent = open(path, 'r')
+	retUserAgent = random.choice(objFileUserAgent.read().split('\n'))
+	objFileUserAgent.close()
+	return retUserAgent
 
 
 def action_getFormInformation(objBrowserForm):

