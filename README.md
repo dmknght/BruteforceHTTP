@@ -64,6 +64,7 @@ Further improvement:
 
 ## Additional information
 This tool was created in Parrot Security OS 3.11, python 2.7.15rc1
+Windows platform is unsupported
 
 ## Credit
 Special thank to all authors of these projects:
