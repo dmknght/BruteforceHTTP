@@ -23,8 +23,8 @@ optionTargetURL = ''
 
 infoUserOptions = '''
 Target: TARGETURL
-optionUserlist: DEFAULT
-optionPasslist: DEFAULT
+Userlist: DEFAULT
+Passlist: DEFAULT
 '''
 ################################
 #	Get user's options
