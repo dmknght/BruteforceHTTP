@@ -69,6 +69,8 @@ Problems:
 - [ ] Better password matching condition
 
 Further improvement:
+
+- [ ] Captcha
 - [ ] Proxy support, brute forcing with multi proxies
 - [ ] Generating password
 - [ ] sock 5, tor support
