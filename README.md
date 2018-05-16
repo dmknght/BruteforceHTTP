@@ -77,9 +77,6 @@ Further improvement:
 
 ## Author
 - [@Ic3W4ll](https://github.com/dmknght)
-
-## Maintainers
-- [@Ic3W4ll](https://github.com/dmknght)
 - [@ZeroX-DG](https://github.com/ZeroX-DG)
 
 ## Additional information
