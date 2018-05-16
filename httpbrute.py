@@ -39,7 +39,7 @@ class BruteForcing(object):
 		self.formPasswordField = ''
 		self.lstUsername = optionUserlist
 		self.lstPassword = optionPasslist
-		self.sizePasslist = actions.subaction_currentTryListSize(self.lstPassword)
+		self.sizePasslist = actions.subaction_countListSize(self.lstPassword)
 		self.credentials = []
 		self.actTestConnection()
 
