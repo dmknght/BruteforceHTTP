@@ -15,13 +15,14 @@ Requirements
 | re         |
 | python-mechanize   |
 
-1. Clone this repo
+1.
+```
+sudo apt install python python-mechanize python-regex git
+```
+
+2.
 ```
 git clone https://github.com/dmknght/BruteforceHTTP.git
-```
-2. Install dependencies
-```
-pip install -r requirements.txt
 ```
 
 ## Usage
@@ -42,18 +43,16 @@ This tool will detect form field automatically, collect information and submit d
 Problems:
  - Detect form field error for some special cases. We will try to improve our function.
  - Wrong password matching: matching condition is not completed.
- - Reading huge file "eats" memory.
 
 ## Todo list:
 
-- [ ] Reading huge file
 - [ ] Multi threading
 - [ ] Better form detecting and parsing
-- [ ] Better automatic login condition - gmail, etc..
+- [ ] Better password matching condition
 
 Further improvement:
-- [ ] Proxy support
-- [ ] Auto parse proxy list, brute forcing multi Proxy
+- [ ] Proxy support, brute forcing with multi proxies
+- [ ] Generating password
 - [ ] sock 5, tor support
 
 ## Author
