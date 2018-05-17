@@ -128,11 +128,11 @@ class BruteForcing(object):
 			except:
 				pass
 
-			for currentPassowrd in self.lstPassword:
-				currentPassowrd = currentPassowrd.replace('\n', '')
+			for currentPassword in self.lstPassword:
+				currentPassword = currentPassword.replace('\n', '')
 
 				currentTry += 1
-				if self.actTryTargetLogin(proc, currentUsername, currentPassowrd, currentTry):
+				if self.actTryTargetLogin(proc, currentUsername, currentPassword, currentTry):
 					break
 
 			if currentTry == self.sizePasslist:
