@@ -1,3 +1,6 @@
+## 1.2g
+* Remove encode UTF 8 in find form information (wrong detect in some cases)
+
 ## 1.2f
 * Edit variable names
 * Rework actions.subaction_countListSize

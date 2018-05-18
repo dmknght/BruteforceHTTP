@@ -39,9 +39,10 @@ def action_getFormInformation(objBrowserForm):
 	# Find login form
 	for idxSingleForm in objBrowserForm:
 		try:
-			retTextField = re.findall(regTextField, str(idxSingleForm).encode('utf-8'), re.MULTILINE)[0]
-			retPassField = re.findall(regPassField, str(idxSingleForm).encode('utf-8'), re.MULTILINE)[0]
-
+			#retTextField = re.findall(regTextField, str(idxSingleForm).encode('utf-8'), re.MULTILINE)[0]
+			#retPassField = re.findall(regPassField, str(idxSingleForm).encode('utf-8'), re.MULTILINE)[0]
+			retTextField = re.findall(regTextField, str(idxSingleForm), re.MULTILINE)[0]
+			retPassField = re.findall(regPassField, str(idxSingleForm), re.MULTILINE)[0]
 			#objBrowserForm.close() #This is seems useless
 			return retFormID, retTextField, retPassField
 		except:
