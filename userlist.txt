@@ -1,6 +1,6 @@
+admin
 administrator
 root
-admin
 user
 username
 test

@@ -1,24 +1,41 @@
-import sys
+import sys, actions
 
 
 def prints(mtext):
 	#############################################
 	#	print message and replace it after
 	#	Use for status bar, brute forcing process
+	#	https://stackoverflow.com/a/5291044
+	#
+	#	Update code by this (Works better)
+	#	https://stackoverflow.com/a/41511658
 	#############################################
-	mtext = mtext.replace('\n', '')
-	#	Remove \n in text.
-	print(mtext)
 
-	sys.stdout.write("\033[F")
-	sys.stdout.write("\033[K")
+	print(mtext)
+	sys.stdout.write("\033[F \033[K" * actions.getObjectSize(mtext))
+
+def printp(username, index, total, bar_size = 50):
+	completed = (index * bar_size) / total
+	prints("%s\n |%s%s| %s/%s"%(
+		username,
+		completed * '#',
+		(bar_size - completed) * '-',
+		index,
+		total)
+	)
+
 
 def printf(mtext, mtype = 'warn'):
+	############################################
+	#	Print text w/ color
+	#
+	###########################################
+
 	print(craft_msg(mtext, mtype))
 
 def craft_msg(mtext, mtype = 'warn'):
 	####################################################
-	#	print text with color
+	#	create text message with color
 	#	bad: red
 	#	warn: yellow
 	#	good: light green

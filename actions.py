@@ -1,13 +1,19 @@
 import random, sys, utils, re
 
-def subaction_countListSize(objInputData):
+def getObjectSize(objInputData):
 	#	Return length of a file object or list
 	if type(objInputData) == file:
-		return len(objInputData.readlines())
+
+		retFileSize = len(objInputData.readlines())
+		objInputData.seek(0)
+		return retFileSize
+
 	elif type(objInputData) == list:
 		return len(objInputData)
+	elif type(objInputData) == str:
+		return len(objInputData.split('\n'))
 
-def action_getUserAgent(path = "user_agents.txt"):
+def getUserAgent(path = "user_agents.txt"):
 	##########################################
 	#	Return random User Agents from file
 	#
@@ -19,7 +25,7 @@ def action_getUserAgent(path = "user_agents.txt"):
 	return retUserAgent
 
 
-def action_getFormInformation(objBrowserForm):
+def getFormInformation(objBrowserForm):
 	##########################################
 	#	Get Login Form Information
 	#	Need form ID for select_form(nr = ID)
@@ -49,7 +55,7 @@ def action_getFormInformation(objBrowserForm):
 			retFormID += 1
 	return None
 
-def actionGetListData(optListUsername):
+def readDataFromList(optListUsername):
 	#################################
 	#	split input username to a list
 	#	username -> [username]
@@ -59,7 +65,7 @@ def actionGetListData(optListUsername):
 
 	return optListUsername.split(':')
 
-def actionGetFileData(pathFileLocation):
+def readDataFromFile(pathFileLocation):
 	###################################
 	#	Read and return data file
 	#	Return file object instead of list

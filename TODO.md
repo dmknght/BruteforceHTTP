@@ -1,0 +1,8 @@
+- [ ] Improve multithreading struct
+- [ ] Terminate threads using Ctrl + C
+- [ ] Get last result, print table
+- [ ] sizeUserlist < numberThreads
+- [ ] Fix miss result / Reading huge file
+- [ ] Edit status bar error
+- [ ] Better form detecting and parsing
+- [ ] Better password matching condition

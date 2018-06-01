@@ -1,3 +1,18 @@
+## 1.3 test 1
+* Use readlines instead of itertools.islice (Testing)
+* Module actions:
+	* Rename functions
+	* Add seek(0) to actions.getObjectSize() when read file object
+	* Add read lines of string object
+* Add set threads to options
+* New progress bar, new progress bar function (utils.printp)
+
+## 1.3 test 0
+* Add multithreading
+* Move parsing args to new module
+* Rework httpbrute module (no OOP). Keep old version in old_httpbrute.py
+* Use list of itertools.islice to read Password list
+
 ## 1.2g
 * Remove encode UTF 8 in find form information (wrong detect in some cases)
 

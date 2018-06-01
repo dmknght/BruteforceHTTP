@@ -62,12 +62,6 @@ Problems:
  - Detect form field error for some special cases. We will try to improve our function.
  - Wrong password matching: matching condition is not completed.
 
-## Todo list:
-
-- [ ] Multi threading
-- [ ] Better form detecting and parsing
-- [ ] Better password matching condition
-
 Further improvement:
 
 - [ ] Captcha
