@@ -6,3 +6,4 @@
 - [ ] Edit status bar error
 - [ ] Better form detecting and parsing
 - [ ] Better password matching condition
+- [ ] Thread exception capture

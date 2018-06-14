@@ -1,3 +1,7 @@
+## 1.3 test 2
+* Add actions.die() -> print error message and exit(1)
+* Add in-dev get proxy module
+
 ## 1.3 test 1
 * Use readlines instead of itertools.islice (Testing)
 * Module actions:

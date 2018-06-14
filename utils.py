@@ -48,6 +48,11 @@ def craft_msg(mtext, mtype = 'warn'):
 		'good': '\033[92m{}\033[00m'.format(mtext)
 	}
 	return (mtext[mtype])
+	
+def die(msg, error):
+	printf(msg, "bad")
+	printf(error, "bad")
+	sys.exit(1)
 
 def print_table(headers, *args, **kwargs):
 	################################################

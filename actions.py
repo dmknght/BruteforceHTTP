@@ -74,6 +74,5 @@ def readDataFromFile(pathFileLocation):
 	try:
 		objFileRead = open(pathFileLocation, 'r')
 		return objFileRead
-	except:
-		utils.printf("Can not read file %s" %(pathFileLocation), 'bad')
-		sys.exit(1)
+	except Exception as error:
+		utils.die("Reading file error", error)

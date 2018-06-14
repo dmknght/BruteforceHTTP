@@ -97,8 +97,8 @@ def getUserOptions():
 					optionTargetURL = sys.argv[index]
 				index += 1
 
-		except:
-			sys.exit(utils.craft_msg("Parsing arguments error", "bad"))
+		except Exception as error:
+			utils.die("Argument error", error)
 
 	##########################
 	#	CHECK REQUIRED OPTIONS
@@ -106,16 +106,16 @@ def getUserOptions():
 	##########################
 
 	if not optionTargetURL:
-		sys.exit(utils.craft_msg("An URL is required", "bad"))
+		utils.die("An URL is required!", "Missing argument")
 	else:
 		infoUserOptions = infoUserOptions.replace('TARGETURL', optionTargetURL)
 
 	try:
 		optionThreads = int(optionThreads)
 		infoUserOptions += "Thread[s]: %s\n" %(optionThreads)
-	except:
+	except Exception as error:
 		utils.printf("Invalid number of threads", "bad")
-		sys.exit(1)
+		sys.exit(error)
 
 
 	###########################################

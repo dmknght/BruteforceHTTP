@@ -24,10 +24,11 @@ def actionGatherFormInfo(optionURL):
 		return formLoginID, formUserfield, formPasswdfield
 	except TypeError:
 		#utils.printf("Can not find login form", "bad")
-		sys.exit(1)
-	except mechanize.HTTPError as error:
+		#sys.exit(1)
+		utils.die("Can not find login form", TypeError)
+	except Exception as error:
 		#utils.printf(error, "bad")
-		sys.exit(1)
+		utils.die("Checking connection error", error)
 
 
 
@@ -113,8 +114,6 @@ def handle(optionURL, optionUserlist, optionPasslist, sizePasslist):
 
 			except mechanize.HTTPError as error:
 				#	Get blocked
-				utils.printf(error, "bad")
-				proc.close()
-				sys.exit(1)
+				utils.die("Thread has been blocked", error)
 
 		proc.close()
