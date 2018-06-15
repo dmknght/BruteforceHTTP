@@ -1,4 +1,5 @@
-import actions, utils, sys, mechanize
+import sys, mechanize
+from core import utils, actions
 
 ##################################################################
 #

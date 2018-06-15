@@ -1,4 +1,5 @@
-import sys, utils, actions
+import sys
+from core import utils, actions
 ##############################################
 #	Parse user's options
 #	Create default options
@@ -8,8 +9,8 @@ import sys, utils, actions
 ############################################
 
 def getUserOptions():
-	pathDefaultUserlist = 'userlist.txt'
-	pathDefaultPasslist = 'passlist.txt'
+	pathDefaultUserlist = 'data/userlist.txt'
+	pathDefaultPasslist = 'data/passlist.txt'
 	optionTargetURL = ''
 	optionThreads = 3
 

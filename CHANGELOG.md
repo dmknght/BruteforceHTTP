@@ -1,6 +1,13 @@
+## 1.3 test 3
+* Add change working directory (chdir) to project's root directory 
+* Move some data to /data/
+* Move module utils, actions to package core
+
+
 ## 1.3 test 2
 * Add actions.die() -> print error message and exit(1)
 * Add in-dev get proxy module
+
 
 ## 1.3 test 1
 * Use readlines instead of itertools.islice (Testing)

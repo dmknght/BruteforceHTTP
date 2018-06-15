@@ -1,7 +1,8 @@
 ### REWRITE httpbrute
 ## NO oop
 
-import mechanize, utils, actions, sys
+import mechanize, sys
+from core import utils, actions
 
 def actionGatherFormInfo(optionURL):
 	######################################

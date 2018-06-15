@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys, threading, time#, itertools
+import sys, threading, time, os#, itertools
 	
 try:
 	import mechanize, re
@@ -10,7 +10,8 @@ except ImportError as error:
 	sys.exit("Try: sudo apt install python-%s" %(missing_moudle))
 	
 try:
-	import actions, utils, httpbrute, options
+	from core import actions, utils
+	import httpbrute, options
 except ImportError as error:
 	print(error)
 	sys.exit("Missing core module!")
@@ -106,5 +107,8 @@ def main(setTargetURL, setUserlist, setPasslist, setNumberThreads):
 		sys.exit(0)
 
 if __name__ == "__main__":
+	current_dir = actions.getProjectRootDirectory(sys.argv[0])
+	if current_dir:
+		os.chdir(current_dir)
 	setTargetURL, setUserlist, setPasslist, setNumberThreads = options.getUserOptions()
 	main(setTargetURL, setUserlist, setPasslist, setNumberThreads)
