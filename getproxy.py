@@ -19,8 +19,9 @@ def help():
 def get_proxy_list(url = "https://free-proxy-list.net/"):
 	try:
 		utils.printf("Connecting to %s." %(url))
-		getproxy = mechanize.Browser()
-		getproxy.set_handle_robots(False)
+		# getproxy = mechanize.Browser()
+		# getproxy.set_handle_robots(False)
+		getproxy = actions.createBrowserObject()
 		user_agent = actions.getUserAgent()
 		getproxy.addheaders = [('User-Agent', user_agent)]
 		getproxy.open(url)

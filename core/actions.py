@@ -34,6 +34,15 @@ def getUserAgent(path = "data/user_agents.txt"):
 	objDataUserAgent.close()
 	return retUserAgent
 
+def createBrowserObject():
+	import mechanize
+	retObject = mechanize.Browser()
+	retObject.set_handle_robots(False)
+	retObject.set_handle_referer(True)
+	retObject.set_handle_redirect(True)
+	retObject.set_handle_equiv(True)
+	return retObject
+
 
 def getFormInformation(objBrowserForm):
 	##########################################

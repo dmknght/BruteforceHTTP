@@ -12,11 +12,11 @@ def actionGatherFormInfo(optionURL):
 	#
 	#####################################
 
-	process = mechanize.Browser()
-	user_agent = actions.getUserAgent()
-	process.addheaders = [('User-Agent', user_agent)]
-	process.set_handle_robots(False)
+
 	try:
+		process = actions.createBrowserObject()
+		user_agent = actions.getUserAgent()
+		process.addheaders = [('User-Agent', user_agent)]
 		process.open(optionURL)
 		#utils.printf("Connected. Getting form information...", "good")
 		formLoginID, formUserfield, formPasswdfield = actions.getFormInformation(process.forms())
@@ -27,9 +27,13 @@ def actionGatherFormInfo(optionURL):
 		#utils.printf("Can not find login form", "bad")
 		#sys.exit(1)
 		utils.die("Can not find login form", TypeError)
+		
 	except Exception as error:
 		#utils.printf(error, "bad")
 		utils.die("Checking connection error", error)
+	
+	finally:
+		process.close()
 
 
 
@@ -58,8 +62,9 @@ def handle(optionURL, optionUserlist, optionPasslist, sizePasslist):
 			pass
 
 		######	new test code block
-		proc = mechanize.Browser()
-		proc.set_handle_robots(False)
+		proc = actions.createBrowserObject()
+		# proc = mechanize.Browser()
+		# proc.set_handle_robots(False)
 		######
 
 		idxTry = 0
