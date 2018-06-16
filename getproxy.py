@@ -59,9 +59,79 @@ def refresh():
 		except Exception as error:
 			utils.die("Error while writting proxy data", error)
 		
+# def check(threads = 16):
+#	#Check Multithread
+# 	import threading
+# 	try:
+# 		proxylist = actions.loadDataFromFile("data/liveproxy.txt")
+# 
+# 	except Exception as error:
+# 		utils.die("You must get proxy list before checking it", error)
+# 
+# 	try:
+# 		workers = []
+# 		for i in xrange(threads):
+# 			worker = threading.Thread(
+# 				target = checkAllProxy,
+# 				args = (proxylist,)
+# 			)
+# 			workers.append(worker)
+# 
+# 	except Exception as error:
+# 		utils.die("Error while checking", error)	
+# 
+# 	try:	
+# 		for worker in workers:
+# 			worker.daemon = True
+# 			worker.start()
+# 
+# 	except KeyboardInterrupt:
+# 		utils.die("Terminated by user", error)
+# 
+# 	except Exception as error:
+# 		utils.die("Error while checking", error)
+# 
+# 	finally:
+# 		try:
+# 			proxylist.close()
+# 		except:
+# 			pass
+
 def check():
-	# TODO add multithread check live proxy
-	pass
+	try:
+		proxylist = actions.loadDataFromFile("data/liveproxy.txt")
+		checkAllProxy(proxylist)
+	except KeyboardInterrupt as error:
+		utils.die("Terminated by user!", error)
+	except Exception as error:
+		utils.die("Error while checking live proxy", error)
+	
+def checkAllProxy(proxyList):
+	for proxyAddr in proxyList:
+		proxyAddr = proxyAddr.replace("\n", "")
+		#connProxy(proxyAddr)
+		result = connProxy(proxyAddr)
+		if result:
+			pass #write new data to file here
+
+
+def connProxy(proxyAddr):
+	try:
+		proxyTest = actions.createBrowserObject()
+		#utils.printf(proxyAddr)
+		proxyTest.set_proxies({"http": proxyAddr})
+		proxyTest.open("https://google.com")
+		utils.printf(proxyAddr, "good")
+		return proxyAddr
+	except Exception as error:
+		utils.die(proxyAddr, error)
+		return None
+	finally:
+		try:
+			proxyTest.close()
+		except:
+			pass
+		
 	
 if __name__ == "__main__":
 	current_dir = actions.getProjectRootDirectory(sys.argv[0])

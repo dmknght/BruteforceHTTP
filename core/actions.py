@@ -84,7 +84,7 @@ def readDataFromList(optListUsername):
 
 	return optListUsername.split(':')
 
-def readDataFromFile(pathFileLocation):
+def loadDataFromFile(pathFileLocation):
 	###################################
 	#	Read and return data file
 	#	Return file object instead of list
@@ -94,7 +94,19 @@ def readDataFromFile(pathFileLocation):
 		objFileRead = open(pathFileLocation, 'r')
 		return objFileRead
 	except Exception as error:
-		utils.die("Reading file error", error)
+		utils.die("Error while loading file!", error)
+		
+def readDataFromFile(pathFileLocation):
+	try:
+		retObj = loadDataFromFile(pathFileLocation)
+		return retObj.read()
+	except Exception as error:
+		utils.die("Error while reading data", error)
+	finally:
+		try:
+			retObj.close()
+		except:
+			pass
 
 def writeDataToFile(pathFileLocation, writeData):
 	try:

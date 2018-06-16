@@ -50,8 +50,8 @@ def getUserOptions():
 			#############################################
 			#	open file here -> no delay for print help
 			#############################################
-			optionUserlist = actions.readDataFromFile(pathDefaultUserlist)
-			optionPasslist = actions.readDataFromFile(pathDefaultPasslist)
+			optionUserlist = actions.loadDataFromFile(pathDefaultUserlist)
+			optionPasslist = actions.loadDataFromFile(pathDefaultPasslist)
 
 	else:
 		###########################################
@@ -61,8 +61,8 @@ def getUserOptions():
 		#
 		###########################################
 
-		optionUserlist = actions.readDataFromFile(pathDefaultUserlist)
-		optionPasslist = actions.readDataFromFile(pathDefaultPasslist)
+		optionUserlist = actions.loadDataFromFile(pathDefaultUserlist)
+		optionPasslist = actions.loadDataFromFile(pathDefaultPasslist)
 		try:
 			index = 1
 			while index < len(sys.argv):
@@ -76,7 +76,7 @@ def getUserOptions():
 
 				#	Choose custom optionUserlist
 				elif sys.argv[index] == '-u':
-					optionUserlist = actions.readDataFromFile(sys.argv[index + 1])
+					optionUserlist = actions.loadDataFromFile(sys.argv[index + 1])
 					infoUserOptions = infoUserOptions.replace(
 						"optionUserlist: DEFAULT", "optionUserlist: %s" %(sys.argv[index + 1])
 					)
@@ -87,7 +87,7 @@ def getUserOptions():
 					infoUserOptions = infoUserOptions.replace(
 						"optionPasslist: DEFAULT", "optionPasslist: %s" %(sys.argv[index + 1])
 					)
-					optionPasslist = actions.readDataFromFile(sys.argv[index + 1])
+					optionPasslist = actions.loadDataFromFile(sys.argv[index + 1])
 					index += 1
 
 				#	Possible URL

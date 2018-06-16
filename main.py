@@ -43,8 +43,8 @@ def main(setTargetURL, setUserlist, setPasslist, setNumberThreads):
 			)
 			# add threads to list
 			workers.append(worker)
-	except:
-		utils.printf("Error while creating threads")
+	except Exception as error:
+		utils.die("Error while creating threads", error)
 
 		#	Start all threads
 	try:
