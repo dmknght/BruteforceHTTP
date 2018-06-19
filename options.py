@@ -71,7 +71,7 @@ def getUserOptions():
 				if sys.argv[index] == '-U':
 					optionUserlist = actions.readDataFromList(sys.argv[index + 1])
 					infoUserOptions = infoUserOptions.replace(
-						"Userlist: DEFAULT", "optionUserlist: %s" %(":".join(optionUserlist))
+						"Userlist: DEFAULT", "Userlist: %s" %(":".join(optionUserlist))
 					)
 					index += 1
 
@@ -79,14 +79,14 @@ def getUserOptions():
 				elif sys.argv[index] == '-u':
 					optionUserlist = actions.loadDataFromFile(sys.argv[index + 1])
 					infoUserOptions = infoUserOptions.replace(
-						"Userlist: DEFAULT", "optionUserlist: %s" %(sys.argv[index + 1])
+						"Userlist: DEFAULT", "Userlist: %s" %(sys.argv[index + 1])
 					)
 					index += 1
 
 				#	Choose custom optionPasslist
 				elif sys.argv[index] == '-p':
 					infoUserOptions = infoUserOptions.replace(
-						"Passlist: DEFAULT", "optionPasslist: %s" %(sys.argv[index + 1])
+						"Passlist: DEFAULT", "Passlist: %s" %(sys.argv[index + 1])
 					)
 					optionPasslist = actions.loadDataFromFile(sys.argv[index + 1])
 					index += 1
