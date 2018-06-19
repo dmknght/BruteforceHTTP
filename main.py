@@ -15,6 +15,20 @@ try:
 except ImportError as error:
 	print(error)
 	sys.exit("Missing core module!")
+	
+	
+########################## SSL 
+#	https://stackoverflow.com/a/35960702
+import ssl
+try:
+    _create_unverified_https_context = ssl._create_unverified_context
+except AttributeError:
+    # Legacy Python that doesn't verify HTTPS certificates by default
+    pass
+else:
+    # Handle target environment that doesn't support HTTPS verification
+    ssl._create_default_https_context = _create_unverified_https_context
+########################## End ssl
 
 def main(setTargetURL, setUserlist, setPasslist, setNumberThreads):
 

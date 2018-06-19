@@ -98,21 +98,28 @@ def refresh():
 # 			pass
 
 def check():
+	# Single thread
 	try:
-		proxylist = actions.loadDataFromFile("data/liveproxy.txt")
-		checkAllProxy(proxylist)
+		pathProxyList = "data/liveproxy.txt"
+		proxylist = actions.loadDataFromFile(pathProxyList)
+		liveproxylist = checkAllProxy(proxylist)
+		proxylist.close()
+		actions.writeDataToFile(pathProxyList, liveproxylist)
 	except KeyboardInterrupt as error:
 		utils.die("Terminated by user!", error)
 	except Exception as error:
 		utils.die("Error while checking live proxy", error)
 	
 def checkAllProxy(proxyList):
+	livelist = []
 	for proxyAddr in proxyList:
 		proxyAddr = proxyAddr.replace("\n", "")
 		#connProxy(proxyAddr)
 		result = connProxy(proxyAddr)
 		if result:
-			pass #write new data to file here
+			livelist.append(result)
+			
+	return "\n".join(livelist)
 
 
 def connProxy(proxyAddr):
