@@ -23,16 +23,18 @@ def getObjectSize(objInputData):
 	elif type(objInputData) == str:
 		return len(objInputData.split('\n'))
 
+def randomSelectFromList(listData):
+	return random.choice(listData)
+
 def randomSelectFromFile(path):
 	##########################################
 	#	Return random User Agents from file
 	#
 	##########################################
 
-	objDataUserAgent = open(path, 'r')
-	retUserAgent = random.choice(objDataUserAgent.read().split('\n'))
-	objDataUserAgent.close()
-	return retUserAgent
+	loadData = readDataFromFile(path).split("\n")
+	retData = randomSelectFromList(loadData)
+	return retData
 	
 def getUserAgent():
 	path = "data/user_agents.txt"

@@ -96,7 +96,20 @@ def getUserOptions():
 					optionThreads = sys.argv[index + 1]
 					index += 1
 				elif sys.argv[index] == "--proxy":
-					optionProxy = True
+					try:
+						optionProxy = actions.readDataFromFile("data/liveproxy.txt").split("\n")
+					except:
+						utils.printf("Can not read proxy list file!", "bad")
+						utils.printf("Downloading proxy list automatically")
+						try:
+							import getproxy
+							getproxy.refresh()
+						except Exception as error:
+							utils.die("Error while getting proxy list [automatic]", error)
+
+					finally:
+						optionProxy = actions.readDataFromFile("data/liveproxy.txt").split("\n")
+
 				else:
 					optionTargetURL = sys.argv[index]
 				index += 1
@@ -117,7 +130,10 @@ def getUserOptions():
 	try:
 		optionThreads = int(optionThreads)
 		infoUserOptions += "Thread[s]: %s\n" %(optionThreads)
-		infoUserOptions += "\tProxy: %s\n" %(optionProxy)
+		if optionProxy:
+			infoUserOptions += "\tProxy: %s\n" %("True")
+		else:
+			infoUserOptions += "\tProxy: %s\n" %(optionProxy)
 	except Exception as error:
 		utils.printf("Invalid number of threads", "bad")
 		sys.exit(error)

