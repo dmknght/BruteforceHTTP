@@ -29,7 +29,7 @@ else:
     ssl._create_default_https_context = _create_unverified_https_context
 ########################## End ssl
 
-def main(setTargetURL, setUserlist, setPasslist, setNumberThreads):
+def main(setTargetURL, setUserlist, setPasslist, setNumberThreads, setProxy):
 
 	try:
 		sizePasslist = actions.getObjectSize(setPasslist)
@@ -52,7 +52,7 @@ def main(setTargetURL, setUserlist, setPasslist, setNumberThreads):
 		for i in xrange(setNumberThreads):
 			worker = threading.Thread(
 				target = httpbrute.handle,
-				args = (setTargetURL, setUserlist, usePasslist, sizePasslist)
+				args = (setTargetURL, setUserlist, usePasslist, sizePasslist, setProxy)
 			)
 			# add threads to list
 			workers.append(worker)
@@ -123,5 +123,5 @@ if __name__ == "__main__":
 	current_dir = actions.getProjectRootDirectory(sys.argv[0])
 	if current_dir:
 		os.chdir(current_dir)
-	setTargetURL, setUserlist, setPasslist, setNumberThreads = options.getUserOptions()
-	main(setTargetURL, setUserlist, setPasslist, setNumberThreads)
+	setTargetURL, setUserlist, setPasslist, setNumberThreads, setProxy = options.getUserOptions()
+	main(setTargetURL, setUserlist, setPasslist, setNumberThreads, setProxy)

@@ -13,6 +13,7 @@ def getUserOptions():
 	pathDefaultPasslist = 'data/passlist.txt'
 	optionTargetURL = ''
 	optionThreads = 3
+	optionProxy = False
 
 	infoUserOptions = '''
 	Target: TARGETURL
@@ -94,6 +95,8 @@ def getUserOptions():
 				elif sys.argv[index] == '-t':
 					optionThreads = sys.argv[index + 1]
 					index += 1
+				elif sys.argv[index] == "--proxy":
+					optionProxy = True
 				else:
 					optionTargetURL = sys.argv[index]
 				index += 1
@@ -114,6 +117,7 @@ def getUserOptions():
 	try:
 		optionThreads = int(optionThreads)
 		infoUserOptions += "Thread[s]: %s\n" %(optionThreads)
+		infoUserOptions += "\tProxy: %s\n" %(optionProxy)
 	except Exception as error:
 		utils.printf("Invalid number of threads", "bad")
 		sys.exit(error)
@@ -125,4 +129,4 @@ def getUserOptions():
 	###########################################
 	utils.printf(infoUserOptions, 'good')
 
-	return optionTargetURL, optionUserlist, optionPasslist, optionThreads
+	return optionTargetURL, optionUserlist, optionPasslist, optionThreads, optionProxy

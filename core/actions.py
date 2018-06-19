@@ -23,7 +23,7 @@ def getObjectSize(objInputData):
 	elif type(objInputData) == str:
 		return len(objInputData.split('\n'))
 
-def getUserAgent(path = "data/user_agents.txt"):
+def randomSelectFromFile(path):
 	##########################################
 	#	Return random User Agents from file
 	#
@@ -33,6 +33,14 @@ def getUserAgent(path = "data/user_agents.txt"):
 	retUserAgent = random.choice(objDataUserAgent.read().split('\n'))
 	objDataUserAgent.close()
 	return retUserAgent
+	
+def getUserAgent():
+	path = "data/user_agents.txt"
+	return randomSelectFromFile(path)
+	
+def getProxyAddr():
+	path = "data/liveproxy.txt"
+	return randomSelectFromFile(path)
 
 def createBrowserObject():
 	import mechanize

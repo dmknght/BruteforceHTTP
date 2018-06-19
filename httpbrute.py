@@ -37,7 +37,7 @@ def actionGatherFormInfo(optionURL):
 
 
 
-def handle(optionURL, optionUserlist, optionPasslist, sizePasslist):
+def handle(optionURL, optionUserlist, optionPasslist, sizePasslist, setProxyConnect = False):
 	############################################
 	#	Old code logic:
 	#		Create 1 browser object per password
@@ -75,6 +75,12 @@ def handle(optionURL, optionUserlist, optionPasslist, sizePasslist):
 			#	New test code block: add new user_agent each try
 			user_agent = actions.getUserAgent()
 			proc.addheaders = [('User-Agent', user_agent)]
+			# if setProxyConnect == True:
+			# 	#Set proxy connect
+			# 	proxyAddr = actions.getProxyAddr()
+			# 	#utils.printf("Debug: proxy addr %s" %(proxyAddr))
+			# 	proc.set_proxies({"http": proxyAddr})
+
 			proc.open(optionURL)
 			#	End new code block
 
