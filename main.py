@@ -3,7 +3,7 @@
 import sys, threading, time, os#, itertools
 	
 try:
-	import mechanize, re
+	import mechanize, re, ssl
 except ImportError as error:
 	print(error)
 	_, missing_moudle, _ = str(error).split("'")
@@ -19,7 +19,6 @@ except ImportError as error:
 	
 ########################## SSL 
 #	https://stackoverflow.com/a/35960702
-import ssl
 try:
     _create_unverified_https_context = ssl._create_unverified_context
 except AttributeError:
