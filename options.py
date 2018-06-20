@@ -104,11 +104,12 @@ def getUserOptions():
 						try:
 							import getproxy
 							getproxy.refresh()
+							optionProxy = actions.readDataFromFile("data/liveproxy.txt").split("\n")
 						except Exception as error:
 							utils.die("Error while getting proxy list [automatic]", error)
 
-					finally:
-						optionProxy = actions.readDataFromFile("data/liveproxy.txt").split("\n")
+					#finally:
+					#	optionProxy = actions.readDataFromFile("data/liveproxy.txt").split("\n")
 
 				else:
 					optionTargetURL = sys.argv[index]

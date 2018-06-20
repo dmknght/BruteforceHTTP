@@ -97,41 +97,52 @@ def refresh():
 # 		except:
 # 			pass
 
-def check():
+def check(target = "https://google.com"):
 	# Single thread
 	try:
 		pathProxyList = "data/liveproxy.txt"
 		proxylist = actions.loadDataFromFile(pathProxyList)
-		liveproxylist = checkAllProxy(proxylist)
-		proxylist.close()
-		actions.writeDataToFile(pathProxyList, liveproxylist)
+		liveproxylist = checkAllProxy(proxylist, target)
+		
 	except KeyboardInterrupt as error:
 		utils.die("Terminated by user!", error)
 	except Exception as error:
 		utils.die("Error while checking live proxy", error)
 	
-def checkAllProxy(proxyList):
+	finally:
+		utils.printf("Writing checked proxies...")
+		actions.writeDataToFile(pathProxyList, liveproxylist)
+		utils.printf("Data has been written to %s" %(pathProxyList))
+		try:
+			proxylist.close()
+		except Exception as error:
+			#Debug 
+			utils.printf(error, "bad")
+
+	
+def checkAllProxy(proxyList, target):
 	livelist = []
 	for proxyAddr in proxyList:
 		proxyAddr = proxyAddr.replace("\n", "")
 		#connProxy(proxyAddr)
-		result = connProxy(proxyAddr)
+		result = connProxy(proxyAddr, target)
 		if result:
 			livelist.append(result)
 			
 	return "\n".join(livelist)
 
 
-def connProxy(proxyAddr):
+def connProxy(proxyAddr, target):
 	try:
 		proxyTest = actions.createBrowserObject()
-		#utils.printf(proxyAddr)
+		utils.printf(proxyAddr)
 		proxyTest.set_proxies({"http": proxyAddr})
-		proxyTest.open("https://google.com")
+		proxyTest.open(target)
 		utils.printf(proxyAddr, "good")
 		return proxyAddr
 	except Exception as error:
-		utils.die(proxyAddr, error)
+		#utils.die(proxyAddr, error)
+		utils.printf("%s %s" %(proxyAddr, error), "bad")
 		return None
 	finally:
 		try:
@@ -155,4 +166,10 @@ if __name__ == "__main__":
 		elif option == "check":
 			check()
 		else:
-			utils.die("Invalid option!", "Usage:\n\tpython getproxy.py help")
+			utils.die("Invalid options!", "Usage:\n\tpython getproxy.py help")
+	elif len(sys.argv) == 3:
+		option, value = sys.argv[1], sys.argv[2]
+		if option == "check":
+			check(value)
+		else:
+			utils.die("Invalid options!", "Usage:\n\tpython getproxy.py help")
