@@ -128,16 +128,17 @@ def getUserOptions():
 	else:
 		infoUserOptions = infoUserOptions.replace('TARGETURL', optionTargetURL)
 
+	if optionProxy:
+		infoUserOptions += "Proxy: %s\n" %("True")
+	else:
+		infoUserOptions += "Proxy: %s\n" %(optionProxy)
+	
 	try:
 		optionThreads = int(optionThreads)
-		infoUserOptions += "Thread[s]: %s\n" %(optionThreads)
-		if optionProxy:
-			infoUserOptions += "\tProxy: %s\n" %("True")
-		else:
-			infoUserOptions += "\tProxy: %s\n" %(optionProxy)
+		infoUserOptions += "\tThread[s]: %s\n" %(optionThreads)
+
 	except Exception as error:
-		utils.printf("Invalid number of threads", "bad")
-		sys.exit(error)
+		utils.die("Invalid number threads", error)
 
 
 	###########################################

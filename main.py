@@ -69,10 +69,10 @@ def main(setTargetURL, setUserlist, setPasslist, setNumberThreads, setProxy):
 	except KeyboardInterrupt:# as error:
 		# for worker in workers:
 		# 	worker.join()
-		utils.die("Terminated by user!", KeyboardInterrupt)
+		utils.die("Terminated by user!", "KeyboardInterrupt")
 		
 	except SystemExit:# as error
-		utils.die("Terminated by system!", SystemExit)
+		utils.die("Terminated by system!", "SystemExit")
 
 	except Exception as error:
 		utils.die("Error while running", error)
