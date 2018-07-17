@@ -4,6 +4,15 @@
 import mechanize, sys
 from core import utils, actions
 
+def printSuccess(foundUsername, foundPassword):
+	utils.printf(
+		"Found: %s:%s\n" %(
+			foundUsername,
+			foundPassword
+			),
+		"good"
+	)
+
 def actionGatherFormInfo(optionURL):
 	######################################
 	#	Test connect to URL
@@ -112,14 +121,17 @@ def handle(optionURL, optionUserlist, optionPasslist, sizePasslist, setProxyList
 				#	If no login form -> success
 				#	TODO improve condition to use captcha
 				if not actions.getFormInformation(proc.forms()):
-					if setKeyFalse not in proc.response().read():
-						utils.printf(
-							"Found: %s:%s\n" %(
-								tryUsername,
-								tryPassword
-								),
-							"good"
-						)
+
+					#TODO edit mixed condition
+					if setKeyFalse:
+						if setKeyFalse not in proc.response().read():
+							printSuccess(tryUsername, tryPassword)
+
+							#	Clear object and try new username
+							proc.close()
+							break
+					else:
+						printSuccess(tryUsername, tryPassword)
 
 						#	Clear object and try new username
 						proc.close()
