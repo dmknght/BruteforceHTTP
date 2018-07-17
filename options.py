@@ -144,11 +144,11 @@ def getUserOptions():
 		optionThreads = int(optionThreads)
 		infoUserOptions += "\tThread[s]: %s\n" %(optionThreads)
 
-	if optionKeyFalse:
-		infoUserOptions += "\tFalse keyword: %s\n" %(optionKeyFalse)
-
 	except Exception as error:
 		utils.die("Invalid number threads", error)
+
+	if optionKeyFalse:
+		infoUserOptions += "\tFalse keyword: %s\n" %(optionKeyFalse)
 
 
 	###########################################
