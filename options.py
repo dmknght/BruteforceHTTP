@@ -12,6 +12,7 @@ def getUserOptions():
 	pathDefaultUserlist = 'data/userlist.txt'
 	pathDefaultPasslist = 'data/passlist.txt'
 	optionTargetURL = ''
+	optionKeyFalse = ''
 	optionThreads = 3
 	optionProxy = False
 
@@ -91,10 +92,16 @@ def getUserOptions():
 					optionPasslist = actions.loadDataFromFile(sys.argv[index + 1])
 					index += 1
 
-				#	Possible URL
+				#	Set thread
 				elif sys.argv[index] == '-t':
 					optionThreads = sys.argv[index + 1]
 					index += 1
+
+				elif sys.argv[index] == '-c':
+					optionKeyFalse = sys.argv[index + 1]
+					index += 1
+
+				# Set proxy
 				elif sys.argv[index] == "--proxy":
 					try:
 						optionProxy = actions.readDataFromFile("data/liveproxy.txt").split("\n")
@@ -132,10 +139,13 @@ def getUserOptions():
 		infoUserOptions += "Proxy: %s\n" %("True")
 	else:
 		infoUserOptions += "Proxy: %s\n" %(optionProxy)
-	
+
 	try:
 		optionThreads = int(optionThreads)
 		infoUserOptions += "\tThread[s]: %s\n" %(optionThreads)
+
+	if optionKeyFalse:
+		infoUserOptions += "\tFalse keyword: %s\n" %(optionKeyFalse)
 
 	except Exception as error:
 		utils.die("Invalid number threads", error)
@@ -147,4 +157,4 @@ def getUserOptions():
 	###########################################
 	utils.printf(infoUserOptions, 'good')
 
-	return optionTargetURL, optionUserlist, optionPasslist, optionThreads, optionProxy
+	return optionTargetURL, optionUserlist, optionPasslist, optionThreads, optionProxy, optionKeyFalse

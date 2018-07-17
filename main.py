@@ -1,23 +1,23 @@
 #!/usr/bin/python
 
 import sys, threading, time, os#, itertools
-	
+
 try:
 	import mechanize, re, ssl
 except ImportError as error:
 	print(error)
 	_, missing_moudle, _ = str(error).split("'")
 	sys.exit("Try: sudo apt install python-%s" %(missing_moudle))
-	
+
 try:
 	from core import actions, utils
 	import httpbrute, options
 except ImportError as error:
 	print(error)
 	sys.exit("Missing core module!")
-	
-	
-########################## SSL 
+
+
+########################## SSL
 #	https://stackoverflow.com/a/35960702
 try:
     _create_unverified_https_context = ssl._create_unverified_context
@@ -29,7 +29,7 @@ else:
     ssl._create_default_https_context = _create_unverified_https_context
 ########################## End ssl
 
-def main(setTargetURL, setUserlist, setPasslist, setNumberThreads, setProxy):
+def main(setTargetURL, setUserlist, setPasslist, setNumberThreads, setProxy, setKeyFalse):
 
 	try:
 		sizePasslist = actions.getObjectSize(setPasslist)
@@ -52,7 +52,7 @@ def main(setTargetURL, setUserlist, setPasslist, setNumberThreads, setProxy):
 		for i in xrange(setNumberThreads):
 			worker = threading.Thread(
 				target = httpbrute.handle,
-				args = (setTargetURL, setUserlist, usePasslist, sizePasslist, setProxy)
+				args = (setTargetURL, setUserlist, usePasslist, sizePasslist, setProxy, setKeyFalse)
 			)
 			# add threads to list
 			workers.append(worker)
@@ -70,7 +70,7 @@ def main(setTargetURL, setUserlist, setPasslist, setNumberThreads, setProxy):
 		# for worker in workers:
 		# 	worker.join()
 		utils.die("Terminated by user!", "KeyboardInterrupt")
-		
+
 	except SystemExit:# as error
 		utils.die("Terminated by system!", "SystemExit")
 
@@ -123,5 +123,5 @@ if __name__ == "__main__":
 	current_dir = actions.getProjectRootDirectory(sys.argv[0])
 	if current_dir:
 		os.chdir(current_dir)
-	setTargetURL, setUserlist, setPasslist, setNumberThreads, setProxy = options.getUserOptions()
-	main(setTargetURL, setUserlist, setPasslist, setNumberThreads, setProxy)
+	setTargetURL, setUserlist, setPasslist, setNumberThreads, setProxy, setKeyFalse = options.getUserOptions()
+	main(setTargetURL, setUserlist, setPasslist, setNumberThreads, setProxy, setKeyFalse)

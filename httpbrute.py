@@ -27,17 +27,17 @@ def actionGatherFormInfo(optionURL):
 		#utils.printf("Can not find login form", "bad")
 		#sys.exit(1)
 		utils.die("Can not find login form", TypeError)
-		
+
 	except Exception as error:
 		#utils.printf(error, "bad")
 		utils.die("Checking connection error", error)
-	
+
 	finally:
 		process.close()
 
 
 
-def handle(optionURL, optionUserlist, optionPasslist, sizePasslist, setProxyList):
+def handle(optionURL, optionUserlist, optionPasslist, sizePasslist, setProxyList, setKeyFalse):
 	############################################
 	#	Old code logic:
 	#		Create 1 browser object per password
@@ -73,8 +73,8 @@ def handle(optionURL, optionUserlist, optionPasslist, sizePasslist, setProxyList
 			#	New test code block: add new user_agent each try
 			user_agent = actions.getUserAgent()
 			proc.addheaders = [('User-Agent', user_agent)]
-			
-			
+
+
 			if setProxyList:
 				#Set proxy connect
 				proxyAddr = actions.randomSelectFromList(setProxyList)
@@ -112,17 +112,18 @@ def handle(optionURL, optionUserlist, optionPasslist, sizePasslist, setProxyList
 				#	If no login form -> success
 				#	TODO improve condition to use captcha
 				if not actions.getFormInformation(proc.forms()):
-					utils.printf(
-						"Found: %s:%s\n" %(
-							tryUsername,
-							tryPassword
-							),
-						"good"
-					)
+					if setKeyFalse not in proc.response().read():
+						utils.printf(
+							"Found: %s:%s\n" %(
+								tryUsername,
+								tryPassword
+								),
+							"good"
+						)
 
-					#	Clear object and try new username
-					proc.close()
-					break
+						#	Clear object and try new username
+						proc.close()
+						break
 
 			except mechanize.HTTPError as error:
 				#	Get blocked
