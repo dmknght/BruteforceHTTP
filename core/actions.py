@@ -1,4 +1,4 @@
-import random, sys, utils, re
+import random, sys, utils, re, string
 
 def getProjectRootDirectory(pathModuleLocation):
 	##################################
@@ -125,3 +125,13 @@ def writeDataToFile(pathFileLocation, writeData):
 		objFileWrite.close()
 	except Exception as error:
 		utils.die("Error while writing data", error)
+
+def randomString(min = 2, max = 5):
+	#https://stackoverflow.com/a/2257449
+	charset = string.lowercase + string.uppercase
+	return ''.join(random.choice(charset) for _ in xrange(min, max))
+
+	
+if __name__ == "__main__":
+	utils.die("Oops! Wrong place", "Find other place")
+	

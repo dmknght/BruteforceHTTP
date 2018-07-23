@@ -4,15 +4,6 @@
 import mechanize, sys
 from core import utils, actions
 
-def printSuccess(foundUsername, foundPassword):
-	utils.printf(
-		"Found: %s:%s\n" %(
-			foundUsername,
-			foundPassword
-			),
-		"good"
-	)
-
 def actionGatherFormInfo(optionURL):
 	######################################
 	#	Test connect to URL
@@ -131,7 +122,7 @@ def handle(optionURL, optionUserlist, optionPasslist, sizePasslist, setProxyList
 							proc.close()
 							break
 					else:
-						printSuccess(tryUsername, tryPassword)
+						utils.printSuccess(tryUsername, tryPassword)
 
 						#	Clear object and try new username
 						proc.close()

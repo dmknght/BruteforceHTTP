@@ -15,6 +15,7 @@ def getUserOptions():
 	optionKeyFalse = ''
 	optionThreads = 3
 	optionProxy = False
+	optionMode = "brute"
 
 	infoUserOptions = '''
 	Target: TARGETURL
@@ -117,6 +118,12 @@ def getUserOptions():
 
 					#finally:
 					#	optionProxy = actions.readDataFromFile("data/liveproxy.txt").split("\n")
+				elif sys.argv[index] == "--sql":
+					optionMode = "sqli"
+					optionUserlist = actions.loadDataFromFile("data/sqli.txt")
+					infoUserOptions = infoUserOptions.replace(
+						"Userlist: DEFAULT", "Userlist: SQL INJECTION"
+					)
 
 				else:
 					optionTargetURL = sys.argv[index]
@@ -157,4 +164,4 @@ def getUserOptions():
 	###########################################
 	utils.printf(infoUserOptions, 'good')
 
-	return optionTargetURL, optionUserlist, optionPasslist, optionThreads, optionProxy, optionKeyFalse
+	return optionTargetURL, optionUserlist, optionPasslist, optionThreads, optionProxy, optionKeyFalse, optionMode

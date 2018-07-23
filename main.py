@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys, threading, time, os#, itertools
+import sys, threading, time, os, sqltest#, itertools
 
 try:
 	import mechanize, re, ssl
@@ -29,10 +29,11 @@ else:
     ssl._create_default_https_context = _create_unverified_https_context
 ########################## End ssl
 
-def main(setTargetURL, setUserlist, setPasslist, setNumberThreads, setProxy, setKeyFalse):
+def main(setTargetURL, setUserlist, setPasslist, setNumberThreads, setProxy, setKeyFalse, setMode):
 
 	try:
 		sizePasslist = actions.getObjectSize(setPasslist)
+		sizeUserlist = actions.getObjectSize(setUserlist)
 
 	except:
 		#utils.printf("Can not get size of passlist", "bad")
@@ -48,14 +49,22 @@ def main(setTargetURL, setUserlist, setPasslist, setNumberThreads, setProxy, set
 		#	Create thread list
 		#usePasslist = list(itertools.islice(setPasslist, sizePasslist))
 		usePasslist = setPasslist.readlines()
-
-		for i in xrange(setNumberThreads):
-			worker = threading.Thread(
-				target = httpbrute.handle,
-				args = (setTargetURL, setUserlist, usePasslist, sizePasslist, setProxy, setKeyFalse)
-			)
-			# add threads to list
-			workers.append(worker)
+		if setMode == "sqli":
+			for i in xrange(setNumberThreads):
+				worker = threading.Thread(
+					target = sqltest.handle,
+					args = (setTargetURL, setUserlist, sizeUserlist, setProxy, setKeyFalse)
+				)
+				# add threads to list
+				workers.append(worker)
+		else:
+			for i in xrange(setNumberThreads):
+				worker = threading.Thread(
+					target = httpbrute.handle,
+					args = (setTargetURL, setUserlist, usePasslist, sizePasslist, setProxy, setKeyFalse)
+				)
+				# add threads to list
+				workers.append(worker)
 	except Exception as error:
 		utils.die("Error while creating threads", error)
 
@@ -123,5 +132,4 @@ if __name__ == "__main__":
 	current_dir = actions.getProjectRootDirectory(sys.argv[0])
 	if current_dir:
 		os.chdir(current_dir)
-	setTargetURL, setUserlist, setPasslist, setNumberThreads, setProxy, setKeyFalse = options.getUserOptions()
-	main(setTargetURL, setUserlist, setPasslist, setNumberThreads, setProxy, setKeyFalse)
+	main(*options.getUserOptions())

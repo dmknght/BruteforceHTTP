@@ -95,7 +95,18 @@ def print_table(headers, *args, **kwargs):
 				'{:{}}'.format(element, fill[idx])
 			))
 		print(content_line)
-
+		
+		
+def printSuccess(foundUsername, foundPassword):
+	utils.printf(
+		"Found: %s:%s\n" %(
+			foundUsername,
+			foundPassword
+			),
+		"good"
+	)
+	
+	
 def print_help():
 
 	#	Print project's help table
@@ -108,3 +119,6 @@ def print_help():
 		["-U <username>", "-U user | -U user1:user2:user3"]
 	]
 	print_table(title, *menu_options)
+	
+if __name__ == "__main__":
+	utils.die("Oops! Wrong place", "Find other place")
