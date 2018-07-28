@@ -27,13 +27,13 @@ def get_proxy_list(url = "https://free-proxy-list.net/"):
 		getproxy.open(url)
 		utils.printf("Gathering proxy completed.", "good")
 		return getproxy.response().read()
-		
+
 	except Exception as error:
 		utils.die("Error while connecting to live proxy server!", error)
 	finally:
 		getproxy.close()
-		
-		
+
+
 def parse_proxy(response):
 	try:
 		re_ip = r"\b(?:\d{1,3}\.){3}\d{1,3}\b<\/td><td>\d{1,5}"
@@ -58,16 +58,16 @@ def refresh():
 
 		except Exception as error:
 			utils.die("Error while writting proxy data", error)
-		
+
 # def check(threads = 16):
 #	#Check Multithread
 # 	import threading
 # 	try:
 # 		proxylist = actions.loadDataFromFile("data/liveproxy.txt")
-# 
+#
 # 	except Exception as error:
 # 		utils.die("You must get proxy list before checking it", error)
-# 
+#
 # 	try:
 # 		workers = []
 # 		for i in xrange(threads):
@@ -76,21 +76,21 @@ def refresh():
 # 				args = (proxylist,)
 # 			)
 # 			workers.append(worker)
-# 
+#
 # 	except Exception as error:
-# 		utils.die("Error while checking", error)	
-# 
-# 	try:	
+# 		utils.die("Error while checking", error)
+#
+# 	try:
 # 		for worker in workers:
 # 			worker.daemon = True
 # 			worker.start()
-# 
+#
 # 	except KeyboardInterrupt:
 # 		utils.die("Terminated by user", error)
-# 
+#
 # 	except Exception as error:
 # 		utils.die("Error while checking", error)
-# 
+#
 # 	finally:
 # 		try:
 # 			proxylist.close()
@@ -103,33 +103,37 @@ def check(target = "https://google.com"):
 		pathProxyList = "data/liveproxy.txt"
 		proxylist = actions.loadDataFromFile(pathProxyList)
 		liveproxylist = checkAllProxy(proxylist, target)
-		
+
 	except KeyboardInterrupt as error:
 		utils.die("Terminated by user!", error)
 	except Exception as error:
 		utils.die("Error while checking live proxy", error)
-	
+
 	finally:
-		utils.printf("Writing checked proxies...")
-		actions.writeDataToFile(pathProxyList, liveproxylist)
-		utils.printf("Data has been written to %s" %(pathProxyList))
 		try:
+			utils.printf("Writing checked proxies...")
+			actions.writeDataToFile(pathProxyList, liveproxylist)
+			utils.printf("Data has been written to %s" %(pathProxyList))
 			proxylist.close()
 		except Exception as error:
-			#Debug 
+			#Debug
 			utils.printf(error, "bad")
 
-	
+
 def checkAllProxy(proxyList, target):
 	livelist = []
-	for proxyAddr in proxyList:
-		proxyAddr = proxyAddr.replace("\n", "")
-		#connProxy(proxyAddr)
-		result = connProxy(proxyAddr, target)
-		if result:
-			livelist.append(result)
-			
-	return "\n".join(livelist)
+	try:
+		for proxyAddr in proxyList:
+			proxyAddr = proxyAddr.replace("\n", "")
+			#connProxy(proxyAddr)
+			result = connProxy(proxyAddr, target)
+			if result:
+				livelist.append(result)
+	except Exception as error:
+		utils.printf("Error", "bad")
+
+	finally:
+		return "\n".join(livelist)
 
 
 def connProxy(proxyAddr, target):
@@ -149,8 +153,8 @@ def connProxy(proxyAddr, target):
 			proxyTest.close()
 		except:
 			pass
-		
-	
+
+
 if __name__ == "__main__":
 	current_dir = actions.getProjectRootDirectory(sys.argv[0])
 	if current_dir:
