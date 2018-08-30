@@ -14,7 +14,7 @@ def actionGatherFormInfo(optionURL):
 
 
 	try:
-		process = actions.createBrowserObject()
+		process = actions.startBrowser()
 		user_agent = actions.getUserAgent()
 		process.addheaders = [('User-Agent', user_agent)]
 		process.open(optionURL)
@@ -60,7 +60,7 @@ def handle(optionURL, optionUserlist, optionPasslist, sizePasslist, setProxyList
 			pass
 
 		######	new test code block
-		proc = actions.createBrowserObject()
+		proc = actions.startBrowser()
 		# proc = mechanize.Browser()
 		# proc.set_handle_robots(False)
 		######
@@ -77,7 +77,7 @@ def handle(optionURL, optionUserlist, optionPasslist, sizePasslist, setProxyList
 
 			if setProxyList:
 				#Set proxy connect
-				proxyAddr = actions.randomSelectFromList(setProxyList)
+				proxyAddr = actions.randomFromList(setProxyList)
 				#utils.printf("Debug: proxy addr %s" %(proxyAddr))
 				proc.set_proxies({"http": proxyAddr})
 

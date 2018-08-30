@@ -1,1 +1,4 @@
 *.pyc
+# Distribution / packaging
+test/
+test.*

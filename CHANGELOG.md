@@ -2,7 +2,7 @@
 * Add change working directory (chdir) to project's root directory 
 * Move some data to /data/
 * Move module utils, actions to package core
-* Create actions.createBrowserObject() instead of lines of code each function
+* Create actions.startBrowser() instead of lines of code each function
 
 
 ## 1.3 test 2

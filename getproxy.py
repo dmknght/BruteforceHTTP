@@ -21,7 +21,7 @@ def get_proxy_list(url = "https://free-proxy-list.net/"):
 		utils.printf("Connecting to %s." %(url))
 		# getproxy = mechanize.Browser()
 		# getproxy.set_handle_robots(False)
-		getproxy = actions.createBrowserObject()
+		getproxy = actions.startBrowser()
 		user_agent = actions.getUserAgent()
 		getproxy.addheaders = [('User-Agent', user_agent)]
 		getproxy.open(url)
@@ -53,7 +53,7 @@ def refresh():
 			listproxy = "\n".join(listproxy)
 			location = "data/liveproxy.txt"
 			utils.printf("Write data to %s." %(location))
-			actions.writeDataToFile(location, listproxy)
+			actions.fwrite(location, listproxy)
 			utils.printf("Write data to %s completed!" %(location), "good")
 
 		except Exception as error:
@@ -63,7 +63,7 @@ def refresh():
 #	#Check Multithread
 # 	import threading
 # 	try:
-# 		proxylist = actions.loadDataFromFile("data/liveproxy.txt")
+# 		proxylist = actions.fload("data/liveproxy.txt")
 #
 # 	except Exception as error:
 # 		utils.die("You must get proxy list before checking it", error)
@@ -101,7 +101,7 @@ def check(target = "https://google.com"):
 	# Single thread
 	try:
 		pathProxyList = "data/liveproxy.txt"
-		proxylist = actions.loadDataFromFile(pathProxyList)
+		proxylist = actions.fload(pathProxyList)
 		liveproxylist = checkAllProxy(proxylist, target)
 
 	except KeyboardInterrupt as error:
@@ -112,7 +112,7 @@ def check(target = "https://google.com"):
 	finally:
 		try:
 			utils.printf("Writing checked proxies...")
-			actions.writeDataToFile(pathProxyList, liveproxylist)
+			actions.fwrite(pathProxyList, liveproxylist)
 			utils.printf("Data has been written to %s" %(pathProxyList))
 			proxylist.close()
 		except Exception as error:
@@ -138,7 +138,7 @@ def checkAllProxy(proxyList, target):
 
 def connProxy(proxyAddr, target):
 	try:
-		proxyTest = actions.createBrowserObject()
+		proxyTest = actions.startBrowser()
 		utils.printf(proxyAddr)
 		proxyTest.set_proxies({"http": proxyAddr})
 		proxyTest.open(target)
@@ -156,7 +156,7 @@ def connProxy(proxyAddr, target):
 
 
 if __name__ == "__main__":
-	current_dir = actions.getProjectRootDirectory(sys.argv[0])
+	current_dir = actions.getRootDir(sys.argv[0])
 	if current_dir:
 		os.chdir(current_dir)
 	if len(sys.argv) == 1:

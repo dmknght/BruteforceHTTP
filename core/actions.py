@@ -1,6 +1,6 @@
 import random, sys, utils, re, string
 
-def getProjectRootDirectory(pathModuleLocation):
+def getRootDir(pathModuleLocation):
 	##################################
 	#	Get root folder of module file
 	#	/foo/bar/module.py
@@ -23,28 +23,28 @@ def getObjectSize(objInputData):
 	elif type(objInputData) == str:
 		return len(objInputData.split('\n'))
 
-def randomSelectFromList(listData):
+def randomFromList(listData):
 	return random.choice(listData)
 
-def randomSelectFromFile(path):
+def randomFromFile(path):
 	##########################################
 	#	Return random User Agents from file
 	#
 	##########################################
 
-	loadData = readDataFromFile(path).split("\n")
-	retData = randomSelectFromList(loadData)
+	loadData = fread(path).split("\n")
+	retData = randomFromList(loadData)
 	return retData
 	
 def getUserAgent():
 	path = "data/user_agents.txt"
-	return randomSelectFromFile(path)
+	return randomFromFile(path)
 	
 def getProxyAddr():
 	path = "data/liveproxy.txt"
-	return randomSelectFromFile(path)
+	return randomFromFile(path)
 
-def createBrowserObject():
+def startBrowser():
 	import mechanize
 	retObject = mechanize.Browser()
 	retObject.set_handle_robots(False)
@@ -84,7 +84,7 @@ def getFormInformation(objBrowserForm):
 			retFormID += 1
 	return None
 
-def readDataFromList(optListUsername):
+def lread(optListUsername):
 	#################################
 	#	split input username to a list
 	#	username -> [username]
@@ -94,7 +94,7 @@ def readDataFromList(optListUsername):
 
 	return optListUsername.split(':')
 
-def loadDataFromFile(pathFileLocation):
+def fload(pathFileLocation):
 	###################################
 	#	Read and return data file
 	#	Return file object instead of list
@@ -106,9 +106,9 @@ def loadDataFromFile(pathFileLocation):
 	except Exception as error:
 		utils.die("Error while loading file!", error)
 		
-def readDataFromFile(pathFileLocation):
+def fread(pathFileLocation):
 	try:
-		retObj = loadDataFromFile(pathFileLocation)
+		retObj = fload(pathFileLocation)
 		return retObj.read()
 	except Exception as error:
 		utils.die("Error while reading data", error)
@@ -118,7 +118,7 @@ def readDataFromFile(pathFileLocation):
 		except:
 			pass
 
-def writeDataToFile(pathFileLocation, writeData):
+def fwrite(pathFileLocation, writeData):
 	try:
 		objFileWrite = open(pathFileLocation, "w'")
 		objFileWrite.write(writeData)

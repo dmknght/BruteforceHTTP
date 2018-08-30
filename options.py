@@ -8,6 +8,11 @@ from core import utils, actions
 #
 ############################################
 
+def checkValidURL(url):
+	# check url, add protocol, etc...
+	
+	pass
+
 def getUserOptions():
 	pathDefaultUserlist = 'data/userlist.txt'
 	pathDefaultPasslist = 'data/passlist.txt'
@@ -53,8 +58,8 @@ def getUserOptions():
 			#############################################
 			#	open file here -> no delay for print help
 			#############################################
-			optionUserlist = actions.loadDataFromFile(pathDefaultUserlist)
-			optionPasslist = actions.loadDataFromFile(pathDefaultPasslist)
+			optionUserlist = actions.fload(pathDefaultUserlist)
+			optionPasslist = actions.fload(pathDefaultPasslist)
 
 	else:
 		###########################################
@@ -64,14 +69,14 @@ def getUserOptions():
 		#
 		###########################################
 
-		optionUserlist = actions.loadDataFromFile(pathDefaultUserlist)
-		optionPasslist = actions.loadDataFromFile(pathDefaultPasslist)
+		optionUserlist = actions.fload(pathDefaultUserlist)
+		optionPasslist = actions.fload(pathDefaultPasslist)
 		try:
 			index = 1
 			while index < len(sys.argv):
 				#	Choose custom username
 				if sys.argv[index] == '-U':
-					optionUserlist = actions.readDataFromList(sys.argv[index + 1])
+					optionUserlist = actions.lread(sys.argv[index + 1])
 					infoUserOptions = infoUserOptions.replace(
 						"Userlist: DEFAULT", "Userlist: %s" %(":".join(optionUserlist))
 					)
@@ -79,7 +84,7 @@ def getUserOptions():
 
 				#	Choose custom optionUserlist
 				elif sys.argv[index] == '-u':
-					optionUserlist = actions.loadDataFromFile(sys.argv[index + 1])
+					optionUserlist = actions.fload(sys.argv[index + 1])
 					infoUserOptions = infoUserOptions.replace(
 						"Userlist: DEFAULT", "Userlist: %s" %(sys.argv[index + 1])
 					)
@@ -90,7 +95,7 @@ def getUserOptions():
 					infoUserOptions = infoUserOptions.replace(
 						"Passlist: DEFAULT", "Passlist: %s" %(sys.argv[index + 1])
 					)
-					optionPasslist = actions.loadDataFromFile(sys.argv[index + 1])
+					optionPasslist = actions.fload(sys.argv[index + 1])
 					index += 1
 
 				#	Set thread
@@ -105,24 +110,25 @@ def getUserOptions():
 				# Set proxy
 				elif sys.argv[index] == "--proxy":
 					try:
-						optionProxy = actions.readDataFromFile("data/liveproxy.txt").split("\n")
+						optionProxy = actions.fread("data/liveproxy.txt").split("\n")
 					except:
 						utils.printf("Can not read proxy list file!", "bad")
 						utils.printf("Downloading proxy list automatically")
 						try:
 							import getproxy
 							getproxy.refresh()
-							optionProxy = actions.readDataFromFile("data/liveproxy.txt").split("\n")
+							optionProxy = actions.fread("data/liveproxy.txt").split("\n")
 						except Exception as error:
 							utils.die("Error while getting proxy list [automatic]", error)
 
 					#finally:
-					#	optionProxy = actions.readDataFromFile("data/liveproxy.txt").split("\n")
+					#	optionProxy = actions.fread("data/liveproxy.txt").split("\n")
 				elif sys.argv[index] == "--sql":
 					optionMode = "sqli"
-					optionUserlist = actions.loadDataFromFile("data/sqli.txt")
+					optionUserlist = actions.fload(pathDefaultUserlist)
+					optionPasslist = actions.fload("data/sqli.txt")
 					infoUserOptions = infoUserOptions.replace(
-						"Userlist: DEFAULT", "Userlist: SQL INJECTION"
+						"DEFAULT", "SQL INJECTION"
 					)
 
 				else:

@@ -53,7 +53,7 @@ def main(setTargetURL, setUserlist, setPasslist, setNumberThreads, setProxy, set
 			for i in xrange(setNumberThreads):
 				worker = threading.Thread(
 					target = sqltest.handle,
-					args = (setTargetURL, setUserlist, sizeUserlist, setProxy, setKeyFalse)
+					args = (setTargetURL, setUserlist, usePasslist, sizeUserlist * sizePasslist, setProxy, setKeyFalse)
 				)
 				# add threads to list
 				workers.append(worker)
@@ -129,7 +129,7 @@ def main(setTargetURL, setUserlist, setPasslist, setNumberThreads, setProxy, set
 		sys.exit(0)
 
 if __name__ == "__main__":
-	current_dir = actions.getProjectRootDirectory(sys.argv[0])
+	current_dir = actions.getRootDir(sys.argv[0])
 	if current_dir:
 		os.chdir(current_dir)
 	main(*options.getUserOptions())
