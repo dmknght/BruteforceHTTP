@@ -2,3 +2,4 @@
 # Distribution / packaging
 test/
 test.*
+data/liveproxy.txt

@@ -1,10 +1,13 @@
-import mechanize, re, sys, os
+import mechanize, re, sys, os, threading
 from core import actions, utils
 
 """
 support url:
 https://free-proxy-list.net/
 """
+
+THREADS = 10
+PROXY_PATH = "data/liveproxy.txt"
 
 def help():
 	print("""
@@ -51,58 +54,30 @@ def refresh():
 	finally:
 		try:
 			listproxy = "\n".join(listproxy)
-			location = "data/liveproxy.txt"
-			utils.printf("Write data to %s." %(location))
-			actions.fwrite(location, listproxy)
-			utils.printf("Write data to %s completed!" %(location), "good")
+			utils.printf("Write data to %s." %(PROXY_PATH))
+			actions.fwrite(PROXY_PATH, listproxy)
+			utils.printf("Write data to %s completed!" %(PROXY_PATH), "good")
 
 		except Exception as error:
 			utils.die("Error while writting proxy data", error)
 
-# def check(threads = 16):
-#	#Check Multithread
-# 	import threading
-# 	try:
-# 		proxylist = actions.fload("data/liveproxy.txt")
-#
-# 	except Exception as error:
-# 		utils.die("You must get proxy list before checking it", error)
-#
-# 	try:
-# 		workers = []
-# 		for i in xrange(threads):
-# 			worker = threading.Thread(
-# 				target = checkAllProxy,
-# 				args = (proxylist,)
-# 			)
-# 			workers.append(worker)
-#
-# 	except Exception as error:
-# 		utils.die("Error while checking", error)
-#
-# 	try:
-# 		for worker in workers:
-# 			worker.daemon = True
-# 			worker.start()
-#
-# 	except KeyboardInterrupt:
-# 		utils.die("Terminated by user", error)
-#
-# 	except Exception as error:
-# 		utils.die("Error while checking", error)
-#
-# 	finally:
-# 		try:
-# 			proxylist.close()
-# 		except:
-# 			pass
 
 def check(target = "https://google.com"):
 	# Single thread
 	try:
-		pathProxyList = "data/liveproxy.txt"
-		proxylist = actions.fload(pathProxyList)
-		liveproxylist = checkAllProxy(proxylist, target)
+		proxylist = actions.fload(PROXY_PATH)
+		
+		workers = []
+		for i in xrange(THREADS):
+			worker = threading.Thread(
+				target = checkAllProxy,
+				args = (proxylist, target,)
+			)
+			workers.append(worker)
+			
+		for worker in workers:
+			worker.daemon = True
+			worker.start()	
 
 	except KeyboardInterrupt as error:
 		utils.die("Terminated by user!", error)
@@ -111,9 +86,14 @@ def check(target = "https://google.com"):
 
 	finally:
 		try:
-			utils.printf("Writing checked proxies...")
-			actions.fwrite(pathProxyList, liveproxylist)
-			utils.printf("Data has been written to %s" %(pathProxyList))
+			for worker in workers:
+				worker.join()
+		except:
+			pass
+		try:
+			utils.printf("Writing result")
+			actions.fwrite(PROXY_PATH, liveproxylist)
+			utils.printf("Data has been written to %s" %(PROXY_PATH))
 			proxylist.close()
 		except Exception as error:
 			#Debug
@@ -139,13 +119,14 @@ def checkAllProxy(proxyList, target):
 def connProxy(proxyAddr, target):
 	try:
 		proxyTest = actions.startBrowser()
+		user_agent = actions.getUserAgent()
+		proxyTest.addheaders = [('User-Agent', user_agent)]
 		utils.printf(proxyAddr)
 		proxyTest.set_proxies({"http": proxyAddr})
 		proxyTest.open(target)
 		utils.printf(proxyAddr, "good")
 		return proxyAddr
 	except Exception as error:
-		#utils.die(proxyAddr, error)
 		utils.printf("%s %s" %(proxyAddr, error), "bad")
 		return None
 	finally:
