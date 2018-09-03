@@ -1,9 +1,12 @@
-- [ ] Improve multithreading struct
-- [ ] Terminate threads using Ctrl + C
-- [ ] Get last result, print table
-- [ ] sizeUserlist < numberThreads
-- [ ] Fix miss result / Reading huge file
-- [ ] Edit status bar error
+- [x] Better module for getting user options
+- [ ] Improve multithreading
+- [ ] Result, reporting
+- [ ] Memory management
+- [ ] Multithreading issue w/ status bar, result
 - [ ] Better form detecting and parsing
 - [ ] Better password matching condition
-- [ ] Thread exception capture
+- [ ] SQL Injection ypass login
+- [ ] HTTP Basic authenticate
+- [ ] Password generating
+- [ ] Captcha
+- [ ] Python 3 and better browser module

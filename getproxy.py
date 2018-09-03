@@ -1,5 +1,6 @@
 import mechanize, re, sys, os, threading
-from core import actions, utils
+from core import actions, utils, tbrowser
+
 
 """
 support url:
@@ -8,6 +9,7 @@ https://free-proxy-list.net/
 
 THREADS = 10
 PROXY_PATH = "data/liveproxy.txt"
+TMP_PATH = "proxies.tmp"
 
 def help():
 	print("""
@@ -24,8 +26,11 @@ def get_proxy_list(url = "https://free-proxy-list.net/"):
 		utils.printf("Connecting to %s." %(url))
 		# getproxy = mechanize.Browser()
 		# getproxy.set_handle_robots(False)
-		getproxy = actions.startBrowser()
-		user_agent = actions.getUserAgent()
+
+		getproxy = tbrowser.startBrowser()
+
+		user_agent = tbrowser.useragent()
+		
 		getproxy.addheaders = [('User-Agent', user_agent)]
 		getproxy.open(url)
 		utils.printf("Gathering proxy completed.", "good")
@@ -65,7 +70,10 @@ def refresh():
 def check(target = "https://google.com"):
 	# Single thread
 	try:
+		
 		proxylist = actions.fload(PROXY_PATH)
+		
+		#actions.fwrite(TMP_PATH, "") # create new empty list
 		
 		workers = []
 		for i in xrange(THREADS):
@@ -90,36 +98,29 @@ def check(target = "https://google.com"):
 				worker.join()
 		except:
 			pass
-		try:
-			utils.printf("Writing result")
-			actions.fwrite(PROXY_PATH, liveproxylist)
-			utils.printf("Data has been written to %s" %(PROXY_PATH))
-			proxylist.close()
-		except Exception as error:
-			#Debug
-			utils.printf(error, "bad")
 
 
 def checkAllProxy(proxyList, target):
-	livelist = []
 	try:
 		for proxyAddr in proxyList:
 			proxyAddr = proxyAddr.replace("\n", "")
-			#connProxy(proxyAddr)
+
 			result = connProxy(proxyAddr, target)
 			if result:
-				livelist.append(result)
-	except Exception as error:
-		utils.printf("Error", "bad")
+				#livelist.append(result)
+				actions.fwrite_c(TMP_PATH, "%s\n" %(proxyAddr)) #TODO use queu here
 
-	finally:
-		return "\n".join(livelist)
+	except Exception as error:
+		utils.printf(error, "bad")
+
+	# finally:
+	# 	return "\n".join(livelist)
 
 
 def connProxy(proxyAddr, target):
 	try:
-		proxyTest = actions.startBrowser()
-		user_agent = actions.getUserAgent()
+		proxyTest = tbrowser.startBrowser()
+		user_agent = tbrowser.useragent()
 		proxyTest.addheaders = [('User-Agent', user_agent)]
 		utils.printf(proxyAddr)
 		proxyTest.set_proxies({"http": proxyAddr})

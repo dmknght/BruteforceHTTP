@@ -1,173 +1,143 @@
-import sys
+import sys, data
 from core import utils, actions
+
 ##############################################
 #	Parse user's options
 #	Create default options
-#	*MUSTDO* validate URL
-#	*TODO* validate option
 #
 ############################################
 
-def checkValidURL(url):
-	# check url, add protocol, etc...
+"""
+	Format: python main.py [--<mode>] [-<option> <value>] <url>
+	mode and option are optinal
+	Todo: add working modules (likes getproxy) to main		
+"""
+
+
+def checkOption(url, options, proxy):
 	
-	pass
+	finalOption = {}
+	
+	# Modify URL value to correct format
+	# Read password list
+	# Read userlist
+	# Convert to int(threads)
+	
+	
+	try:
+		finalOption["threads"] = int(options["-t"])
+	except Exception as ConvertError:
+		utils.die("Invalid threads", ConvertError)
+		
+	finalOption["passlist"] = data.getPass() if options["-p"] == "default" else actions.fread(options["-p"])
+	
+	if options["-U"]:
+		finalOption["userlist"] = actions.lread(options["-U"])
+	else:
+		finalOption["userlist"] = data.getUser() if options["-u"] == "default" else actions.fread(options["-u"])
+	
+	finalOption["falsekey"] = options["-k"]
+	
+	if "http" not in url:
+		url = "http://%s" %(url)
+	if url[-1] != "/":
+		url += "/"
+		
+	if proxy:
+		proxy = actions.getProxyList()
+	
+	return url, finalOption, proxy
+
 
 def getUserOptions():
-	pathDefaultUserlist = 'data/userlist.txt'
-	pathDefaultPasslist = 'data/passlist.txt'
-	optionTargetURL = ''
-	optionKeyFalse = ''
-	optionThreads = 3
-	optionProxy = False
-	optionMode = "brute"
-
-	infoUserOptions = '''
-	Target: TARGETURL
-	Userlist: DEFAULT
-	Passlist: DEFAULT
-	'''
-	################################
-	#	Get user's options
-	#
-	################################
-
+	
+	URL = None
+	USERLIST = "default"
+	PASSLIST = "default"
+	THREADS = 3
+	KEY_FALSE = None
+	MODE = "--brute"
+	PROXY = False
+	
+	# Default operation modes:
+	#	--brute: brute force
+	#	--sqli: sql injection bypass login
+	#	--basic: http basic authentication
+	#	--proxy: Using proxy while attacking
+	
+	DEF_MODE = ("--brute", "--sqli", "--basic", "--proxy")
+	
+	# Default options:
+	#	-u: Read userlist from file
+	#	-p: Read passlit from file
+	#	-U: Read username / userlist directly from argument
+	#	-t: Number of threads using #TODO Modify for new module
+	#	-k: Set key for false condition (for special cases)
+	
+	DEF_OPS = ("-u", "-U", "-p", "-t", "-k")
+	
+	options = {
+		"-u": USERLIST,
+		"-p": PASSLIST,
+		"-t": THREADS,
+		"-k": KEY_FALSE,
+		"-U": None,
+	}
+	
+	
 	if len(sys.argv) == 1:
-		##############################
-		#	If there is no options:
-		#	print help and show how to use this script
-		##############################
-
 		utils.print_help()
 		sys.exit(0)
-
-	elif len(sys.argv) == 2:
-		############################################
-		#	if 1 option only:
-		#		calling help
-		#	else:
-		#		run process with default options
-		#
-		############################################
-
-		if sys.argv[1] == '-h' or sys.argv[1] == '--help':
+	
+	idx = 1
+	while idx < len(sys.argv):
+		if sys.argv[idx] in ("-h", "--help", "help"):
 			utils.print_help()
-			sys.exit(0)
+			
 		else:
-			optionTargetURL = sys.argv[1]
-			#############################################
-			#	open file here -> no delay for print help
-			#############################################
-			optionUserlist = actions.fload(pathDefaultUserlist)
-			optionPasslist = actions.fload(pathDefaultPasslist)
-
-	else:
-		###########################################
-		#	Get user options
-		#	Replace default options
-		#	**NEED IMPROVE**
-		#
-		###########################################
-
-		optionUserlist = actions.fload(pathDefaultUserlist)
-		optionPasslist = actions.fload(pathDefaultPasslist)
-		try:
-			index = 1
-			while index < len(sys.argv):
-				#	Choose custom username
-				if sys.argv[index] == '-U':
-					optionUserlist = actions.lread(sys.argv[index + 1])
-					infoUserOptions = infoUserOptions.replace(
-						"Userlist: DEFAULT", "Userlist: %s" %(":".join(optionUserlist))
-					)
-					index += 1
-
-				#	Choose custom optionUserlist
-				elif sys.argv[index] == '-u':
-					optionUserlist = actions.fload(sys.argv[index + 1])
-					infoUserOptions = infoUserOptions.replace(
-						"Userlist: DEFAULT", "Userlist: %s" %(sys.argv[index + 1])
-					)
-					index += 1
-
-				#	Choose custom optionPasslist
-				elif sys.argv[index] == '-p':
-					infoUserOptions = infoUserOptions.replace(
-						"Passlist: DEFAULT", "Passlist: %s" %(sys.argv[index + 1])
-					)
-					optionPasslist = actions.fload(sys.argv[index + 1])
-					index += 1
-
-				#	Set thread
-				elif sys.argv[index] == '-t':
-					optionThreads = sys.argv[index + 1]
-					index += 1
-
-				elif sys.argv[index] == '-c':
-					optionKeyFalse = sys.argv[index + 1]
-					index += 1
-
-				# Set proxy
-				elif sys.argv[index] == "--proxy":
-					try:
-						optionProxy = actions.fread("data/liveproxy.txt").split("\n")
-					except:
-						utils.printf("Can not read proxy list file!", "bad")
-						utils.printf("Downloading proxy list automatically")
-						try:
-							import getproxy
-							getproxy.refresh()
-							optionProxy = actions.fread("data/liveproxy.txt").split("\n")
-						except Exception as error:
-							utils.die("Error while getting proxy list [automatic]", error)
-
-					#finally:
-					#	optionProxy = actions.fread("data/liveproxy.txt").split("\n")
-				elif sys.argv[index] == "--sql":
-					optionMode = "sqli"
-					optionUserlist = actions.fload(pathDefaultUserlist)
-					optionPasslist = actions.fload("data/sqli.txt")
-					infoUserOptions = infoUserOptions.replace(
-						"DEFAULT", "SQL INJECTION"
-					)
-
+			if sys.argv[idx] in DEF_MODE:
+				if sys.argv[idx] == "--proxy":
+					PROXY = True
 				else:
-					optionTargetURL = sys.argv[index]
-				index += 1
-
-		except Exception as error:
-			utils.die("Argument error", error)
-
-	##########################
-	#	CHECK REQUIRED OPTIONS
-	#
-	##########################
-
-	if not optionTargetURL:
-		utils.die("An URL is required!", "Missing argument")
+					MODE = sys.argv[idx + 1]
+					idx += 1
+				
+			elif sys.argv[idx] in DEF_OPS:
+				options[sys.argv[idx]] = sys.argv[idx + 1]
+				idx += 1
+				# TODO -u vs -U
+				
+			else:
+				URL  = sys.argv[idx]
+				
+		idx += 1
+	
+	if not URL:
+		utils.printf("An URL is required", "bad")
+		sys.exit(1)
 	else:
-		infoUserOptions = infoUserOptions.replace('TARGETURL', optionTargetURL)
-
-	if optionProxy:
-		infoUserOptions += "Proxy: %s\n" %("True")
-	else:
-		infoUserOptions += "Proxy: %s\n" %(optionProxy)
-
-	try:
-		optionThreads = int(optionThreads)
-		infoUserOptions += "\tThread[s]: %s\n" %(optionThreads)
-
-	except Exception as error:
-		utils.die("Invalid number threads", error)
-
-	if optionKeyFalse:
-		infoUserOptions += "\tFalse keyword: [\"%s\"]\n" %(optionKeyFalse)
+		utils.printf(craftbanner(URL, options, MODE, PROXY), "good")
+		URL, options, PROXY = checkOption(URL, options, PROXY)
+		return URL, options, MODE, PROXY
 
 
-	###########################################
-	#	print option information before running
-	#
-	###########################################
-	utils.printf(infoUserOptions, 'good')
+def craftbanner(url, options, mode, useproxy):
+	usr = options["-U"] if options["-U"] else options["-u"]
 
-	return optionTargetURL, optionUserlist, optionPasslist, optionThreads, optionProxy, optionKeyFalse, optionMode
+	banner = """
+	======================================================================
+	| Target: %s
+	|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	| Users: %s
+	| Password: %s
+	|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	| Threads: %s
+	| Attack mode: %s
+	|---------------------------------------------------------------------
+	| False keyword: %s
+	|---------------------------------------------------------------------
+	| Using Proxy: %s
+	======================================================================
+	""" %(url, usr, options["-p"], options["-t"], mode.replace("--", ""), options["-k"], useproxy)
+	
+	return banner.replace("\t", "  ")

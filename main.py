@@ -4,17 +4,17 @@ import sys, threading, time, os, sqltest#, itertools
 
 try:
 	import mechanize, re, ssl
-except ImportError as error:
+except ImportError as ImportError:
 	print(error)
-	_, missing_moudle, _ = str(error).split("'")
+	_, missing_moudle, _ = str(ImportError).split("'")
 	sys.exit("Try: sudo apt install python-%s" %(missing_moudle))
 
 try:
-	from core import actions, utils
+	from core import actions, utils, tbrowser
 	import httpbrute, options
-except ImportError as error:
-	print(error)
-	sys.exit("Missing core module!")
+except ImportError as ImportError:
+	print(ImportError)
+	sys.exit("Error while importing modules")
 
 
 ########################## SSL
@@ -29,11 +29,13 @@ else:
     ssl._create_default_https_context = _create_unverified_https_context
 ########################## End ssl
 
-def main(setTargetURL, setUserlist, setPasslist, setNumberThreads, setProxy, setKeyFalse, setMode):
+def main(setTargetURL, setOptions, setMode, setProxy):
+	
+	setUserlist, setNumberThreads, setKeyFalse, setPasslist = setOptions.values()
 
 	try:
-		sizePasslist = actions.getObjectSize(setPasslist)
-		sizeUserlist = actions.getObjectSize(setUserlist)
+		sizePasslist = actions.size_o(setPasslist)
+		sizeUserlist = actions.size_o(setUserlist)
 
 	except:
 		#utils.printf("Can not get size of passlist", "bad")
@@ -48,12 +50,14 @@ def main(setTargetURL, setUserlist, setPasslist, setNumberThreads, setProxy, set
 		#lock.acquire()
 		#	Create thread list
 		#usePasslist = list(itertools.islice(setPasslist, sizePasslist))
-		usePasslist = setPasslist.readlines()
-		if setMode == "sqli":
+		#usePasslist = setPasslist.readlines()
+		
+		#TODO modify for sql injection mode
+		if setMode == "--sqli":
 			for i in xrange(setNumberThreads):
 				worker = threading.Thread(
 					target = sqltest.handle,
-					args = (setTargetURL, setUserlist, usePasslist, sizeUserlist * sizePasslist, setProxy, setKeyFalse)
+					args = (setTargetURL, setUserlist, setPasslist, sizeUserlist * sizePasslist, setProxy, setKeyFalse)
 				)
 				# add threads to list
 				workers.append(worker)
@@ -61,7 +65,7 @@ def main(setTargetURL, setUserlist, setPasslist, setNumberThreads, setProxy, set
 			for i in xrange(setNumberThreads):
 				worker = threading.Thread(
 					target = httpbrute.handle,
-					args = (setTargetURL, setUserlist, usePasslist, sizePasslist, setProxy, setKeyFalse)
+					args = (setTargetURL, setUserlist.split("\n"), setPasslist.split("\n"), sizePasslist, setProxy, setKeyFalse)
 				)
 				# add threads to list
 				workers.append(worker)

@@ -12,7 +12,7 @@ def prints(mtext):
 	#############################################
 
 	print(mtext)
-	sys.stdout.write("\033[F \033[K" * actions.getObjectSize(mtext))
+	sys.stdout.write("\033[F \033[K" * actions.size_o(mtext))
 
 def printp(username, index, total, bar_size = 50):
 	completed = (index * bar_size) / total
@@ -111,14 +111,35 @@ def print_help():
 
 	#	Print project's help table
 
-	print('Usage: %s [options] url\n\nOptions:\n' %(sys.argv[0]))
+	print('\nUsage: %s [<option> <value>] [mode] URL\n\nOptions:\n' %(sys.argv[0]))
 	title = ("Format", "Example")
-	menu_options = [
-		["-u <path_to_wordlist>", "-u /usr/share/wordlists/nmap.lst"],
-		["-p <path_to_wordlist>", "-p /usr/share/wordlists/fasttrack.txt"],
-		["-U <username>", "-U user | -U user1:user2:user3"]
+	menu = [
+		[ "%-25s"%("-u <path_to_wordlist>"), "-u /usr/share/wordlists/nmap.lst"],
+		[ "%-25s"%("-p <path_to_wordlist>"), "-p /usr/share/wordlists/fasttrack.txt"],
+		[ "%-25s"%("-U <username>"), "-U admin | -U admin:user1:user2:user3"],
+		[ "%-25s"%("-t <threads>"), "-t 32"],
+		[ "%-25s"%("-k <false_key>"), "-k 'Invalid username'"]
 	]
-	print_table(title, *menu_options)
+	print_table(title, *menu)
+	
+	print("\nModes:\n")
+	title = ("Attack Modes", "Ony ONE attack mode can be used")
+	menu = [
+		[ "%-25s"%("--brute [Default]"), "Brute Forcing credentials"],
+		[ "%-25s"%("--sqli [Not Available]"), "SQL Injection bypass"],
+		[ "%-25s"%("--basic [Not Available]"), "HTTP Basic Authentication"],
+	]
+	print_table(title, *menu)
+
+	print("")
+	title = ("Running Modes", "")
+	menu = [
+		[ "%-25s"%("--proxy"), "Use Proxy each connection"],
+		[ "%-25s"%("--verbose [Not Available]"), "Display more information"],
+		[ "%-25s"%("--log [Not Available]"), "Write log file"],
+	]
+	print_table(title, *menu)
+	print("")
 	
 if __name__ == "__main__":
 	utils.die("Oops! Wrong place", "Find other place")

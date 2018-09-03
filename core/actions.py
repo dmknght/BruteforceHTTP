@@ -1,4 +1,4 @@
-import random, sys, utils, re, string
+import random, sys, utils, string
 
 def getRootDir(pathModuleLocation):
 	##################################
@@ -10,7 +10,7 @@ def getRootDir(pathModuleLocation):
 	pathModuleLocation = "/".join(pathModuleLocation.split("/")[:-1])
 	return pathModuleLocation
 
-def getObjectSize(objInputData):
+def size_o(objInputData):
 	#	Return length of a file object or list
 	if type(objInputData) == file:
 
@@ -36,53 +36,10 @@ def randomFromFile(path):
 	retData = randomFromList(loadData)
 	return retData
 	
-def getUserAgent():
-	path = "data/user_agents.txt"
-	return randomFromFile(path)
-	
-def getProxyAddr():
+def getProxyList():
 	path = "data/liveproxy.txt"
 	return randomFromFile(path)
 
-def startBrowser():
-	import mechanize
-	retObject = mechanize.Browser()
-	retObject.set_handle_robots(False)
-	retObject.set_handle_referer(True)
-	retObject.set_handle_redirect(True)
-	retObject.set_handle_equiv(True)
-	return retObject
-
-
-def getFormInformation(objBrowserForm):
-	##########################################
-	#	Get Login Form Information
-	#	Need form ID for select_form(nr = ID)
-	#	Username field's name for submiting
-	#	Password field's name for submiting
-	#
-	#	*** NEED IMPROVE ***
-	#
-	###########################################
-
-	# Using for loop for getting
-	retFormID = 0
-
-	regTextField = r"TextControl\W(.*)="
-	regPassField = r"PasswordControl\W(.*)="
-
-	# Find login form
-	for idxSingleForm in objBrowserForm:
-		try:
-			#retTextField = re.findall(regTextField, str(idxSingleForm).encode('utf-8'), re.MULTILINE)[0]
-			#retPassField = re.findall(regPassField, str(idxSingleForm).encode('utf-8'), re.MULTILINE)[0]
-			retTextField = re.findall(regTextField, str(idxSingleForm), re.MULTILINE)[0]
-			retPassField = re.findall(regPassField, str(idxSingleForm), re.MULTILINE)[0]
-			#objBrowserForm.close() #This is seems useless
-			return retFormID, retTextField, retPassField
-		except:
-			retFormID += 1
-	return None
 
 def lread(optListUsername):
 	#################################
@@ -122,9 +79,21 @@ def fwrite(pathFileLocation, writeData):
 	try:
 		objFileWrite = open(pathFileLocation, "w'")
 		objFileWrite.write(writeData)
-		objFileWrite.close()
 	except Exception as error:
 		utils.die("Error while writing data", error)
+	finally:
+		objFileWrite.close()
+
+		
+
+def fwrite_c(pathFileLocation, writeData):
+	try:
+		fileWrite = open(pathFileLocation, "a")
+		fileWrite.write(writeData)
+	except Exception as error:
+		utils.die("Error while continuing write file", err)
+	finally:
+		fileWrite.close()
 
 def randomString(min = 2, max = 5):
 	#https://stackoverflow.com/a/2257449

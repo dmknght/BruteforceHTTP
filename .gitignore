@@ -3,3 +3,4 @@
 test/
 test.*
 data/liveproxy.txt
+*.tmp

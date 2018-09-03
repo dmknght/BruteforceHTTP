@@ -1,3 +1,10 @@
+## ## 1.3 test 4
+* Modify many function names
+* Rework options.py module
+* Default lists now are modules instead of reading form files
+* New tbrowser.py module for browsing
+* Update help menu
+
 ## 1.3 test 3
 * Add change working directory (chdir) to project's root directory 
 * Move some data to /data/
