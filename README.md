@@ -62,12 +62,7 @@ Problems:
  - Detect form field error for some special cases. We will try to improve our function.
  - Wrong password matching: matching condition is not completed.
 
-Further improvement:
-
-- [ ] Captcha
-- [ ] Multiple Proxies brute forcing
-- [ ] Generating password
-- [ ] Support Tor network
+Further improvement (See TODO.md)
 
 ## Author
 - [@Ic3W4ll](https://github.com/dmknght)
