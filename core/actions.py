@@ -41,7 +41,7 @@ def getProxyList():
 	return randomFromFile(path)
 
 
-def lread(optListUsername):
+def lread(strUsername):
 	#################################
 	#	split input username to a list
 	#	username -> [username]
@@ -49,7 +49,11 @@ def lread(optListUsername):
 	#
 	##################################
 
-	return optListUsername.split(':')
+	for char in (":", ","):
+		if char in string.punctuation:
+			break
+
+	return strUsername.split(char)
 
 def fload(pathFileLocation):
 	###################################

@@ -13,11 +13,24 @@ from core import utils, actions
 	Todo: add working modules (likes getproxy) to main		
 """
 
+	
+URL = None
+USERLIST = "default"
+PASSLIST = "default"
+THREADS = 3
+KEY_FALSE = None
+MODE = "--brute"
 
-def checkOption(url, options, proxy):
+r_options = {
+	"--proxy": False,
+	"--log": False,
+	"--verbose": False
+}
+
+def checkOption(url, options, r_options):
 	
 	finalOption = {}
-	
+	global MODE
 	# Modify URL value to correct format
 	# Read password list
 	# Read userlist
@@ -29,12 +42,17 @@ def checkOption(url, options, proxy):
 	except Exception as ConvertError:
 		utils.die("Invalid threads", ConvertError)
 		
-	finalOption["passlist"] = data.getPass() if options["-p"] == "default" else actions.fread(options["-p"])
-	
-	if options["-U"]:
-		finalOption["userlist"] = actions.lread(options["-U"])
+	if MODE == "--sqli":
+		finalOption["passlist"] = "MyP@ssW0rd"
+		finalOption["userlist"] = data.getSQL()
+		
 	else:
-		finalOption["userlist"] = data.getUser() if options["-u"] == "default" else actions.fread(options["-u"])
+		finalOption["passlist"] = data.getPass() if options["-p"] == "default" else actions.fread(options["-p"])
+		
+		if options["-U"]:
+			finalOption["userlist"] = actions.lread(options["-U"])
+		else:
+			finalOption["userlist"] = data.getUser() if options["-u"] == "default" else actions.fread(options["-u"])
 	
 	finalOption["falsekey"] = options["-k"]
 	
@@ -43,21 +61,15 @@ def checkOption(url, options, proxy):
 	if url[-1] != "/":
 		url += "/"
 		
-	if proxy:
-		proxy = actions.getProxyList()
+	if r_options["--proxy"]:
+		r_options["--proxy"] = actions.getProxyList()
 	
-	return url, finalOption, proxy
+	return url, finalOption, r_options
 
 
 def getUserOptions():
 	
-	URL = None
-	USERLIST = "default"
-	PASSLIST = "default"
-	THREADS = 3
-	KEY_FALSE = None
-	MODE = "--brute"
-	PROXY = False
+	global URL, USERLIST, PASSLIST, THREADS, KEY_FALSE, MODE, r_options
 	
 	# Default operation modes:
 	#	--brute: brute force
@@ -65,7 +77,9 @@ def getUserOptions():
 	#	--basic: http basic authentication
 	#	--proxy: Using proxy while attacking
 	
-	DEF_MODE = ("--brute", "--sqli", "--basic", "--proxy")
+	DEF_A_MODE = ("--brute", "--sqli", "--basic")
+	
+	DEF_R_MODE = ("--verbose", "--log", "--proxy")
 	
 	# Default options:
 	#	-u: Read userlist from file
@@ -95,17 +109,16 @@ def getUserOptions():
 			utils.print_help()
 			
 		else:
-			if sys.argv[idx] in DEF_MODE:
-				if sys.argv[idx] == "--proxy":
-					PROXY = True
-				else:
-					MODE = sys.argv[idx + 1]
-					idx += 1
+			if sys.argv[idx] in DEF_R_MODE:
+				r_options[sys.argv[idx]] = True
+
+			elif sys.argv[idx] in DEF_A_MODE:
+				MODE = sys.argv[idx]
+				idx += 1
 				
 			elif sys.argv[idx] in DEF_OPS:
 				options[sys.argv[idx]] = sys.argv[idx + 1]
 				idx += 1
-				# TODO -u vs -U
 				
 			else:
 				URL  = sys.argv[idx]
@@ -116,28 +129,39 @@ def getUserOptions():
 		utils.printf("An URL is required", "bad")
 		sys.exit(1)
 	else:
-		utils.printf(craftbanner(URL, options, MODE, PROXY), "good")
-		URL, options, PROXY = checkOption(URL, options, PROXY)
-		return URL, options, MODE, PROXY
+		utils.printf(craftbanner(URL, options, MODE, r_options), "good")
+		URL, options, r_options = checkOption(URL, options, r_options)
+
+		return URL, options, MODE, r_options
 
 
-def craftbanner(url, options, mode, useproxy):
+def craftbanner(url, options, mode, r_options):
 	usr = options["-U"] if options["-U"] else options["-u"]
 
 	banner = """
-	======================================================================
-	| Target: %s
-	|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	| Users: %s
-	| Password: %s
-	|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	| Threads: %s
-	| Attack mode: %s
-	|---------------------------------------------------------------------
-	| False keyword: %s
-	|---------------------------------------------------------------------
-	| Using Proxy: %s
-	======================================================================
-	""" %(url, usr, options["-p"], options["-t"], mode.replace("--", ""), options["-k"], useproxy)
+	  =================================================================
+	/  Target: %-56s \\
+	|++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
+	|  Users: %-58s |
+	|  Password: %-55s |
+	|++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
+	|                                                                    |
+	|      Attack mode: %-6s |   Using Proxy: %-6s |   Threads: %-4s |
+	|                                                                    |
+	|--------------------------------------------------------------------|
+	|          Verbose: %-13s  |          Save Log: %-12s |
+	|--------------------------------------------------------------------|
+	\\  False keyword: %-49s /
+	  =================================================================
+	""" %(url,
+		usr,
+		options["-p"],
+		mode.replace("--", ""),
+		r_options["--proxy"],
+		options["-t"],
+		r_options["--verbose"],
+		r_options["--log"],
+		options["-k"]
+	)
 	
 	return banner.replace("\t", "  ")

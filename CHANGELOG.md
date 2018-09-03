@@ -4,6 +4,7 @@
 * Default lists now are modules instead of reading form files
 * New tbrowser.py module for browsing
 * Update help menu
+* Userlist (`-U` option now use `:` and `,` to split names)
 
 ## 1.3 test 3
 * Add change working directory (chdir) to project's root directory 

@@ -29,9 +29,10 @@ else:
     ssl._create_default_https_context = _create_unverified_https_context
 ########################## End ssl
 
-def main(setTargetURL, setOptions, setMode, setProxy):
+def main(setTargetURL, setOptions, setMode, setRunOptions):
 	
 	setUserlist, setNumberThreads, setKeyFalse, setPasslist = setOptions.values()
+	setProxy, setVerbose, setLog = setRunOptions.values()
 
 	try:
 		sizePasslist = actions.size_o(setPasslist)
