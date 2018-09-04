@@ -38,7 +38,9 @@ def main(setTargetURL, setOptions, setMode, setRunOptions):
 		sizePasslist = actions.size_o(setPasslist)
 		sizeUserlist = actions.size_o(setUserlist)
 		setUserlist = setUserlist.split("\n")
-
+		setPasslist = setPasslist.split("\n")
+		# TODO Check condition each case
+		
 	except:
 		#utils.printf("Can not get size of passlist", "bad")
 		pass
