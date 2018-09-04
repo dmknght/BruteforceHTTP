@@ -98,7 +98,7 @@ def print_table(headers, *args, **kwargs):
 		
 		
 def printSuccess(foundUsername, foundPassword):
-	utils.printf(
+	printf(
 		"Found: %s:%s\n" %(
 			foundUsername,
 			foundPassword
@@ -142,4 +142,4 @@ def print_help():
 	print("")
 	
 if __name__ == "__main__":
-	utils.die("Oops! Wrong place", "Find other place")
+	die("Oops! Wrong place", "Find other place")

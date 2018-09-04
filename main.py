@@ -37,6 +37,7 @@ def main(setTargetURL, setOptions, setMode, setRunOptions):
 	try:
 		sizePasslist = actions.size_o(setPasslist)
 		sizeUserlist = actions.size_o(setUserlist)
+		setUserlist = setUserlist.split("\n")
 
 	except:
 		#utils.printf("Can not get size of passlist", "bad")
@@ -66,7 +67,7 @@ def main(setTargetURL, setOptions, setMode, setRunOptions):
 			for i in xrange(setNumberThreads):
 				worker = threading.Thread(
 					target = httpbrute.handle,
-					args = (setTargetURL, setUserlist.split("\n"), setPasslist.split("\n"), sizePasslist, setProxy, setKeyFalse)
+					args = (setTargetURL, setUserlist, setPasslist.split("\n"), sizePasslist, setProxy, setKeyFalse)
 				)
 				# add threads to list
 				workers.append(worker)

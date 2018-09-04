@@ -1,6 +1,6 @@
 *.pyc
 # Distribution / packaging
 test/
-test.*
+test*
 data/liveproxy.txt
 *.tmp
