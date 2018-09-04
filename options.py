@@ -73,11 +73,15 @@ def getUserOptions():
 	
 	# Default operation modes:
 	#	--brute: brute force
-	#	--sqli: sql injection bypass login
-	#	--basic: http basic authentication
-	#	--proxy: Using proxy while attacking
+	#	--sqli: sql injection bypass login (TODO)
+	#	--basic: http basic authentication (TODO)
 	
 	DEF_A_MODE = ("--brute", "--sqli", "--basic")
+	
+	# Default running mode:
+	#	--verbose: display informations (TODO)
+	#	--log: creating log file (TODO)
+	#	--proxy: Running using proxy
 	
 	DEF_R_MODE = ("--verbose", "--log", "--proxy")
 	

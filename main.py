@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys, threading, time, os, sqltest#, itertools
+import sys, threading, time, os#, itertools
 
 try:
 	import mechanize, re, ssl
