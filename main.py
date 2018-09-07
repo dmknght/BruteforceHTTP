@@ -69,7 +69,7 @@ def main(setTargetURL, setOptions, setMode, setRunOptions):
 			for i in xrange(setNumberThreads):
 				worker = threading.Thread(
 					target = httpbrute.handle,
-					args = (setTargetURL, setUserlist, setPasslist.split("\n"), sizePasslist, setProxy, setKeyFalse)
+					args = (setTargetURL, setUserlist, setPasslist, sizePasslist, setProxy, setKeyFalse)
 				)
 				# add threads to list
 				workers.append(worker)
