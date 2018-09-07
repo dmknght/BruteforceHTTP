@@ -24,7 +24,7 @@ MODE = "--brute"
 r_options = {
 	"--proxy": False,
 	"--log": False,
-	"--verbose": False
+	"--verbose": False,
 }
 
 def checkOption(url, options, r_options):
@@ -113,16 +113,24 @@ def getUserOptions():
 			utils.print_help()
 			
 		else:
-			if sys.argv[idx] in DEF_R_MODE:
-				r_options[sys.argv[idx]] = True
+			if sys.argv[idx][:2] == "--":
+				if sys.argv[idx] in DEF_R_MODE:
+					# --verbose", "--log", "--proxy"
+					r_options[sys.argv[idx]] = True
 
-			elif sys.argv[idx] in DEF_A_MODE:
-				MODE = sys.argv[idx]
-				idx += 1
-				
-			elif sys.argv[idx] in DEF_OPS:
-				options[sys.argv[idx]] = sys.argv[idx + 1]
-				idx += 1
+				elif sys.argv[idx] in DEF_A_MODE:
+					# "--brute", "--sqli", "--basic"
+					MODE = sys.argv[idx]
+				else:
+					utils.die("Error while parsing option", "Invalid option %s" %(sys.argv[idx]))
+
+			elif sys.argv[idx][:1] == "-":
+				if sys.argv[idx] in DEF_OPS:
+					# "-u", "-U", "-p", "-t", "-k"
+					options[sys.argv[idx]] = sys.argv[idx + 1]
+					idx += 1
+				else:
+					utils.die("Error while parsing option", "Invalid option %s" %(sys.argv[idx]))
 				
 			else:
 				URL  = sys.argv[idx]
