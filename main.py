@@ -66,18 +66,19 @@ def main(setTargetURL, setOptions, setMode, setRunOptions):
 		
 		#TODO modify for sql injection mode
 		if setMode == "--sqli":
-			for i in xrange(setNumberThreads):
-				worker = threading.Thread(
-					target = sqltest.handle,
-					args = (setTargetURL, setUserlist, setPasslist, sizeUserlist * sizePasslist, setProxy, setKeyFalse)
-				)
-				# add threads to list
-				workers.append(worker)
+			pass
+			# for i in xrange(setNumberThreads):
+			# 	worker = threading.Thread(
+			# 		target = sqltest.handle,
+			# 		args = (setTargetURL, setUserlist, setPasslist, sizeUserlist * sizePasslist, setProxy, setKeyFalse)
+			# 	)
+			# 	# add threads to list
+			# 	workers.append(worker)
 		else:
 			for i in xrange(setNumberThreads):
 				worker = threading.Thread(
 					target = httpbrute.handle,
-					args = (setTargetURL, setUserlist, setPasslist, sizePasslist, setProxy, setKeyFalse)
+					args = (setTargetURL, setUserlist, setPasslist, sizeUserlist * sizePasslist, setProxy, setKeyFalse)
 				)
 				# add threads to list
 				workers.append(worker)
