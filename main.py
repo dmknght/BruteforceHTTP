@@ -10,8 +10,8 @@ except ImportError as ImportError:
 	sys.exit("Try: sudo apt install python-%s" %(missing_moudle))
 
 try:
-	from core import actions, utils, tbrowser
-	import httpbrute, options
+	from core import actions, utils, tbrowser, options
+	import httpbrute
 except ImportError as ImportError:
 	print(ImportError)
 	sys.exit("Error while importing modules")
