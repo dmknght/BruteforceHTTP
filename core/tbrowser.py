@@ -9,7 +9,7 @@ def startBrowser():
 	browser.set_handle_equiv(True)
 	return browser
 	
-def getLoginForm(objBrowserForm):
+def parseLoginForm(objBrowserForm):
 	##########################################
 	#	Get Login Form Information
 	#	Need form ID for select_form(nr = ID)
@@ -43,3 +43,30 @@ def useragent():
 	agents = data.getAgent()
 	
 	return actions.randomFromList(agents.split("\n"))
+	
+	
+def getLoginForm(optionURL, browser):
+	######################################
+	#	Test connect to URL
+	#	Fetch login field
+	#	TODO print ONLY ONE status message
+	#
+	#####################################
+
+	try:
+		
+		browser.open(optionURL)
+		#utils.printf("Connected. Getting form information...", "good")
+		
+		formLoginID, formUserfield, formPasswdfield = parseLoginForm(browser.forms())
+		#utils.printf("Found login form", "good")
+		return formLoginID, formUserfield, formPasswdfield
+
+	except TypeError as error:
+		#utils.printf("Can not find login form", "bad")
+		#sys.exit(1)
+		utils.die("Can not find login form", error)
+
+	except Exception as error:
+		#utils.printf(error, "bad")
+		utils.die("Checking connection error", error)
