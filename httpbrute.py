@@ -35,23 +35,30 @@ def handle(optionURL, optionUserlist, optionPasslist, optionProxyList, optionKey
 		proc.close()
 		
 	workers = []
-
+	co = 0
 	# New testing method 
 	for usrname in optionUserlist:
-		co = 0
+		 # BUG: passwd [pos] <= co
 		for i in xrange(optionThreads):
-			passwd = optionPasslist[co + i]
-			worker = threading.Thread(
-				target = brute,
-				args = (optionURL, usrname, passwd, sizePasslist, optionProxyList, optionKeyFalse, loginInfo)
-			)
-			workers.append(worker)
+			try:
+				passwd = optionPasslist[co + i]
+				worker = threading.Thread(
+					target = brute,
+					args = (optionURL, usrname, passwd, sizePasslist, optionProxyList, optionKeyFalse, loginInfo)
+				)
+				workers.append(worker)
+				worker.daemon = True 
+				worker.start()
+				co += 1
+
+			except IndexError:
+				co = 0
+				break
+			
 
 		#for worker in workers:
-			worker.daemon = True 
-			worker.start()
 
-		co += 1
+
 		for worker in workers:
 			worker.join()
 	# end of testing
