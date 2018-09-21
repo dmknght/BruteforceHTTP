@@ -46,7 +46,7 @@ def main(setTargetURL, setOptions, setMode, setRunOptions):
 	"""
 	
 	setUserlist, setThreads, setKeyFalse, setPasslist = setOptions.values()
-	setProxy, setVerbose, setLog = setRunOptions.values()
+	#setProxy, setVerbose, setLog = setRunOptions.values()
 
 	# try:
 	# 	sizePasslist = actions.size_o(setPasslist)
@@ -90,7 +90,7 @@ def main(setTargetURL, setOptions, setMode, setRunOptions):
 			# 	workers.append(worker)
 		else:
 			#httpbrute.handle(setTargetURL, setUserlist, setPasslist, sizePasslist, setProxy, setKeyFalse)
-			httpbrute.handle(setTargetURL, setUserlist, setPasslist, setProxy, setKeyFalse, setThreads)
+			httpbrute.handle(setTargetURL, setUserlist, setPasslist, setKeyFalse, setThreads, setRunOptions)
 
 	except KeyboardInterrupt:# as error:
 		# for worker in workers:

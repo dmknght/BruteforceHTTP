@@ -39,6 +39,8 @@ def checkOption(url, options, r_options):
 	
 	try:
 		finalOption["threads"] = int(options["-t"])
+		if finalOption["threads"] < 1:
+			utils.die("Value error", "Threads must be > 1")
 	except Exception as ConvertError:
 		utils.die("Invalid threads", ConvertError)
 		
