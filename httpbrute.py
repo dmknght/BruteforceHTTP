@@ -19,7 +19,8 @@
 	print creds
 """
 # TODO break task after matching
-# BUG Matching error if sending payload to login.php (redirect?)
+# BUG Redirect error after successful: keep sending to login page
+# BUG Redirect error after successful: HTTPError w/ login page (no redirect param) WP - broken web app
 
 import mechanize, sys
 from core import utils, actions, tbrowser		
