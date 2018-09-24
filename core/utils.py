@@ -138,7 +138,7 @@ def print_help():
 	menu = [
 		[ "%-25s"%("--proxy"), "Use Proxy each connection"],
 		[ "%-25s"%("--verbose [Not Available]"), "Display more information"],
-		[ "%-25s"%("--log [Not Available]"), "Write log file"],
+		[ "%-25s"%("--result [Not Available]"), "Write result report"],
 	]
 	print_table(title, *menu)
 	print("")

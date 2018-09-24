@@ -23,7 +23,7 @@ MODE = "--brute"
 
 r_options = {
 	"--proxy": False,
-	"--log": False,
+	"--result": False,
 	"--verbose": False,
 }
 
@@ -82,10 +82,10 @@ def getUserOptions():
 	
 	# Default running mode:
 	#	--verbose: display informations (TODO)
-	#	--log: creating log file (TODO)
+	#	--result: creating log file (TODO)
 	#	--proxy: Running using proxy
 	
-	DEF_R_MODE = ("--verbose", "--log", "--proxy")
+	DEF_R_MODE = ("--verbose", "--result", "--proxy")
 	
 	# Default options:
 	#	-u: Read userlist from file
@@ -113,11 +113,12 @@ def getUserOptions():
 	while idx < len(sys.argv):
 		if sys.argv[idx] in ("-h", "--help", "help"):
 			utils.print_help()
+			sys.exit(0)
 			
 		else:
 			if sys.argv[idx][:2] == "--":
 				if sys.argv[idx] in DEF_R_MODE:
-					# --verbose", "--log", "--proxy"
+					# --verbose", "--result", "--proxy"
 					r_options[sys.argv[idx]] = True
 
 				elif sys.argv[idx] in DEF_A_MODE:
@@ -165,7 +166,7 @@ def craftbanner(url, options, mode, r_options):
 	|--------------------------------------------------------------------|
 	|          Verbose: %-13s  |          Save Log: %-12s |
 	|--------------------------------------------------------------------|
-	\\  False keyword: %-49s /
+	\\       False keyword: %-44s /
 	  =================================================================
 	""" %(url,
 		usr,
@@ -174,7 +175,7 @@ def craftbanner(url, options, mode, r_options):
 		r_options["--proxy"],
 		options["-t"],
 		r_options["--verbose"],
-		r_options["--log"],
+		r_options["--result"],
 		options["-k"]
 	)
 	
