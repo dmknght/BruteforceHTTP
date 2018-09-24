@@ -17,7 +17,7 @@ from core import utils, actions
 URL = None
 USERLIST = "default"
 PASSLIST = "default"
-THREADS = 3
+THREADS = 16
 KEY_FALSE = None
 MODE = "--brute"
 
