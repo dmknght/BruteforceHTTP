@@ -32,6 +32,11 @@ def printf(mtext, mtype = 'warn'):
 	###########################################
 
 	print(craft_msg(mtext, mtype))
+	# TODO move print to std write
+	# if mtype == 'bad':
+	# 	sys.stderr.write("%s\n" %(craft_msg(mtext, mtype)))
+	# else:
+	# 	sys.stdout.write("%s\n" %(craft_msg(mtext, mtype)))
 
 def craft_msg(mtext, mtype = 'warn'):
 	# https://misc.flogisoft.com/bash/tip_colors_and_formatting

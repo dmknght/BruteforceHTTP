@@ -36,15 +36,7 @@ def handle(optionURL, optionUserlist, optionPasslist, optionKeyFalse, optionThre
 	# get login form info 
 	# call brute
 	
-	"""
-	Testing result: -u, -p:
-	- first task: 3 same threads
-	- after: 1 thread each task (randomly, could be slow resp )
-	Testing with default:
-	- first task: 3 same threads
-	- after: 2 same threads (likely)
-	"""
-	optionProxy, optionVerbose, optionLog = optionRun.values()
+	optionProxy, optionLog, optionVerbose = optionRun.values()
 	# TODO remove username from userlist if done (if not break)
 	
 	sizePasslist = actions.size_o(optionPasslist)
@@ -130,7 +122,7 @@ def brute(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFal
 
 	proc.open(optionURL)
 		#	End new code block
-
+	
 	try:
 		idxTry += 1
 
@@ -140,7 +132,7 @@ def brute(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFal
 		proc.form[frmPassfield] = tryPassword
 
 		# BUG: idxTry is always 1
-		utils.printp(idxTry, sizeTask)
+		#utils.printp(idxTry, sizeTask)
 
 		#	Send request
 		proc.submit()
