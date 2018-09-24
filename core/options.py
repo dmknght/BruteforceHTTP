@@ -27,7 +27,14 @@ r_options = {
 	"--verbose": False,
 }
 
-def checkOption(url, options, r_options):
+def checkURL(url):
+	if "http" not in url:
+		url = "http://%s" %(url)
+	if url[-1] != "/":
+		url += "/"
+	return url
+	
+def checkOption(options, r_options):
 	
 	finalOption = {}
 	global MODE
@@ -57,16 +64,11 @@ def checkOption(url, options, r_options):
 			finalOption["userlist"] = data.getUser() if options["-u"] == "default" else actions.fread(options["-u"])
 	
 	finalOption["falsekey"] = options["-k"]
-	
-	if "http" not in url:
-		url = "http://%s" %(url)
-	if url[-1] != "/":
-		url += "/"
 		
 	if r_options["--proxy"]:
 		r_options["--proxy"] = actions.getProxyList()
 	
-	return url, finalOption, r_options
+	return finalOption, r_options
 
 
 def getUserOptions():
@@ -144,39 +146,42 @@ def getUserOptions():
 		utils.printf("An URL is required", "bad")
 		sys.exit(1)
 	else:
-		utils.printf(craftbanner(URL, options, MODE, r_options), "good")
-		URL, options, r_options = checkOption(URL, options, r_options)
+		URL = checkURL(URL)
+		utils.printf(banner(URL, options, MODE, r_options), "good")
+		options, r_options = checkOption(options, r_options)
 
 		return URL, options, MODE, r_options
 
 
-def craftbanner(url, options, mode, r_options):
+def banner(url, options, mode, r_options):
 	usr = options["-U"] if options["-U"] else options["-u"]
 
 	banner = """
-	  =================================================================
-	/  Target: %-56s \\
-	|++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	|  Users: %-58s |
-	|  Password: %-55s |
-	|++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	|                                                                    |
-	|      Attack mode: %-6s |   Using Proxy: %-6s |   Threads: %-4s |
-	|                                                                    |
-	|--------------------------------------------------------------------|
-	|          Verbose: %-13s  |          Save Log: %-12s |
-	|--------------------------------------------------------------------|
-	\\       False keyword: %-44s /
-	  =================================================================
-	""" %(url,
-		usr,
-		options["-p"],
+	  ======================================================================
+	/  Target: %-61s \\
+	|  URL: %-65s |
+	|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
+	|  Users: %-63s |
+	|  Password: %-60s |
+	|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
+	|                                                                         |
+	|       Attack mode: %-6s |   Using Proxy: %-6s |   Threads: %-4s     |
+	|                                                                         |
+	|-------------------------------------------------------------------------|
+	|            Verbose: %-13s  |          Save Log: %-12s    |
+	|-------------------------------------------------------------------------|
+	\\       False keyword: %-49s /
+	  ======================================================================
+	""" %(url.split("/")[2][:61],
+		url[:62],
+		usr[:65],
+		options["-p"][:60],
 		mode.replace("--", ""),
 		r_options["--proxy"],
 		options["-t"],
 		r_options["--verbose"],
 		r_options["--result"],
-		options["-k"]
+		options["-k"] # if options["-k"] else options["-k"][:49]
 	)
 	
 	return banner.replace("\t", "  ")
