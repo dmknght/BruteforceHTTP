@@ -60,7 +60,7 @@ def getPass():
 	123456q
 	12345a
 	1122334411223344
-	letmein""".replace("\t", "")
+	P4ssw0rd""".replace("\t", "")
 	
 def getSQL():
 	return """ or true --
