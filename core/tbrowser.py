@@ -7,6 +7,7 @@ def startBrowser():
 	browser.set_handle_referer(True)
 	browser.set_handle_redirect(True)
 	browser.set_handle_equiv(True)
+	#browser._factory.is_html = True #https://stackoverflow.com/a/4201003
 	return browser
 	
 def parseLoginForm(objBrowserForm):
