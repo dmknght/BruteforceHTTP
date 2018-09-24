@@ -157,8 +157,8 @@ def banner(url, options, mode, r_options):
 	usr = options["-U"] if options["-U"] else options["-u"]
 
 	banner = """
-	  ======================================================================
-	/  Target: %-61s \\
+	  =======================================================================
+	/  Target: %-62s \\
 	|  URL: %-65s |
 	|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
 	|  Users: %-63s |
@@ -170,8 +170,8 @@ def banner(url, options, mode, r_options):
 	|-------------------------------------------------------------------------|
 	|            Verbose: %-13s  |          Save Log: %-12s    |
 	|-------------------------------------------------------------------------|
-	\\       False keyword: %-49s /
-	  ======================================================================
+	\\       False keyword: %-50s /
+	  =======================================================================
 	""" %(url.split("/")[2][:61],
 		url[:62],
 		usr[:65],
@@ -181,7 +181,7 @@ def banner(url, options, mode, r_options):
 		options["-t"],
 		r_options["--verbose"],
 		r_options["--result"],
-		options["-k"] # if options["-k"] else options["-k"][:49]
+		options["-k"] # TODO if options["-k"] else options["-k"][:49]
 	)
 	
 	return banner.replace("\t", "  ")
