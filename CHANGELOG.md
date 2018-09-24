@@ -1,3 +1,6 @@
+## 24/09/2018
+* New threading logic. Fix threading problems.
+
 ## ## 1.3 test 4
 * Modify many function names
 * Rework options.py module

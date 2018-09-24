@@ -1,5 +1,6 @@
 import sys, actions
 
+# TODO write stderr and stdout instead of print
 
 def prints(mtext):
 	#############################################
@@ -14,10 +15,9 @@ def prints(mtext):
 	print(mtext)
 	sys.stdout.write("\033[F \033[K" * actions.size_o(mtext))
 
-def printp(username, index, total, bar_size = 50):
+def printp(index, total, bar_size = 50):
 	completed = (index * bar_size) / total
-	prints("%s\n |%s%s| %s/%s"%(
-		username,
+	prints("|%s%s| %s/%s"%(
 		completed * '#',
 		(bar_size - completed) * '-',
 		index,
@@ -34,6 +34,7 @@ def printf(mtext, mtype = 'warn'):
 	print(craft_msg(mtext, mtype))
 
 def craft_msg(mtext, mtype = 'warn'):
+	# https://misc.flogisoft.com/bash/tip_colors_and_formatting
 	####################################################
 	#	create text message with color
 	#	bad: red
@@ -45,7 +46,8 @@ def craft_msg(mtext, mtype = 'warn'):
 	mtext = {
 		'bad': '\033[91m{}\033[00m'.format(mtext),
 		'warn': '\033[93m{}\033[00m'.format(mtext),
-		'good': '\033[92m{}\033[00m'.format(mtext)
+		'good': '\033[92m{}\033[00m'.format(mtext),
+		'norm': '\033[97m{}\033[00m'.format(mtext)
 	}
 	return (mtext[mtype])
 	
