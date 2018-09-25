@@ -35,6 +35,13 @@ def main(optionURL, setOptions, setMode, setRunOptions):
 		# Handle target environment that doesn't support HTTPS verification
 		ssl._create_default_https_context = _create_unverified_https_context
 
+	try:
+		from Queue import Queue
+	except ImportError:
+		from queue import Queue
+	
+	result = Queue()
+
 	def do_job(jobs):
 		for job in jobs:
 			job.start()
@@ -110,7 +117,7 @@ def main(optionURL, setOptions, setMode, setRunOptions):
 					args = (
 						optionURL, username.replace("\n", ""), password.replace("\n", ""), sizeUserlist * sizePasslist,
 						optionProxy, optionKeyFalse, optionVerbose, optionLog,
-						loginInfo, trying
+						loginInfo, result, trying
 					)
 				)
 				worker.daemon = True
@@ -142,18 +149,16 @@ def main(optionURL, setOptions, setMode, setRunOptions):
 		#
 		############################################
 
-		# try:
-		# 	credentials = processBruteForcing.actGetResult()
-		#
-		# 	#	check result
-		# 	if len(credentials) == 0:
-		# 		utils.printf("Password not found!", "bad")
-		# 	else:
-		# 		utils.printf("")
-		# 		utils.print_table(("Username", "Password"), *credentials)
-		# except:
-		# 	#utils.printf("\nCan not get result.\n", "bad")
-		# 	pass
+		try:
+			credentials = list(result.queue)
+			if len(credentials) == 0:
+				utils.printf("Password not found!", "bad")
+			else:
+				utils.printf("")
+				utils.print_table(("Username", "Password"), *credentials)
+		except Exception as err:
+			utils.printf("\nError while getting result.\n", "bad")
+			utils.printf(err, "bad")
 
 		utils.printf("\nCompleted. Run time: %0.5s [s]\n" %(time.time() - timeStarting))
 

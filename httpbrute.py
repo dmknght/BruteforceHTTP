@@ -25,7 +25,7 @@
 import mechanize, sys
 from core import utils, actions, tbrowser		
 
-def submit(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFalse, optionVerbose, optionLog, loginInfo, trying):
+def submit(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFalse, optionVerbose, optionLog, loginInfo, result, trying):
 	############################################
 	#	Old code logic:
 	#		Create 1 browser object per password
@@ -83,7 +83,6 @@ def submit(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFa
 
 		if not tbrowser.parseLoginForm(proc.forms()):
 
-			#TODO edit mixed condition
 			if setKeyFalse:
 				if setKeyFalse not in proc.response().read():
 					
@@ -91,6 +90,7 @@ def submit(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFa
 					# If verbose: print
 					
 					printSuccess(tryUsername, tryPassword)
+					result.put([tryUsername, tryPassword])
 
 					#	Clear object and try new username
 					proc.close()
@@ -101,6 +101,7 @@ def submit(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFa
 					
 			else:
 				utils.printSuccess(tryUsername, tryPassword)
+				result.put([tryUsername, tryPassword])
 
 				#	Clear object and try new username
 				proc.close()
