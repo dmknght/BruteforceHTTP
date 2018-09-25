@@ -1,17 +1,9 @@
 #!/usr/bin/python
 
-import sys, time, os, threading
-
-try:
-	import mechanize, re, ssl
-except ImportError as ImportError:
-	print(error)
-	_, missing_moudle, _ = str(ImportError).split("'")
-	sys.exit("Try: sudo apt install python-%s" %(missing_moudle))
-
+# CHECK IMPORTING MODULES
 try:
 	from core import actions, utils, tbrowser, options
-	import httpbrute
+	import httpbrute, sys
 except ImportError as ImportError:
 	print(ImportError)
 	sys.exit("Error while importing modules")
@@ -19,22 +11,32 @@ except ImportError as ImportError:
 
 ########################## SSL
 #	https://stackoverflow.com/a/35960702
-try:
-	_create_unverified_https_context = ssl._create_unverified_context
-except AttributeError:
-	# Legacy Python that doesn't verify HTTPS certificates by default
-	pass
-else:
-	# Handle target environment that doesn't support HTTPS verification
-	ssl._create_default_https_context = _create_unverified_https_context
+
 ########################## End ssl
 
 def main(optionURL, setOptions, setMode, setRunOptions):
-	
+
+	import time, os, threading
+
+	# CHECK IMPORTING ALL LIBS. IMPORT HERE -> CALL HELP_BANNER ONLY FASTER
+	try:
+		import mechanize, re, ssl
+	except ImportError as ImportError:
+		print(error)
+		_, missing_moudle, _ = str(ImportError).split("'")
+		sys.exit("Try: sudo apt install python-%s" %(missing_moudle))
+			
+	try:
+		_create_unverified_https_context = ssl._create_unverified_context
+	except AttributeError:
+		# Legacy Python that doesn't verify HTTPS certificates by default
+		pass
+	else:
+		# Handle target environment that doesn't support HTTPS verification
+		ssl._create_default_https_context = _create_unverified_https_context
 
 	def do_job(jobs):
 		for job in jobs:
-			job.daemon = True
 			job.start()
 			
 		for job in jobs:
@@ -49,16 +51,6 @@ def main(optionURL, setOptions, setMode, setRunOptions):
 	
 	optionUserlist, optionThreads, optionKeyFalse, optionPasslist = setOptions.values()
 	optionProxy, optionLog, optionVerbose = setRunOptions.values()
-	#setProxy, setVerbose, setLog = setRunOptions.values()
-
-	# try:
-	# 	sizePasslist = actions.size_o(optionPasslist)
-	# 	sizeUserlist = actions.size_o(optionUserlist)
-	# 	# TODO Check condition each case
-	# 
-	# except:
-	# 	#utils.printf("Can not get size of passlist", "bad")
-	# 	pass
 		
 	try:
 		optionUserlist = optionUserlist.split("\n")
@@ -80,7 +72,6 @@ def main(optionURL, setOptions, setMode, setRunOptions):
 	# get login form info 
 	# call brute
 		
-	
 	
 	sizePasslist = actions.size_o(optionPasslist)
 	sizeUserlist = actions.size_o(optionUserlist)
@@ -122,31 +113,16 @@ def main(optionURL, setOptions, setMode, setRunOptions):
 						loginInfo, trying
 					)
 				)
+				worker.daemon = True
 				workers.append(worker)
 		
 		#DO ALL LAST TASKs
 		for worker in workers:
 			do_job(workers)
 			del workers[:]
-	# try:
-	# 
-	# 	#TODO modify for sql injection mode
-	# 	if setMode == "--sqli":
-	# 		pass
-	# 		# for i in xrange(optionThreads):
-	# 		# 	worker = threading.Thread(
-	# 		# 		target = sqltest.handle,
-	# 		# 		args = (optionURL, optionUserlist, optionPasslist, sizeUserlist * sizePasslist, setProxy, optionKeyFalse)
-	# 		# 	)
-	# 		# 	# add threads to list
-	# 		# 	workers.append(worker)
-	# 	else:
-	# 		#httpbrute.handle(optionURL, optionUserlist, optionPasslist, sizePasslist, setProxy, optionKeyFalse)
-	# 		httpbrute.handle(optionURL, optionUserlist, optionPasslist, optionKeyFalse, optionThreads, setRunOptions)
 
 	except KeyboardInterrupt:# as error:
-		# for worker in workers:
-		# 	worker.join()
+		# TODO: kill running threads here
 		utils.die("Terminated by user!", "KeyboardInterrupt")
 
 	except SystemExit:# as error
@@ -156,6 +132,11 @@ def main(optionURL, setOptions, setMode, setRunOptions):
 		utils.die("Error while running", error)
 
 	finally:
+		# TODO: clean running threads
+		"""
+			All threads have been set daemon
+			Running threads should be stopped after main task done
+		"""
 		############################################
 		#	Get result
 		#
