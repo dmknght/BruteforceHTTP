@@ -1,8 +1,6 @@
 <h1 align='center'>BruteforceHTTP</h1>
 <p align='center'><i>An automated brute forcing tool</i></p>
 <h1 align='center'>THIS PROJECT IS NOT WORKING </h1>
-- WE ARE DOING HARD FOR MAKING MULTITHREADING WORK AS GOOD AS WE WANT. CURRENT PROJECT IS UNUSABLE. WE WILL MAKE A GOOD THREADING STRUCTURE BEFORE INCLUDING NEW FEATURE AND MOVE TO PYTHON3 (INCLUDING NEW BROWSER LIB)
-
 
 ## About this project
 This project focusing on Brute Forcing HTTP protocol AUTOMATICALLY.
