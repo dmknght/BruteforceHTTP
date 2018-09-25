@@ -152,9 +152,9 @@ def main(optionURL, setOptions, setMode, setRunOptions):
 		try:
 			credentials = list(result.queue)
 			if len(credentials) == 0:
-				utils.printf("Password not found!", "bad")
+				utils.printf("[-] No valid password found!", "bad")
 			else:
-				utils.printf("")
+				utils.printf("\n[*] %s valid password[s] found:\n" %(len(credentials)), "norm")
 				utils.print_table(("Username", "Password"), *credentials)
 		except Exception as err:
 			utils.printf("\nError while getting result.\n", "bad")

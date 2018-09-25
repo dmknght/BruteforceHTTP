@@ -106,7 +106,7 @@ def print_table(headers, *args, **kwargs):
 		
 def printSuccess(foundUsername, foundPassword):
 	printf(
-		"Found: %s:%s\n" %(
+		"Found: %s:%s" %(
 			foundUsername,
 			foundPassword
 			),
