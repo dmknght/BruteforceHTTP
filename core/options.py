@@ -181,7 +181,7 @@ def banner(url, options, mode, r_options):
 		options["-t"],
 		r_options["--verbose"],
 		r_options["--result"],
-		options["-k"] # TODO if options["-k"] else options["-k"][:50]
+		str(options["-k"])[:50]
 	)
 	
 	return banner.replace("\t", "  ")
