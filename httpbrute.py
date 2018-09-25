@@ -21,6 +21,7 @@
 # TODO break task after matching
 # BUG Redirect error after successful: keep sending to login page
 # BUG Redirect error after successful: HTTPError w/ login page (no redirect param) WP - broken web app
+# BUG login fail redirect to message page (Using keyfalse option as optional condition)
 
 import mechanize, sys
 from core import utils, actions, tbrowser		
