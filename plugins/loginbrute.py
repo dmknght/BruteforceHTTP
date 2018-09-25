@@ -1,6 +1,3 @@
-### REWRITE httpbrute
-## NO oop
-
 """
 	TODO? OOP instead of functions
 	for (usr, passwd) in (usernames, passwords):
@@ -23,7 +20,7 @@
 # BUG Redirect error after successful: HTTPError w/ login page (no redirect param) WP - broken web app
 # BUG login fail redirect to message page (Using keyfalse option as optional condition)
 
-import mechanize, sys
+import mechanize
 from core import utils, actions, tbrowser		
 
 def submit(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFalse, optionVerbose, optionLog, loginInfo, result, trying):
@@ -48,7 +45,11 @@ def submit(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFa
 	user_agent = tbrowser.useragent()
 	proc.addheaders = [('User-Agent', user_agent)]
 	
-	
+	for cred in list(result.queue):
+		if tryUsername == cred[0]:
+			if optionVerbose:
+				utils.printf("Canceled: %s:%s" %(tryUsername, tryPassword))
+			return 0 # don't run if find password of username
 	
 	if setProxyList:
 		#Set proxy connect
@@ -117,3 +118,4 @@ def submit(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFa
 		utils.die("Error while running thread", error)
 
 	proc.close()
+	return True

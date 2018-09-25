@@ -1,3 +1,7 @@
+## 26/09/2018
+* Mov httpbrute to plugins/loginbrute
+* Testing: threads stop after valid password found
+
 ## 24/09/2018
 * New threading logic. Fix threading problems.
 

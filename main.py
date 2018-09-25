@@ -3,7 +3,8 @@
 # CHECK IMPORTING MODULES
 try:
 	from core import actions, utils, tbrowser, options
-	import httpbrute, sys
+	from plugins import loginbrute
+	import sys
 except ImportError as ImportError:
 	print(ImportError)
 	sys.exit("Error while importing modules")
@@ -20,7 +21,7 @@ def main(optionURL, setOptions, setMode, setRunOptions):
 
 	# CHECK IMPORTING ALL LIBS. IMPORT HERE -> CALL HELP_BANNER ONLY FASTER
 	try:
-		import mechanize, re, ssl
+		import mechanize, re, ssl, requests
 	except ImportError as ImportError:
 		print(error)
 		_, missing_moudle, _ = str(ImportError).split("'")
@@ -79,7 +80,6 @@ def main(optionURL, setOptions, setMode, setRunOptions):
 	# get login form info 
 	# call brute
 		
-	
 	sizePasslist = actions.size_o(optionPasslist)
 	sizeUserlist = actions.size_o(optionUserlist)
 
@@ -111,15 +111,15 @@ def main(optionURL, setOptions, setMode, setRunOptions):
 				if len(workers) == optionThreads:
 					do_job(workers)
 					del workers[:]
-
-				worker = threading.Thread(
-					target = httpbrute.submit,
-					args = (
-						optionURL, username.replace("\n", ""), password.replace("\n", ""), sizeUserlist * sizePasslist,
-						optionProxy, optionKeyFalse, optionVerbose, optionLog,
-						loginInfo, result, trying
+				if setMode == "--brute":
+					worker = threading.Thread(
+						target = loginbrute.submit,
+						args = (
+							optionURL, username.replace("\n", ""), password.replace("\n", ""), sizeUserlist * sizePasslist,
+							optionProxy, optionKeyFalse, optionVerbose, optionLog,
+							loginInfo, result, trying
+						)
 					)
-				)
 				worker.daemon = True
 				workers.append(worker)
 		
