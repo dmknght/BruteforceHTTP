@@ -89,7 +89,7 @@ def submit(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFa
 					# Add creds to success list
 					# If verbose: print
 					
-					printSuccess(tryUsername, tryPassword)
+					utils.printSuccess(tryUsername, tryPassword)
 					result.put([tryUsername, tryPassword])
 
 					#	Clear object and try new username
