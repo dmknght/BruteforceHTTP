@@ -67,17 +67,19 @@ def submit(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFa
 		proc.form[frmUserfield] = tryUsername
 		proc.form[frmPassfield] = tryPassword
 
-		utils.printp(trying, sizeTask)
 
 		#	Send request
-		#proc.submit()
+		proc.submit()
 
 		#	Print status bar
-
+		# TODO: print logic? before or after submit?
 		if optionVerbose:
 			utils.printf("Trying: %s:%s" %(tryUsername, tryPassword), 'norm')
+		
+		utils.printp(trying, sizeTask)
 
-		proc.submit()
+
+		#proc.submit()
 		#	Reload - useful for redirect to dashboard
 		proc.reload()
 		#	If no login form -> success

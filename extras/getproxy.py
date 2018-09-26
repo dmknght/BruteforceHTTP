@@ -1,15 +1,19 @@
 import mechanize, re, sys, os, threading
 from core import actions, utils, tbrowser
 
-
+try:
+	from Queue import Queue
+except ImportError:
+	from queue import Queue
 """
 support url:
 https://free-proxy-list.net/
 """
 
-THREADS = 10
+# BUG: import modules error
+
+THREADS = 16
 PROXY_PATH = "data/liveproxy.txt"
-TMP_PATH = "proxies.tmp"
 
 def help():
 	print("""
@@ -21,39 +25,39 @@ def help():
 	\r               Requires an exist list
 	""")
 
-def get_proxy_list(url = "https://free-proxy-list.net/"):
+
+def getNewProxy():
+	
+	def parse_proxy(response):
+		try:
+			re_ip = r"\b(?:\d{1,3}\.){3}\d{1,3}\b<\/td><td>\d{1,5}"
+			result = re.findall(re_ip, response, re.MULTILINE)
+			result = [element.replace("</td><td>", ":") for element in result]
+			return result
+		except Exception as error:
+			utils.die("Error while parsing proxy list.", error)
+			
+	def checProxyConnProvider(url = "https://free-proxy-list.net/"):
+		try:
+			utils.printf("Connecting to %s." %(url))
+
+			getproxy = tbrowser.startBrowser()
+
+			user_agent = tbrowser.useragent()
+			
+			getproxy.addheaders = [('User-Agent', user_agent)]
+			getproxy.open(url)
+			utils.printf("Gathering proxy completed.", "good")
+			return getproxy.response().read()
+
+		except Exception as error:
+			utils.die("Error while connecting to live proxy server!", error)
+		finally:
+			getproxy.close()
+			
+
 	try:
-		utils.printf("Connecting to %s." %(url))
-		# getproxy = mechanize.Browser()
-		# getproxy.set_handle_robots(False)
-
-		getproxy = tbrowser.startBrowser()
-
-		user_agent = tbrowser.useragent()
-		
-		getproxy.addheaders = [('User-Agent', user_agent)]
-		getproxy.open(url)
-		utils.printf("Gathering proxy completed.", "good")
-		return getproxy.response().read()
-
-	except Exception as error:
-		utils.die("Error while connecting to live proxy server!", error)
-	finally:
-		getproxy.close()
-
-
-def parse_proxy(response):
-	try:
-		re_ip = r"\b(?:\d{1,3}\.){3}\d{1,3}\b<\/td><td>\d{1,5}"
-		result = re.findall(re_ip, response, re.MULTILINE)
-		result = [element.replace("</td><td>", ":") for element in result]
-		return result
-	except Exception as error:
-		utils.die("Error while parsing proxy list.", error)
-
-def refresh():
-	try:
-		listproxy = parse_proxy(get_proxy_list())
+		listproxy = parse_proxy(checProxyConnProvider())
 	except:
 		listproxy = ""
 	finally:
@@ -68,24 +72,53 @@ def refresh():
 
 
 def check(target = "https://google.com"):
+
+	def checProxyConn(proxyAddr, target, result):
+		try:
+			proxyTest = tbrowser.startBrowser()
+			user_agent = tbrowser.useragent()
+			proxyTest.addheaders = [('User-Agent', user_agent)]
+			utils.printf(proxyAddr)
+			proxyTest.set_proxies({"http": proxyAddr})
+			proxyTest.open(target)
+			utils.printf("Trying: %s" %(proxyAddr), "good")
+			result.put(proxyAddr)
+		except Exception as error:
+			utils.printf("%s %s" %(proxyAddr, error), "bad")
+		finally:
+			try:
+				proxyTest.close()
+			except:
+				pass
 	# Single thread
 	try:
 		
-		proxylist = actions.fload(PROXY_PATH)
+		proxylist = actions.fread(PROXY_PATH).split("\n")
 		
 		#actions.fwrite(TMP_PATH, "") # create new empty list
 		
 		workers = []
-		for i in xrange(THREADS):
+		result = Queue()
+		for tryProxy in proxylist:
+			if len(workers) >= THREADS:
+				for worker in workers:
+					worker.start()
+				for worker in workers:
+					worker.join()
+				del workers[:]
+			
 			worker = threading.Thread(
-				target = checkAllProxy,
-				args = (proxylist, target,)
+				target = checProxyConn,
+				args = (tryProxy, target, result)
 			)
+
+			worker.daemon = True
 			workers.append(worker)
 			
 		for worker in workers:
-			worker.daemon = True
 			worker.start()	
+		for worker in workers:
+			workers.join()
 
 	except KeyboardInterrupt as error:
 		utils.die("Terminated by user!", error)
@@ -94,53 +127,17 @@ def check(target = "https://google.com"):
 
 	finally:
 		try:
-			for worker in workers:
-				worker.join()
-		except:
-			pass
+			open("data/liveproxy.txt", "w").write("\n".join(list(result.queue))) #TODO better code
+		except Exception as err:
+			utils.die("Error while writing result", err)
+			
 
-
-def checkAllProxy(proxyList, target):
-	try:
-		for proxyAddr in proxyList:
-			proxyAddr = proxyAddr.replace("\n", "")
-
-			result = connProxy(proxyAddr, target)
-			if result:
-				#livelist.append(result)
-				actions.fwrite_c(TMP_PATH, "%s\n" %(proxyAddr)) #TODO use queu here
-
-	except Exception as error:
-		utils.printf(error, "bad")
-
-	# finally:
-	# 	return "\n".join(livelist)
-
-
-def connProxy(proxyAddr, target):
-	try:
-		proxyTest = tbrowser.startBrowser()
-		user_agent = tbrowser.useragent()
-		proxyTest.addheaders = [('User-Agent', user_agent)]
-		utils.printf(proxyAddr)
-		proxyTest.set_proxies({"http": proxyAddr})
-		proxyTest.open(target)
-		utils.printf(proxyAddr, "good")
-		return proxyAddr
-	except Exception as error:
-		utils.printf("%s %s" %(proxyAddr, error), "bad")
-		return None
-	finally:
-		try:
-			proxyTest.close()
-		except:
-			pass
 
 
 if __name__ == "__main__":
 	current_dir = actions.getRootDir(sys.argv[0])
-	if current_dir:
-		os.chdir(current_dir)
+	# if current_dir:
+	# 	os.chdir(current_dir)
 	if len(sys.argv) == 1:
 		help()
 	elif len(sys.argv) == 2:
@@ -148,7 +145,7 @@ if __name__ == "__main__":
 		if option in ["help", "--help", "-h"]:
 			help()
 		elif option == "get":
-			refresh()
+			getNewProxy()
 		elif option == "check":
 			check()
 		else:

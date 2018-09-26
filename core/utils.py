@@ -49,7 +49,7 @@ def craft_msg(mtext, mtype = 'warn'):
 	####################################################
 
 	mtext = {
-		'bad': '\033[91m{}\033[00m'.format(mtext),
+		'bad':  '\033[91m{}\033[00m'.format(mtext),
 		'warn': '\033[93m{}\033[00m'.format(mtext),
 		'good': '\033[92m{}\033[00m'.format(mtext),
 		'norm': '\033[97m{}\033[00m'.format(mtext)
