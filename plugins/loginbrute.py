@@ -115,9 +115,9 @@ def submit(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFa
 
 	except mechanize.HTTPError as error:
 		#	Get blocked
-		utils.die("Thread has been blocked", error)
+		utils.die("Error: %s:%s" %(tryUsername, tryPassword), error)
 	except Exception as error:
-		utils.die("Error while running thread", error)
+		utils.die("Error: %s:%s" %(tryUsername, tryPassword), error)
 
 	proc.close()
 	return True

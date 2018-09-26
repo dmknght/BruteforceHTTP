@@ -132,10 +132,19 @@ def print_help():
 	menu = [
 		[ "%-25s"%("--proxy"), "Use Proxy each connection"],
 		[ "%-25s"%("--verbose [Not Available]"), "Display more information"],
-		[ "%-25s"%("--result [Not Available]"), "Write result report"],
+		[ "%-25s"%("--report [Not Available]"), "Write result report"],
 	]
 	print_table(title, *menu)
 	print("")
+	
+def fixLen(text, lim):
+	# https://stackoverflow.com/a/37422973
+	def _f(text, lim):
+		while text:
+			yield "|   %-20s |\n" %(text[:lim])
+			text = text[lim:]
+	return "".join(list(_f(text, lim)))
+		
 	
 def start_banner(url, options, mode, r_options):
 	usr = options["-U"] if options["-U"] else options["-u"]
@@ -164,7 +173,7 @@ def start_banner(url, options, mode, r_options):
 		r_options["--proxy"],
 		options["-t"],
 		r_options["--verbose"],
-		r_options["--result"],
+		r_options["--report"],
 		str(options["-k"])[:50]
 	)
 	

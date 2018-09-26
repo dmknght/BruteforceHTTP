@@ -23,7 +23,7 @@ MODE = "--brute"
 
 r_options = {
 	"--proxy": False,
-	"--result": False,
+	"--report": False,
 	"--verbose": False,
 }
 
@@ -84,10 +84,10 @@ def getUserOptions():
 	
 	# Default running mode:
 	#	--verbose: display informations (TODO)
-	#	--result: creating log file (TODO)
+	#	--report: creating log file (TODO)
 	#	--proxy: Running using proxy
 	
-	DEF_R_MODE = ("--verbose", "--result", "--proxy")
+	DEF_R_MODE = ("--verbose", "--report", "--proxy")
 	
 	# Default options:
 	#	-u: Read userlist from file
@@ -120,7 +120,7 @@ def getUserOptions():
 		else:
 			if sys.argv[idx][:2] == "--":
 				if sys.argv[idx] in DEF_R_MODE:
-					# --verbose", "--result", "--proxy"
+					# --verbose", "--report", "--proxy"
 					r_options[sys.argv[idx]] = True
 
 				elif sys.argv[idx] in DEF_A_MODE:
