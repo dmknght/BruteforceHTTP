@@ -15,7 +15,7 @@ except ImportError as ImportError:
 
 ########################## End ssl
 
-def main(optionURL, setOptions, setMode, setRunOptions):
+def main(optionURL, setOptions, optionRunMode, setRunOptions):
 
 	import time, os, threading
 
@@ -58,7 +58,7 @@ def main(optionURL, setOptions, setMode, setRunOptions):
 	"""
 	
 	optionUserlist, optionThreads, optionKeyFalse, optionPasslist = setOptions.values()
-	optionProxy, optionLog, optionVerbose = setRunOptions.values()
+	optionProxy, optionReport, optionVerbose = setRunOptions.values()
 		
 	try:
 		optionUserlist = optionUserlist.split("\n")
@@ -113,13 +113,12 @@ def main(optionURL, setOptions, setMode, setRunOptions):
 				if len(workers) == optionThreads:
 					do_job(workers)
 					del workers[:]
-				if setMode == "--brute":
+				if optionRunMode == "--brute":
 					worker = threading.Thread(
 						target = loginbrute.submit,
 						args = (
 							optionURL, username.replace("\n", ""), password.replace("\n", ""), sizeUserlist * sizePasslist,
-							optionProxy, optionKeyFalse, optionVerbose, optionLog,
-							loginInfo, result, trying
+							optionProxy, optionKeyFalse, optionVerbose, loginInfo, result, trying
 						)
 					)
 				worker.daemon = True
@@ -141,6 +140,7 @@ def main(optionURL, setOptions, setMode, setRunOptions):
 		utils.die("Error while running", error)
 
 	finally:
+		runtime = time.time() - timeStarting
 		# TODO: clean running threads
 		"""
 			All threads have been set daemon
@@ -158,11 +158,27 @@ def main(optionURL, setOptions, setMode, setRunOptions):
 			else:
 				utils.printf("\n[*] %s valid password[s] found:\n" %(len(credentials)), "norm")
 				utils.print_table(("Username", "Password"), *credentials)
+
+				if optionReport:
+					optionProxy = "True" if optionProxy else "False"
+					utils.printf(
+						utils.report_banner(
+							optionURL,
+							optionRunMode,
+							optionProxy,
+							optionThreads,
+							credentials,
+							"%s_%s" %(time.strftime("%Y.%m.%d_%H.%M"), optionURL.split("/")[2]),
+							runtime),
+						"good")
+				else:
+					pass #print with single body with --sqli and --single
+
 		except Exception as err:
 			utils.printf("\nError while getting result.\n", "bad")
 			utils.printf(err, "bad")
 
-		utils.printf("\nCompleted. Run time: %0.5s [s]\n" %(time.time() - timeStarting))
+		utils.printf("\nCompleted. Run time: %0.5s [s]\n" %(runtime))
 
 		########################################
 		#	Clear resources

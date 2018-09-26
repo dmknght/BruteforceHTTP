@@ -150,7 +150,57 @@ def fixLen(text, lim):
 		ret, text = ret + " |\n  |  %.*s" %(71, text[:lim]), text[lim:]
 
 	return ret
+
+def report_banner(url, mode, proxy, thread, creds, daytime, runtime):
+	# if option != "--sqli" and "--single":
+	def n_body(creds):
+		ret = ""
+		for match in creds:
+			ret += "|  Username: %-60s |\n  |  Password: %-60s |" %(
+				fixLen(match[0], 50), fixLen(match[1], 48)
+			)
+			ret += "\n  |%s|\n  " %("+" * 73)
+		return ret
 	
+	def s_body(creds):
+		ret = ""
+		for match in creds:
+			ret += "  |  Payload: %-50s |\n" %(
+				fixLen(match, 50)
+			)
+		return ret
+
+	header = """
+	  =======================================================================
+	/       Finish: %-58s\\
+	|       Name: %-59s |
+	|-------------------------------------------------------------------------|
+	|       Attack mode: %-6s |   Using Proxy: %-6s |   Threads: %-4s     |
+	|-------------------------------------------------------------------------|
+	|  Target: %-62s |
+	|  URL: %-65s |
+	|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
+	""" %(
+		"%s      %s" %(
+			daytime.split("_")[1].replace(".", ":"),
+			daytime.split("_")[0].replace(".", "/")
+		),
+		fixLen(daytime, 58),
+		mode.replace("--", ""),
+		proxy,
+		thread,
+		fixLen(url.split("/")[2], 61),
+		fixLen(url, 64),
+	)
+	
+	footer = """\\  Runtime: %-62s/
+	  =======================================================================
+	  """ %(runtime)
+	
+	body = n_body(creds) if mode not in ["--sqli"] else s_body(creds)
+
+	return header.replace("\t", "  ") + body + footer.replace("\t", "  ")
+
 def start_banner(url, options, mode, r_options):
 	usr = options["-U"] if options["-U"] else options["-u"]
 
