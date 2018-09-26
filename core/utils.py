@@ -137,78 +137,19 @@ def print_help():
 	print_table(title, *menu)
 	print("")
 
-# OLD DEMO CODE	
-# def fixLen(text, lim):
-# 	# https://stackoverflow.com/a/37422973
-# 	def _f(text, lim):
-# 		while text:
-# 			yield "|   %-20s |\n" %(text[:lim])
-# 			text = text[lim:]
-# 	return "".join(list(_f(text, lim)))
-
-# TESTING WITH PRINT 
-# def fixLen(text, lim):
-# 	"""
-# 	mystr = "1234567890"
-# 	print mystr[5:] ---> new_text
-# 		67890
-# 	print mystr[:5] ---> cut text 
-# 		12345
-# 	"""
-# 	# https://stackoverflow.com/a/37422973
-# 	def _f(text, lim):
-# 		while text:
-# 			_tmp = text[:lim]
-# 
-# 			if len(_tmp) >= lim:
-# 				yield " |\n  |  %.*s" %(lim, _tmp)
-# 			else:
-# 				# Last line
-# 				yield " |\n  | %s%s" %(_tmp, " " * (lim - len(_tmp)))
-# 			text = text[lim:]
-# 
-# 	result = "%.*s" %(lim, text[:lim])
-# 	text = text[lim:]
-# 	return result + "".join(list(_f(text, lim)))
-
 def fixLen(text, lim):
-	"""
-	>>> mystr = "1234567890123456789"
-	>>> print mystr[5:] --->>> new_text
-		67890123456789
-	>>> print mystr[:5] --->>> cut_text
-		12345
-	>>> 
-
-	"""
 	# https://stackoverflow.com/a/37422973
 	ret, text = " %.*s" %(lim, text[:lim]), text[lim:]
+	lim = 70
 	
 	while text:
 		
 		if len(text) < lim:
-			text = text + " " * (lim - len(text))
+			ret += " |\n  | %s" %(text) + " " * (71 - len(text))
+			break
+		ret, text = ret + " |\n  |  %.*s" %(71, text[:lim]), text[lim:]
 
-		ret, text = ret + " |\n  |  %.*s" %(lim, text[:lim]), text[lim:]
-
-	#print ret[-1].split("\n")[-1]
 	return ret
-		
-	# def _f(text, lim):
-	# 	while text:
-	# 		_tmp = text[:lim]
-	# 
-	# 		if len(_tmp) >= lim:
-	# 			yield " |\n  |  %.*s" %(lim, _tmp)
-	# 		else:
-	# 			# Last line
-	# 			yield " |\n  | %s%s" %(_tmp, " " * (lim - len(_tmp)))
-	# 		text = text[lim:]
-	# 
-	# # result = "%.*s" %(lim, text[:lim])
-	# # text = text[lim:]
-	# # return result + "".join(list(_f(text, lim)))
-
 	
 def start_banner(url, options, mode, r_options):
 	usr = options["-U"] if options["-U"] else options["-u"]
@@ -232,7 +173,7 @@ def start_banner(url, options, mode, r_options):
 	\\       False keyword: %-50s /
 	  =======================================================================
 	""" %( " " * 25 + "HTTP LOGIN BRUTE FORCING",
-		fixLen(url.split("/")[2], 62),
+		fixLen(url.split("/")[2], 61),
 		fixLen(url, 64),
 		usr[:65],
 		options["-p"][:60],
@@ -241,7 +182,7 @@ def start_banner(url, options, mode, r_options):
 		options["-t"],
 		r_options["--verbose"],
 		r_options["--report"],
-		str(options["-k"])[:50]
+		fixLen(str(options["-k"]), 49)
 	)
 	
 	return banner.replace("\t", "  ")
