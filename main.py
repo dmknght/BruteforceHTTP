@@ -92,13 +92,15 @@ def main(optionURL, setOptions, setMode, setRunOptions):
 		proc.open(optionURL)
 		#TODO PROXY
 		loginInfo = tbrowser.getLoginForm(optionURL, proc)
-		utils.printf("Connection success! Starting attack.")
+		utils.printf("Connection success!", "good")
 
 	except Exception as err:
 		utils.die("Error while parsing login form", err)
 
 	finally:
 		proc.close()
+	
+	utils.printf("Starting attack.... %s tasks" %(sizeUserlist * sizePasslist))
 	
 	workers = []
 	trying = 0
