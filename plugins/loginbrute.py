@@ -47,8 +47,8 @@ def submit(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFa
 	
 	for cred in list(result.queue):
 		if tryUsername == cred[0]:
-			if optionVerbose:
-				utils.printf("Canceled: %s:%s" %(tryUsername, tryPassword))
+			# if optionVerbose:
+			# 	utils.printf("Canceled: %s:%s" %(tryUsername, tryPassword))
 			return 0 # don't run if find password of username
 	
 	if setProxyList:
@@ -93,7 +93,7 @@ def submit(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFa
 					# Add creds to success list
 					# If verbose: print
 					
-					utils.printSuccess(tryUsername, tryPassword)
+					utils.printf("Match found: %s:%s" %(tryUsername, tryPassword), "good")
 					result.put([tryUsername, tryPassword])
 
 					#	Clear object and try new username
@@ -104,7 +104,7 @@ def submit(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFa
 						utils.printf("Failed: %s:%s" %(tryUsername, tryPassword), "bad")
 					
 			else:
-				utils.printSuccess(tryUsername, tryPassword)
+				utils.printf("Match found: %s:%s" %(tryUsername, tryPassword), "good")
 				result.put([tryUsername, tryPassword])
 
 				#	Clear object and try new username

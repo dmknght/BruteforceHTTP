@@ -103,17 +103,6 @@ def print_table(headers, *args, **kwargs):
 			))
 		print(content_line)
 		
-		
-def printSuccess(foundUsername, foundPassword):
-	printf(
-		"Found: %s:%s" %(
-			foundUsername,
-			foundPassword
-			),
-		"good"
-	)
-	
-	
 def print_help():
 
 	#	Print project's help table
@@ -147,6 +136,39 @@ def print_help():
 	]
 	print_table(title, *menu)
 	print("")
+	
+def start_banner(url, options, mode, r_options):
+	usr = options["-U"] if options["-U"] else options["-u"]
+
+	banner = """
+	  =======================================================================
+	/  Target: %-62s \\
+	|  URL: %-65s |
+	|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
+	|  Users: %-63s |
+	|  Password: %-60s |
+	|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
+	|                                                                         |
+	|       Attack mode: %-6s |   Using Proxy: %-6s |   Threads: %-4s     |
+	|                                                                         |
+	|-------------------------------------------------------------------------|
+	|            Verbose: %-13s  |          Save Log: %-12s    |
+	|-------------------------------------------------------------------------|
+	\\       False keyword: %-50s /
+	  =======================================================================
+	""" %(url.split("/")[2][:62],
+		url[:62],
+		usr[:65],
+		options["-p"][:60],
+		mode.replace("--", ""),
+		r_options["--proxy"],
+		options["-t"],
+		r_options["--verbose"],
+		r_options["--result"],
+		str(options["-k"])[:50]
+	)
+	
+	return banner.replace("\t", "  ")
 	
 if __name__ == "__main__":
 	die("Oops! Wrong place", "Find other place")
