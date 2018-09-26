@@ -161,8 +161,8 @@ def start_banner(url, options, mode, r_options):
 	|  Target: %-62s |
 	|  URL: %-65s |
 	|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	|  Users: %-63s |
-	|  Password: %-60s |
+	|  Userlist: %-60s |
+	|  Passlist: %-60s |
 	|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
 	|                                                                         |
 	|       Attack mode: %-6s |   Using Proxy: %-6s |   Threads: %-4s     |
@@ -175,8 +175,8 @@ def start_banner(url, options, mode, r_options):
 	""" %( " " * 25 + "HTTP LOGIN BRUTE FORCING",
 		fixLen(url.split("/")[2], 61),
 		fixLen(url, 64),
-		usr[:65],
-		options["-p"][:60],
+		fixLen(usr, 59),
+		fixLen(options["-p"], 59),
 		mode.replace("--", ""),
 		r_options["--proxy"],
 		options["-t"],
