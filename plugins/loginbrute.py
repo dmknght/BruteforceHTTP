@@ -76,7 +76,7 @@ def submit(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFa
 		if optionVerbose:
 			utils.printf("Trying: %s:%s" %(tryUsername, tryPassword), 'norm')
 		
-		utils.printp(trying, sizeTask)
+		#utils.printp(trying, sizeTask)
 
 
 		#proc.submit()
