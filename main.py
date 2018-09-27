@@ -16,6 +16,14 @@ except ImportError as ImportError:
 ########################## End ssl
 
 def main(optionURL, setOptions, optionRunMode, setRunOptions):
+	
+	def do_job(jobs):
+		for job in jobs:
+			job.start()
+			
+		for job in jobs:
+			job.join()
+
 
 	import time, os, threading
 
@@ -43,12 +51,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 	
 	result = Queue()
 
-	def do_job(jobs):
-		for job in jobs:
-			job.start()
-			
-		for job in jobs:
-			job.join()
+	
 	
 	# BUG
 	"""
@@ -155,37 +158,30 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 			credentials = list(result.queue)
 			if len(credentials) == 0:
 				utils.printf("[-] No valid password found!", "bad")
-				if optionReport:
-					optionProxy = "True" if optionProxy else "False"
-					utils.printf(
-						utils.report_banner(
-							optionURL,
-							optionRunMode,
-							optionProxy,
-							optionThreads,
-							credentials,
-							"%s_%s" %(time.strftime("%Y.%m.%d_%H.%M"), optionURL.split("/")[2]),
-							runtime),
-						"good")
+				
 			else:
 				utils.printf("\n[*] %s valid password[s] found:\n" %(len(credentials)), "norm")
 				utils.print_table(("Username", "Password"), *credentials)
 
+			
+			if optionReport:
+				optionProxy = "True" if optionProxy else "False"
+				import report
+				report_name = "%s_%s" %(time.strftime("%Y.%m.%d_%H.%M"), optionURL.split("/")[2])
+				
 				if optionReport:
 					optionProxy = "True" if optionProxy else "False"
-					utils.printf(
+					report.makeReport(
 						utils.report_banner(
 							optionURL,
 							optionRunMode,
 							optionProxy,
 							optionThreads,
 							credentials,
-							"%s_%s" %(time.strftime("%Y.%m.%d_%H.%M"), optionURL.split("/")[2]),
+							report_name,
 							runtime),
-						"good")
-				else:
-					pass #print with single body with --sqli and --single
-
+						"%s/%s.txt" %(report.__path__[0], report_name))
+						
 		except Exception as err:
 			utils.printf("\nError while getting result.\n", "bad")
 			utils.printf(err, "bad")
