@@ -1,9 +1,9 @@
 #!/usr/bin/python
 
 # CHECK IMPORTING MODULES
-import sys
 
 try:
+	import sys
 	from core import actions, utils, tbrowser, options
 	from plugins import loginbrute
 except ImportError as ImportError:
@@ -30,7 +30,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 
 	# CHECK IMPORTING ALL LIBS. IMPORT HERE -> CALL HELP_BANNER ONLY FASTER
 	try:
-		import mechanize, re, ssl, requests
+		import mechanize, re, ssl
 	except ImportError as ImportError:
 		print(error)
 		_, missing_moudle, _ = str(ImportError).split("'")
