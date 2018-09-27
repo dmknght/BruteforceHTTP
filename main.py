@@ -30,7 +30,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 
 	# CHECK IMPORTING ALL LIBS. IMPORT HERE -> CALL HELP_BANNER ONLY FASTER
 	try:
-		import mechanize, re, ssl
+		import mechanize, re, ssl, requests # for basichttpauthentication, not useless, use later
 	except ImportError as ImportError:
 		print(error)
 		_, missing_moudle, _ = str(ImportError).split("'")

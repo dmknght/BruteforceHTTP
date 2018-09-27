@@ -117,9 +117,15 @@ def submit(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFa
 
 	except mechanize.HTTPError as error:
 		#	Get blocked
-		utils.die("Error: %s:%s" %(tryUsername, tryPassword), error)
+		if optionVerbose:
+			utils.printf("Error: %s:%s\n%s" %(tryUsername, tryPassword, error), "bad")
+		return False
 	except Exception as error:
-		utils.die("Error: %s:%s" %(tryUsername, tryPassword), error)
+		
+		if optionVerbose:
+			utils.printf("Error: %s:%s\n%s" %(tryUsername, tryPassword, error), "bad")
+		return False
+		
 
 	proc.close()
 	return True
