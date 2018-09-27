@@ -155,6 +155,18 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 			credentials = list(result.queue)
 			if len(credentials) == 0:
 				utils.printf("[-] No valid password found!", "bad")
+				if optionReport:
+					optionProxy = "True" if optionProxy else "False"
+					utils.printf(
+						utils.report_banner(
+							optionURL,
+							optionRunMode,
+							optionProxy,
+							optionThreads,
+							credentials,
+							"%s_%s" %(time.strftime("%Y.%m.%d_%H.%M"), optionURL.split("/")[2]),
+							runtime),
+						"good")
 			else:
 				utils.printf("\n[*] %s valid password[s] found:\n" %(len(credentials)), "norm")
 				utils.print_table(("Username", "Password"), *credentials)
