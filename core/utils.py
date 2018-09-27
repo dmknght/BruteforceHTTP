@@ -169,7 +169,7 @@ def report_banner(url, mode, proxy, thread, creds, daytime, runtime):
 				fixLen(match, 50)
 			)
 		return ret
-
+	
 	header = """
 	  =======================================================================
 	/       Finish: %-58s\\
@@ -185,7 +185,7 @@ def report_banner(url, mode, proxy, thread, creds, daytime, runtime):
 			daytime.split("_")[1].replace(".", ":"),
 			daytime.split("_")[0].replace(".", "/")
 		),
-		fixLen(daytime, 58),
+		fixLen(daytime + ".txt", 58),
 		mode.replace("--", ""),
 		proxy,
 		thread,
