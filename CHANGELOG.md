@@ -1,3 +1,7 @@
+## 27/09/2018
+* Add making report funcs
+* Add wordlists as default
+
 ## 26/09/2018
 * Mov httpbrute to plugins/loginbrute
 * Testing: threads stop after valid password found
