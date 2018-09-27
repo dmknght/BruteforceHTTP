@@ -1,6 +1,6 @@
 - [x] Better module for getting user options
 - [x] Improve multithreading
-- [ ] Result, reporting
+- [x] Result, reporting
 - [ ] Memory management
 - [ ] Multithreading issue w/ status bar, result
 - [ ] Better form detecting and parsing

@@ -75,6 +75,8 @@ def submit(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFa
 		# TODO: print logic? before or after submit?
 		if optionVerbose:
 			utils.printf("Trying: %s:%s" %(tryUsername, tryPassword), 'norm')
+			if setProxyList:
+				utils.printf("Using proxy: %s" %(proxyAddr), 'norm')
 		
 		#utils.printp(trying, sizeTask)
 
