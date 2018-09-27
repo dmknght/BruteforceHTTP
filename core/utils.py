@@ -131,8 +131,8 @@ def print_help():
 	title = ("Running Modes", "")
 	menu = [
 		[ "%-25s"%("--proxy"), "Use Proxy each connection"],
-		[ "%-25s"%("--verbose [Not Available]"), "Display more information"],
-		[ "%-25s"%("--report [Not Available]"), "Write result report"],
+		[ "%-25s"%("--verbose"), "Display more information"],
+		[ "%-25s"%("--report"), "Write result report"],
 	]
 	print_table(title, *menu)
 	print("")
