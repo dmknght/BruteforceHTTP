@@ -1,10 +1,11 @@
 #!/usr/bin/python
 
 # CHECK IMPORTING MODULES
+import sys
+
 try:
 	from core import actions, utils, tbrowser, options
 	from plugins import loginbrute
-	import sys
 except ImportError as ImportError:
 	print(ImportError)
 	sys.exit("Error while importing modules")
