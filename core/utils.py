@@ -222,7 +222,7 @@ def start_banner(url, options, mode, r_options):
 	|-------------------------------------------------------------------------|
 	\\           Verbose: %-12s       |         Report: %-12s    /
 	  =======================================================================
-	""" %( " " * 25 + "HTTP LOGIN BRUTE FORCING",
+	""" %( " " * 25 + "HTTP LOGIN BRUTE FORCER",
 		fixLen(url.split("/")[2], 61),
 		fixLen(url, 64),
 		fixLen(usr, 59),

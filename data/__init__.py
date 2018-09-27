@@ -1920,6 +1920,7 @@ def default_pass():
 	123456789!@#
 	123456!@#$%^
 	password
+	Password
 	admin
 	administrator
 	abc123
