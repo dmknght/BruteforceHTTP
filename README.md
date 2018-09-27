@@ -1,6 +1,6 @@
 <h1 align='center'>BruteforceHTTP</h1>
 <p align='center'><i>An automated brute forcing tool</i></p>
-<h1 align='center'>THIS PROJECT IS NOT WORKING </h1>
+<h1 align='center'>THIS PROJECT IS IN TESTING TIME </h1>
 
 ## About this project
 This project focusing on Brute Forcing HTTP protocol AUTOMATICALLY.
