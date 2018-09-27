@@ -165,12 +165,13 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 
 			
 			if optionReport:
-				optionProxy = "True" if optionProxy else "False"
-				import report
-				report_name = "%s_%s" %(time.strftime("%Y.%m.%d_%H.%M"), optionURL.split("/")[2])
-				
-				if optionReport:
+				try:
+					import report
+
 					optionProxy = "True" if optionProxy else "False"
+					report_name = "%s_%s" %(time.strftime("%Y.%m.%d_%H.%M"), optionURL.split("/")[2])
+					report_path = "%s/%s.txt" %(report.__path__[0], report_name)
+					
 					report.makeReport(
 						utils.report_banner(
 							optionURL,
@@ -180,7 +181,12 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 							credentials,
 							report_name,
 							runtime),
-						"%s/%s.txt" %(report.__path__[0], report_name))
+						report_path)
+					
+					utils.printf("\n[*]Report file at:\n%s" %(report_path), "good")
+					
+				except Exception as err:
+					utils.printf("Error while creating report: %s" %(err), "bad")
 						
 		except Exception as err:
 			utils.printf("\nError while getting result.\n", "bad")
