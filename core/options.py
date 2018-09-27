@@ -56,12 +56,12 @@ def checkOption(options, r_options):
 		finalOption["userlist"] = data.getSQL()
 		
 	else:
-		finalOption["passlist"] = data.getPass() if options["-p"] == "default" else actions.fread(options["-p"])
+		finalOption["passlist"] = data.default_pass() if options["-p"] == "default" else actions.fread(options["-p"])
 		
 		if options["-U"]:
 			finalOption["userlist"] = actions.lread(options["-U"])
 		else:
-			finalOption["userlist"] = data.getUser() if options["-u"] == "default" else actions.fread(options["-u"])
+			finalOption["userlist"] = data.default_user() if options["-u"] == "default" else actions.fread(options["-u"])
 	
 	finalOption["falsekey"] = options["-k"]
 		
