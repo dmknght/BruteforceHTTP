@@ -1,3 +1,12 @@
+## 1.4
+* Add new wordlist by default and using option
+* Add getproxy option
+* Threading now working properly
+* Remove progress bar (Issue with threading)
+* Add report option (And making report after finishing job)
+* Add verbose option
+* Bugs fixed and codes improvement
+
 ## 27/09/2018
 * Add making report funcs
 * Add wordlists as default
@@ -9,7 +18,7 @@
 ## 24/09/2018
 * New threading logic. Fix threading problems.
 
-## ## 1.3 test 4
+## 1.3 test 4
 * Modify many function names
 * Rework options.py module
 * Default lists now are modules instead of reading form files
