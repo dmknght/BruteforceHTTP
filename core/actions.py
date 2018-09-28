@@ -35,10 +35,6 @@ def randomFromFile(path):
 	loadData = fread(path).split("\n")
 	retData = randomFromList(loadData)
 	return retData
-	
-def getProxyList():
-	path = "data/liveproxy.txt"
-	return randomFromFile(path)
 
 
 def lread(strUsername):

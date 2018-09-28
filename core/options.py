@@ -45,7 +45,7 @@ def checkOption(options, r_options):
 	try:
 		finalOption["threads"] = int(options["-t"])
 		if finalOption["threads"] < 1:
-			utils.die("Error while parsing arguments", "Threads must be > 1")
+			utils.die("Argument error", "Threads must be > 1")
 	except Exception as ConvertError:
 		utils.die("Invalid threads", ConvertError)
 		
@@ -65,7 +65,11 @@ def checkOption(options, r_options):
 	finalOption["falsekey"] = options["-k"]
 		
 	if r_options["--proxy"]:
-		r_options["--proxy"] = actions.getProxyList()
+		try:
+			import data
+			r_options["--proxy"] = actions.fread("%s/liveproxy.txt" %(data.__path__[0]))
+		except Exception as err:
+			utils.printf("Argument error", err)
 	
 	return finalOption, r_options
 
