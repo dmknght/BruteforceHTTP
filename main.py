@@ -7,8 +7,8 @@ try:
 	from core import actions, utils, tbrowser, options
 	from plugins import loginbrute
 
-except ImportError as error:
-	print(error)
+except ImportError as err:
+	print(err)
 	sys.exit("Error while importing modules")
 
 
