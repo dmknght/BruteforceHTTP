@@ -54,13 +54,13 @@ def checkOption(options, r_options):
 		finalOption["userlist"] = data.getSQL()
 		
 	else:
-		# TODO call default list
-		finalOption["passlist"] = data.default_pass() if options["-p"] in DEF_WORDLIST else actions.fread(options["-p"])
+		# WARNING eval() is called. It can be unsafe
+		finalOption["passlist"] = eval("data.%s_pass()" %(options["-p"])) if options["-p"] in DEF_WORDLIST else actions.fread(options["-p"])
 		
 		if options["-U"]:
 			finalOption["userlist"] = actions.lread(options["-U"])
 		else:
-			finalOption["userlist"] = data.default_user() if options["-u"] in DEF_WORDLIST else actions.fread(options["-u"])
+			finalOption["userlist"] = eval("data.%s_user()" %(options["-u"])) if options["-u"] in DEF_WORDLIST else actions.fread(options["-u"])
 	
 	finalOption["falsekey"] = options["-k"]
 		
@@ -133,7 +133,7 @@ def getUserOptions():
 					if sys.argv[idx + 1] in DEF_WORDLIST:
 						options["-u"], options["-p"], idx = sys.argv[idx + 1], sys.argv[idx + 1], idx + 1
 					else:
-						utils.die("Parsing option error", "Invalid wordlist %s" %(_opt))
+						utils.die("Parsing option error", "Invalid wordlist %s" %(sys.argv[idx + 1]))
 
 				else:
 					utils.die("Error while parsing option", "Invalid option %s" %(sys.argv[idx]))
