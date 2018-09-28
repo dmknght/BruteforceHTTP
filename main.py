@@ -32,9 +32,9 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 	# CHECK IMPORTING ALL LIBS. IMPORT HERE -> CALL HELP_BANNER ONLY FASTER
 	try:
 		import mechanize, re, ssl, requests # for basichttpauthentication, not useless, use later
-	except ImportError as ImportError:
+	except ImportError as err:
 		print(error)
-		_, missing_moudle, _ = str(ImportError).split("'")
+		_, missing_moudle, _ = str(err).split("'")
 		sys.exit("Try: sudo apt install python-%s" %(missing_moudle))
 			
 	try:
@@ -217,7 +217,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 		sys.exit(0)
 
 if __name__ == "__main__":
-	current_dir = actions.getRootDir(sys.argv[0])
-	if current_dir:
-		os.chdir(current_dir)
+	#current_dir = actions.getRootDir(sys.argv[0])
+	# if current_dir:
+	# 	os.chdir(current_dir)
 	main(*options.getUserOptions())
