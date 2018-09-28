@@ -164,6 +164,8 @@ def getUserOptions():
 			threads = int(options["-t"])
 		except Exception as err:
 			utils.die("GetProxy: Error while parsing arguments", err)
+			
+		getproxy.main(URL, threads, r_options["--verbose"])
 
 		sys.exit(0)
 	

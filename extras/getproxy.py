@@ -12,21 +12,8 @@ https://free-proxy-list.net/
 
 # BUG: import modules error
 
-THREADS = 16
-PROXY_PATH = "data/liveproxy.txt"
 
-def help():
-	print("""
-	\rUsage: python getproxy.py <options>
-	\rOptions:
-	\r    [*] help / --help / -h: Display help banner
-	\r    [*] get: Save new proxy list
-	\r    [*] check: Check live proxy from list
-	\r               Requires an exist list
-	""")
-
-
-def getNewProxy():
+def getNewProxy(PROXY_PATH):
 	
 	def parse_proxy(response):
 		try:
@@ -35,7 +22,7 @@ def getNewProxy():
 			result = [element.replace("</td><td>", ":") for element in result]
 			return result
 		except Exception as error:
-			utils.die("Error while parsing proxy list.", error)
+			utils.die("GetProxy: Error while parsing proxies.", error)
 			
 	def checProxyConnProvider(url = "https://free-proxy-list.net/"):
 		try:
@@ -47,11 +34,11 @@ def getNewProxy():
 			
 			getproxy.addheaders = [('User-Agent', user_agent)]
 			getproxy.open(url)
-			utils.printf("Gathering proxy completed.", "good")
+			utils.printf("Gathering proxies completed.", "good")
 			return getproxy.response().read()
 
 		except Exception as error:
-			utils.die("Error while connecting to live proxy server!", error)
+			utils.die("GetProxy: Error while connecting to proxy server!", error)
 		finally:
 			getproxy.close()
 			
@@ -68,39 +55,43 @@ def getNewProxy():
 			utils.printf("Write data to %s completed!" %(PROXY_PATH), "good")
 
 		except Exception as error:
-			utils.die("Error while writting proxy data", error)
+			utils.die("GetProxy: Error while writting data", error)
 
 
-def check(target = "https://google.com"):
+def check(target, threads, verbose, PROXY_PATH):
 
-	def checProxyConn(proxyAddr, target, result):
+	def checProxyConn(proxyAddr, target, result, verbose):
 		try:
 			proxyTest = tbrowser.startBrowser()
 			user_agent = tbrowser.useragent()
 			proxyTest.addheaders = [('User-Agent', user_agent)]
-			utils.printf(proxyAddr)
 			proxyTest.set_proxies({"http": proxyAddr})
+
+			if verbose:
+				utils.printf("Trying: %s" %(proxyAddr))
+
 			proxyTest.open(target)
-			utils.printf("Trying: %s" %(proxyAddr), "good")
+
+			if verbose:
+				utils.printf("Success: %s" %(proxyAddr), "good")
 			result.put(proxyAddr)
+
 		except Exception as error:
-			utils.printf("%s %s" %(proxyAddr, error), "bad")
+			if verbose:
+				utils.printf("%s %s" %(proxyAddr, error), "bad")
 		finally:
 			try:
 				proxyTest.close()
 			except:
 				pass
-	# Single thread
 	try:
 		
 		proxylist = actions.fread(PROXY_PATH).split("\n")
-		
-		#actions.fwrite(TMP_PATH, "") # create new empty list
-		
+				
 		workers = []
 		result = Queue()
 		for tryProxy in proxylist:
-			if len(workers) >= THREADS:
+			if len(workers) >= threads:
 				for worker in workers:
 					worker.start()
 				for worker in workers:
@@ -109,7 +100,7 @@ def check(target = "https://google.com"):
 			
 			worker = threading.Thread(
 				target = checProxyConn,
-				args = (tryProxy, target, result)
+				args = (tryProxy, target, result, verbose)
 			)
 
 			worker.daemon = True
@@ -121,38 +112,24 @@ def check(target = "https://google.com"):
 			workers.join()
 
 	except KeyboardInterrupt as error:
-		utils.die("Terminated by user!", error)
+		utils.die("GetProxy: Terminated by user!", error)
 	except Exception as error:
-		utils.die("Error while checking live proxy", error)
+		utils.die("GetProxy: Error while checking proxy connection to target", error)
 
 	finally:
 		try:
-			open("data/liveproxy.txt", "w").write("\n".join(list(result.queue))) #TODO better code
+			utils.printf("GetProxy: Write working proxies")
+			actions.fwrite(PROXY_PATH, "\n".join(list(result.queue)))
+			utils.printf("Write working proxies completed", "good")
 		except Exception as err:
-			utils.die("Error while writing result", err)
-			
+			utils.die("GetProxy: Error while writing result", err)
 
-
-
-if __name__ == "__main__":
-	#current_dir = actions.getRootDir(sys.argv[0])
-	# if current_dir:
-	# 	os.chdir(current_dir)
-	if len(sys.argv) == 1:
-		help()
-	elif len(sys.argv) == 2:
-		option = sys.argv[1]
-		if option in ["help", "--help", "-h"]:
-			help()
-		elif option == "get":
-			getNewProxy()
-		elif option == "check":
-			check()
-		else:
-			utils.die("Invalid options!", "Usage:\n\tpython getproxy.py help")
-	elif len(sys.argv) == 3:
-		option, value = sys.argv[1], sys.argv[2]
-		if option == "check":
-			check(value)
-		else:
-			utils.die("Invalid options!", "Usage:\n\tpython getproxy.py help")
+def main(URL, threads, verbose):
+	try:
+		import data
+		save = "%s/liveproxy.txt" %(data.__path__[0])
+		getNewProxy(save)
+		if URL:
+			check(URL, threads, verbose, save)
+	except Exception as err:
+		utils.die("GetProxy: Error while running module", err)

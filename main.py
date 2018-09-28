@@ -212,7 +212,4 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 		sys.exit(0)
 
 if __name__ == "__main__":
-	#current_dir = actions.getRootDir(sys.argv[0])
-	# if current_dir:
-	# 	os.chdir(current_dir)
 	main(*options.getUserOptions())
