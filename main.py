@@ -33,9 +33,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 	try:
 		import mechanize, re, ssl, requests # for basichttpauthentication, not useless, use later
 	except ImportError as err:
-		utils.die("Import module error", err)
-	finally:
-		utils.printf("Try: pip install %s" %(str(err).split(" ")[-1]), "bad")
+		utils.die(err, "Try: pip install %s" %(str(err).split(" ")[-1]))
 
 			
 	try:
