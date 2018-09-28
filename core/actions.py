@@ -1,14 +1,14 @@
 import random, sys, utils, string
 
-def getRootDir(pathModuleLocation):
-	##################################
-	#	Get root folder of module file
-	#	/foo/bar/module.py
-	#	---> return "/foo/bar"
-	#################################
-	
-	pathModuleLocation = "/".join(pathModuleLocation.split("/")[:-1])
-	return pathModuleLocation
+# def getRootDir(pathModuleLocation):
+# 	##################################
+# 	#	Get root folder of module file
+# 	#	/foo/bar/module.py
+# 	#	---> return "/foo/bar"
+# 	#################################
+# 
+# 	pathModuleLocation = "/".join(pathModuleLocation.split("/")[:-1])
+# 	return pathModuleLocation
 
 def size_o(objInputData):
 	#	Return length of a file object or list

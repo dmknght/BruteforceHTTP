@@ -135,7 +135,7 @@ def check(target = "https://google.com"):
 
 
 if __name__ == "__main__":
-	current_dir = actions.getRootDir(sys.argv[0])
+	#current_dir = actions.getRootDir(sys.argv[0])
 	# if current_dir:
 	# 	os.chdir(current_dir)
 	if len(sys.argv) == 1:

@@ -54,6 +54,7 @@ def checkOption(options, r_options):
 		finalOption["userlist"] = data.getSQL()
 		
 	else:
+		# TODO call default list
 		finalOption["passlist"] = data.default_pass() if options["-p"] in DEF_WORDLIST else actions.fread(options["-p"])
 		
 		if options["-U"]:
