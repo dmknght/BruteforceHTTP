@@ -34,8 +34,8 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 		import mechanize, re, ssl, requests # for basichttpauthentication, not useless, use later
 	except ImportError as err:
 		print(err)
-		_, missing_moudle, _ = str(err).split("'")
-		sys.exit("Try: sudo apt install python-%s" %(missing_moudle))
+		#_, missing_moudle, _ = str(err).split("'")
+		#sys.exit("Try: sudo apt install python-%s" %(missing_moudle))
 			
 	try:
 		_create_unverified_https_context = ssl._create_unverified_context
