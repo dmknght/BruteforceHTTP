@@ -107,35 +107,49 @@ def print_help():
 
 	#	Print project's help table
 
-	print('\nUsage: %s [<option> <value>] [mode] URL\n\nOptions:\n' %(sys.argv[0]))
+	print('\nUsage: %s [<option> <value>] [--list <value>] [mode] URL\n\nOptions:\n' %(sys.argv[0]))
 	title = ("Format", "Example")
 	menu = [
-		[ "%-25s"%("-u <path_to_wordlist>"), "-u /usr/share/wordlists/nmap.lst"],
-		[ "%-25s"%("-p <path_to_wordlist>"), "-p /usr/share/wordlists/fasttrack.txt"],
-		[ "%-25s"%("-U <username>"), "-U admin | -U admin:user1:user2:user3"],
-		[ "%-25s"%("-t <threads>"), "-t 32"],
-		[ "%-25s"%("-k <false_key>"), "-k 'Invalid username'"]
+		[ "%-25s" %("-u <path_to_wordlist>"), "-u /usr/share/wordlists/nmap.lst"],
+		[ "%-25s" %("-p <path_to_wordlist>"), "-p /usr/share/wordlists/fasttrack.txt"],
+		[ "%-25s" %("-U <username>"), "-U admin | -U admin:user1:user2:user3"],
+		[ "%-25s" %("-t <threads>"), "-t 32"],
+		[ "%-25s" %("-k <false_key>"), "-k 'Invalid username'"]
 	]
 	print_table(title, *menu)
 	
 	print("\nModes:\n")
 	title = ("Attack Modes", "Ony ONE attack mode can be used")
 	menu = [
-		[ "%-25s"%("--brute [Default]"), "Brute Forcing credentials"],
-		[ "%-25s"%("--sqli [Not Available]"), "SQL Injection bypass"],
-		[ "%-25s"%("--basic [Not Available]"), "HTTP Basic Authentication"],
+		[ "%-25s" %("--brute [Default]"), "Brute Forcing credentials"],
+		[ "%-25s" %("--sqli [Not Available]"), "SQL Injection bypass"],
+		[ "%-25s" %("--basic [Not Available]"), "HTTP Basic Authentication"],
 	]
 	print_table(title, *menu)
 
 	print("")
 	title = ("Running Modes", "")
 	menu = [
-		[ "%-25s"%("--proxy"), "Use Proxy each connection"],
-		[ "%-25s"%("--verbose"), "Display more information"],
-		[ "%-25s"%("--report"), "Write result report"],
+		[ "%-25s" %("--proxy"), "Use Proxy each connection"],
+		[ "%-25s" %("--verbose"), "Display more information"],
+		[ "%-25s" %("--report"), "Write result report"],
+	]
+	print_table(title, *menu)
+
+	print("\nWordlists:\n")
+	title = ("Value", "")
+	menu = [
+		["%-25s" %("router"), "Default router usernames+passwords"],
+		["%-25s" %("tomcat"), "Default tomcat usernames+passwords"],
+		["%-25s" %("cctv"), "Default cctv usernames+passwords"],
+		["%-25s" %("default"), "Top usernames+passwords"],
+		["%-25s" %("unix"), "Top unix usernames+passwords"],
+		["%-25s" %("http"), "Top http usernames+passwords"],
+		["%-25s" %("mirai"), "List usernames+passwords used by mirai botnet"],
 	]
 	print_table(title, *menu)
 	print("")
+	
 
 def fixLen(text, lim):
 	# https://stackoverflow.com/a/37422973
