@@ -55,12 +55,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 
 	
 	
-	# BUG
-	"""
-		Setting threading with big number
-		split jobs for threading
-		Memory management
-	"""
+	# BUG bad memory management
 	
 	optionUserlist, optionThreads, optionKeyFalse, optionPasslist = setOptions.values()
 	optionProxy, optionReport, optionVerbose = setRunOptions.values()
