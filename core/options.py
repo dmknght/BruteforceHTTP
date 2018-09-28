@@ -15,11 +15,9 @@ from core import utils, actions
 
 	
 URL = None
-USERLIST = "default"
-PASSLIST = "default"
-THREADS = 16
-KEY_FALSE = None
 MODE = "--brute"
+DEF_WORDLIST = ("default", "router", "unix", "tomcat", "cctv", "mirai", "http")
+
 
 r_options = {
 	"--proxy": False,
@@ -37,7 +35,7 @@ def checkURL(url):
 def checkOption(options, r_options):
 	
 	finalOption = {}
-	global MODE
+	global MODE, DEF_WORDLIST
 	# Modify URL value to correct format
 	# Read password list
 	# Read userlist
@@ -56,12 +54,12 @@ def checkOption(options, r_options):
 		finalOption["userlist"] = data.getSQL()
 		
 	else:
-		finalOption["passlist"] = data.default_pass() if options["-p"] == "default" else actions.fread(options["-p"])
+		finalOption["passlist"] = data.default_pass() if options["-p"] in DEF_WORDLIST else actions.fread(options["-p"])
 		
 		if options["-U"]:
 			finalOption["userlist"] = actions.lread(options["-U"])
 		else:
-			finalOption["userlist"] = data.default_user() if options["-u"] == "default" else actions.fread(options["-u"])
+			finalOption["userlist"] = data.default_user() if options["-u"] in DEF_WORDLIST else actions.fread(options["-u"])
 	
 	finalOption["falsekey"] = options["-k"]
 		
@@ -72,8 +70,8 @@ def checkOption(options, r_options):
 
 
 def getUserOptions():
-	
-	global URL, USERLIST, PASSLIST, THREADS, KEY_FALSE, MODE, r_options
+		
+	global URL, MODE, r_options, DEF_WORDLIST
 	
 	# Default operation modes:
 	#	--brute: brute force
@@ -98,11 +96,13 @@ def getUserOptions():
 	
 	DEF_OPS = ("-u", "-U", "-p", "-t", "-k")
 	
+	# Default wordlist: default, router, unix, tomcat, cctv, mirai, http
+		
 	options = {
-		"-u": USERLIST,
-		"-p": PASSLIST,
-		"-t": THREADS,
-		"-k": KEY_FALSE,
+		"-u": "default",
+		"-p": "default",
+		"-t": 16,
+		"-k": None,
 		"-U": None,
 	}
 	
@@ -126,14 +126,21 @@ def getUserOptions():
 				elif sys.argv[idx] in DEF_A_MODE:
 					# "--brute", "--sqli", "--basic"
 					MODE = sys.argv[idx]
+					
+				elif sys.argv[idx] == "--list":
+					# Wordlist provided
+					if sys.argv[idx + 1] in DEF_WORDLIST:
+						options["-u"], options["-p"], idx = sys.argv[idx + 1], sys.argv[idx + 1], idx + 1
+					else:
+						utils.die("Parsing option error", "Invalid wordlist %s" %(_opt))
+
 				else:
 					utils.die("Error while parsing option", "Invalid option %s" %(sys.argv[idx]))
 
 			elif sys.argv[idx][:1] == "-":
 				if sys.argv[idx] in DEF_OPS:
 					# "-u", "-U", "-p", "-t", "-k"
-					options[sys.argv[idx]] = sys.argv[idx + 1]
-					idx += 1
+					options[sys.argv[idx]], idx = sys.argv[idx + 1], idx + 1
 				else:
 					utils.die("Error while parsing option", "Invalid option %s" %(sys.argv[idx]))
 				

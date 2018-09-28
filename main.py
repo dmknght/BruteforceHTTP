@@ -176,9 +176,9 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 
 					optionProxy = "True" if optionProxy else "False"
 					report_name = "%s_%s" %(time.strftime("%Y.%m.%d_%H.%M"), optionURL.split("/")[2])
-					report_path = "%s/%s.txt" %(report.__path__[0], report_name)
+					report_path = "%s/%s.txt" %(reports.__path__[0], report_name)
 					
-					report.makeReport(
+					reports.makeReport(
 						utils.report_banner(
 							optionURL,
 							optionRunMode,
