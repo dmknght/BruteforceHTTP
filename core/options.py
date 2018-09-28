@@ -82,8 +82,8 @@ def getUserOptions():
 	DEF_A_MODE = ("--brute", "--sqli", "--basic")
 	
 	# Default running mode:
-	#	--verbose: display informations (TODO)
-	#	--report: creating log file (TODO)
+	#	--verbose: display informations
+	#	--report: create task report
 	#	--proxy: Running using proxy
 	
 	DEF_R_MODE = ("--verbose", "--report", "--proxy")
@@ -92,7 +92,7 @@ def getUserOptions():
 	#	-u: Read userlist from file
 	#	-p: Read passlit from file
 	#	-U: Read username / userlist directly from argument
-	#	-t: Number of threads using #TODO Modify for new module
+	#	-t: Number of threads using
 	#	-k: Set key for false condition (for special cases)
 	
 	DEF_OPS = ("-u", "-U", "-p", "-t", "-k")

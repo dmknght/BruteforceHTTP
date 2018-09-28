@@ -1,5 +1,4 @@
 """
-	TODO? OOP instead of functions
 	for (usr, passwd) in (usernames, passwords):
 		print_progress_bar()
 		tryLogin (url, usr, passwd, options):
@@ -72,7 +71,6 @@ def submit(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFa
 		proc.submit()
 
 		#	Print status bar
-		# TODO: print logic? before or after submit?
 		if optionVerbose:
 			utils.printf("Trying: %s:%s" %(tryUsername, tryPassword), 'norm')
 			if setProxyList:

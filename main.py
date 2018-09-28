@@ -130,6 +130,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 							optionProxy, optionKeyFalse, optionVerbose, loginInfo, result, trying
 						)
 					)
+					
 				worker.daemon = True
 				workers.append(worker)
 		
@@ -150,7 +151,6 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 
 	finally:
 		runtime = time.time() - timeStarting
-		# TODO: clean running threads
 		"""
 			All threads have been set daemon
 			Running threads should be stopped after main task done

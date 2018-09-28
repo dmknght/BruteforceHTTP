@@ -51,7 +51,6 @@ def getLoginForm(optionURL, browser):
 	######################################
 	#	Test connect to URL
 	#	Fetch login field
-	#	TODO print ONLY ONE status message
 	#
 	#####################################
 
