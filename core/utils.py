@@ -107,7 +107,7 @@ def print_help():
 
 	#	Print project's help table
 
-	print('\nUsage: %s [<option> <value>] [--list <value>] [mode] URL\n\nOptions:\n' %(sys.argv[0]))
+	print('\nUsage: %s [<option> <value>] [--list <value>] [mode] [--getproxy] URL\n\nOptions:\n' %(sys.argv[0]))
 	title = ("Format", "Example")
 	menu = [
 		[ "%-25s" %("-u <path_to_wordlist>"), "-u /usr/share/wordlists/nmap.lst"],
@@ -132,7 +132,7 @@ def print_help():
 	menu = [
 		[ "%-25s" %("--proxy"), "Use Proxy each connection"],
 		[ "%-25s" %("--verbose"), "Display more information"],
-		[ "%-25s" %("--report"), "Write result report"],
+		[ "%-25s" %("--getproxy"), "Get proxy list [Auto check connect to target]"],
 	]
 	print_table(title, *menu)
 

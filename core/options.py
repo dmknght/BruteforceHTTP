@@ -157,6 +157,10 @@ def getUserOptions():
 		idx += 1
 		
 	if GETPROXY:
+		# TODO Only get new list
+		# TODO Auto brute using proxy after get new proxy
+		# TODO New help banner
+		
 		from extras import getproxy
 		URL = checkURL(URL) if URL else None
 
