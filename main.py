@@ -33,7 +33,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 	try:
 		import mechanize, re, ssl, requests # for basichttpauthentication, not useless, use later
 	except ImportError as err:
-		print(error)
+		print(err)
 		_, missing_moudle, _ = str(err).split("'")
 		sys.exit("Try: sudo apt install python-%s" %(missing_moudle))
 			

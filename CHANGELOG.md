@@ -1,5 +1,5 @@
 ## 1.4
-* Add new wordlist by default and using option
+* Add new wordlists by default and using option
 * Add getproxy option
 * Threading now working properly
 * Remove progress bar (Issue with threading)
