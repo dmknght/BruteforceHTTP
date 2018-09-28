@@ -45,7 +45,7 @@ def checkOption(options, r_options):
 	try:
 		finalOption["threads"] = int(options["-t"])
 		if finalOption["threads"] < 1:
-			utils.die("Value error", "Threads must be > 1")
+			utils.die("Error while parsing arguments", "Threads must be > 1")
 	except Exception as ConvertError:
 		utils.die("Invalid threads", ConvertError)
 		
@@ -107,6 +107,9 @@ def getUserOptions():
 		"-U": None,
 	}
 	
+	GETPROXY = False
+	
+	########### STARTING ##################
 	
 	if len(sys.argv) == 1:
 		utils.print_help()
@@ -133,26 +136,39 @@ def getUserOptions():
 					if sys.argv[idx + 1] in DEF_WORDLIST:
 						options["-u"], options["-p"], idx = sys.argv[idx + 1], sys.argv[idx + 1], idx + 1
 					else:
-						utils.die("Parsing option error", "Invalid wordlist %s" %(sys.argv[idx + 1]))
+						utils.die("Error while parsing arguments", "Invalid wordlist %s" %(sys.argv[idx + 1]))
+				
+				elif sys.argv[idx] == "--getproxy":
+					GETPROXY = True
 
 				else:
-					utils.die("Error while parsing option", "Invalid option %s" %(sys.argv[idx]))
+					utils.die("Error while parsing arguments", "Invalid option %s" %(sys.argv[idx]))
 
 			elif sys.argv[idx][:1] == "-":
 				if sys.argv[idx] in DEF_OPS:
 					# "-u", "-U", "-p", "-t", "-k"
 					options[sys.argv[idx]], idx = sys.argv[idx + 1], idx + 1
 				else:
-					utils.die("Error while parsing option", "Invalid option %s" %(sys.argv[idx]))
+					utils.die("Error while parsing arguments", "Invalid option %s" %(sys.argv[idx]))
 				
 			else:
 				URL  = sys.argv[idx]
 				
 		idx += 1
+		
+	if GETPROXY:
+		from extras import getproxy
+		URL = checkURL(URL) if URL else None
+
+		try:
+			threads = int(options["-t"])
+		except Exception as err:
+			utils.die("GetProxy: Error while parsing arguments", err)
+
+		sys.exit(0)
 	
 	if not URL:
-		utils.printf("An URL is required", "bad")
-		sys.exit(1)
+		utils.die("Error while parsing arguments", "An URL is required")
 		
 	else:
 		URL = checkURL(URL)
