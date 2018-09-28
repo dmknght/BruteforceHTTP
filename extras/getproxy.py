@@ -1,4 +1,4 @@
-import mechanize, re, sys, os, threading
+import mechanize, re, threading
 from core import actions, utils, tbrowser
 
 try:

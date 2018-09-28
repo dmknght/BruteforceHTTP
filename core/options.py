@@ -26,11 +26,15 @@ r_options = {
 }
 
 def checkURL(url):
-	if "http" not in url:
-		url = "http://%s" %(url)
-	if url[-1] != "/":
-		url += "/"
-	return url
+	try:
+		if "http" not in url:
+			url = "http://%s" %(url)
+		if url[-1] != "/":
+			url += "/"
+		return url
+		
+	except:
+		return None
 	
 def checkOption(options, r_options):
 	
@@ -159,14 +163,15 @@ def getUserOptions():
 				URL  = sys.argv[idx]
 				
 		idx += 1
-		
+	
+	
+	URL = checkURL(URL)
+
 	if GETPROXY:
-		# TODO Only get new list
 		# TODO Auto brute using proxy after get new proxy
 		# TODO New help banner
 		
 		from extras import getproxy
-		URL = checkURL(URL) if URL else None
 
 		try:
 			threads = int(options["-t"])
@@ -174,15 +179,17 @@ def getUserOptions():
 			utils.die("GetProxy: Error while parsing arguments", err)
 			
 		getproxy.main(URL, threads, r_options["--verbose"])
-
-		sys.exit(0)
-	
-	if not URL:
-		utils.die("Error while parsing arguments", "An URL is required")
 		
-	else:
-		URL = checkURL(URL)
-		utils.printf(utils.start_banner(URL, options, MODE, r_options), "good")
-		options, r_options = checkOption(options, r_options)
+		
+		# GET NEW PROXY LIST ONLY
+		if not URL:
+			sys.exit(0)
+		# else: CHECK PROXY TO TARGET DONE, AUTO ATTACK?
+		# 	r_options["--proxy"] == True		
 
-		return URL, options, MODE, r_options
+	if not URL:
+		utils.die("Error while parsing arguments", "Invalid URL")
+	utils.printf(utils.start_banner(URL, options, MODE, r_options), "good")
+	options, r_options = checkOption(options, r_options)
+
+	return URL, options, MODE, r_options
