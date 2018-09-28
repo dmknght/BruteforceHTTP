@@ -1,4 +1,5 @@
-import data, actions, re
+import data, re
+from core import actions, utils
 
 def startBrowser():
 	import mechanize
@@ -47,7 +48,7 @@ def useragent():
 	return actions.randomFromList(agents.split("\n"))
 	
 	
-def getLoginForm(optionURL, browser):
+def getLoginForm(optionURL, browser, verbose):
 	######################################
 	#	Test connect to URL
 	#	Fetch login field
@@ -60,7 +61,8 @@ def getLoginForm(optionURL, browser):
 		#utils.printf("Connected. Getting form information...", "good")
 		
 		formLoginID, formUserfield, formPasswdfield = parseLoginForm(browser.forms())
-		#utils.printf("Found login form", "good")
+		if verbose:
+			utils.printf("Found login form", "good")
 		return formLoginID, formUserfield, formPasswdfield
 
 	except TypeError as error:

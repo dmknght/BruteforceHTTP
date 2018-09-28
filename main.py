@@ -90,12 +90,8 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 		utils.printf("Checking connection...")
 		proc.open(optionURL)
 		#TODO PROXY
-		loginInfo = tbrowser.getLoginForm(optionURL, proc)
+		loginInfo = tbrowser.getLoginForm(optionURL, proc, optionVerbose)
 		utils.printf("Connect success!", "good")
-		if loginInfo:
-			utils.printf("Found login form", "good")
-		else:
-			utils.die("URL error", "No login form found")
 
 	except Exception as err:
 		utils.die("Error while parsing login form", err)
