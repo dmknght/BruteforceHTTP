@@ -125,9 +125,8 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 				workers.append(worker)
 		
 		#DO ALL LAST TASKs
-		for worker in workers:
-			do_job(workers)
-			del workers[:]
+		do_job(workers)
+		del workers[:]
 
 	except KeyboardInterrupt:# as error:
 		# TODO: kill running threads here
