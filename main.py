@@ -108,6 +108,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 	try:
 		for password in optionPasslist:
 			for username in optionUserlist:
+				username, password = username.replace("\n", ""), password.replace("\n", "")
 				
 				if len(workers) == optionThreads:
 					do_job(workers)
@@ -117,7 +118,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 					worker = threading.Thread(
 						target = loginbrute.submit,
 						args = (
-							optionURL, username.replace("\n", ""), password.replace("\n", ""),
+							optionURL, username, password,
 							optionProxy, optionKeyFalse, optionVerbose, loginInfo, result
 						)
 					)
@@ -125,7 +126,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 					worker = threading.Thread(
 						target = httpauth.submit,
 						args = (
-							optionURL, username.replace("\n", ""), password.replace("\n", ""),
+							optionURL, username, password,
 							optionProxy, optionVerbose, result
 						)
 					)
