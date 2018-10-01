@@ -112,6 +112,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 				if len(workers) == optionThreads:
 					do_job(workers)
 					del workers[:]
+
 				if optionRunMode == "--brute":
 					worker = threading.Thread(
 						target = loginbrute.submit,
