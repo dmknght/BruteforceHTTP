@@ -6,7 +6,7 @@
 - [ ] Better form detecting and parsing
 - [ ] Better password matching condition
 - [ ] SQL Injection bypass login
-- [ ] HTTP Basic authenticate
+- [x] HTTP Basic authenticate
 - [ ] Password generating
 - [ ] Captcha
 - [ ] Python 3 and better browser module
