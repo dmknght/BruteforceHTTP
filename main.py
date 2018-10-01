@@ -107,7 +107,6 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 	try:
 		for password in optionPasslist:
 			for username in optionUserlist:
-				trying += 1
 				
 				if len(workers) == optionThreads:
 					do_job(workers)
@@ -117,7 +116,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 						target = loginbrute.submit,
 						args = (
 							optionURL, username.replace("\n", ""), password.replace("\n", ""), sizeUserlist * sizePasslist,
-							optionProxy, optionKeyFalse, optionVerbose, loginInfo, result, trying
+							optionProxy, optionKeyFalse, optionVerbose, loginInfo, result
 						)
 					)
 					

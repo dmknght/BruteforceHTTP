@@ -22,7 +22,7 @@
 import mechanize
 from core import utils, actions, tbrowser		
 
-def submit(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFalse, optionVerbose, loginInfo, result, trying):
+def submit(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFalse, optionVerbose, loginInfo, result):
 	############################################
 	#	Old code logic:
 	#		Create 1 browser object per password

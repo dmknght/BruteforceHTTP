@@ -59,6 +59,12 @@ def getNewProxy(PROXY_PATH):
 
 
 def check(target, threads, verbose, PROXY_PATH):
+	
+	def do_job(jobs):
+		for job in jobs:
+			job.start()
+		for job in jobs:
+			job.join()
 
 	def checProxyConn(proxyAddr, target, result, verbose):
 		try:
@@ -91,11 +97,8 @@ def check(target, threads, verbose, PROXY_PATH):
 		workers = []
 		result = Queue()
 		for tryProxy in proxylist:
-			if len(workers) >= threads:
-				for worker in workers:
-					worker.start()
-				for worker in workers:
-					worker.join()
+			if len(workers) == threads:
+				do_job(workers)
 				del workers[:]
 			
 			worker = threading.Thread(
@@ -106,10 +109,8 @@ def check(target, threads, verbose, PROXY_PATH):
 			worker.daemon = True
 			workers.append(worker)
 			
-		for worker in workers:
-			worker.start()	
-		for worker in workers:
-			workers.join()
+		do_job(workers)
+		del workers[:]
 
 	except KeyboardInterrupt as error:
 		utils.die("GetProxy: Terminated by user!", error)

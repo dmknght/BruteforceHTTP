@@ -85,9 +85,9 @@ def getUserOptions():
 	# Default operation modes:
 	#	--brute: brute force
 	#	--sqli: sql injection bypass login (TODO)
-	#	--basic: http basic authentication (TODO)
+	#	--httpauth: http basic authentication (TODO)
 	
-	DEF_A_MODE = ("--brute", "--sqli", "--basic")
+	DEF_A_MODE = ("--brute", "--sqli", "--httpauth")
 	
 	# Default running mode:
 	#	--verbose: display informations
@@ -136,7 +136,7 @@ def getUserOptions():
 					r_options[sys.argv[idx]] = True
 
 				elif sys.argv[idx] in DEF_A_MODE:
-					# "--brute", "--sqli", "--basic"
+					# "--brute", "--sqli", "--httpauth"
 					MODE = sys.argv[idx]
 					
 				elif sys.argv[idx] == "--list":
