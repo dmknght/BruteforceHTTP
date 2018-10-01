@@ -29,8 +29,8 @@ def checkURL(url):
 	try:
 		if "http" not in url:
 			url = "http://%s" %(url)
-		if url[-1] != "/":
-			url += "/"
+		# if url[-1] != "/":
+		# 	url += "/"
 		return url
 		
 	except:
