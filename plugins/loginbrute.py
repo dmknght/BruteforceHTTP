@@ -95,7 +95,7 @@ def submit(optionURL, tryUsername, tryPassword, setProxyList, setKeyFalse, optio
 					result.put([tryUsername, tryPassword])
 
 					#	Clear object and try new username
-					proc.close()
+					#proc.close()
 
 				else:
 					if optionVerbose:
@@ -106,7 +106,7 @@ def submit(optionURL, tryUsername, tryPassword, setProxyList, setKeyFalse, optio
 				result.put([tryUsername, tryPassword])
 
 				#	Clear object and try new username
-				proc.close()
+				#proc.close()
 		else:
 			if optionVerbose:
 				utils.printf("Failed: %s:%s" %(tryUsername, tryPassword), "bad")
@@ -122,6 +122,6 @@ def submit(optionURL, tryUsername, tryPassword, setProxyList, setKeyFalse, optio
 			utils.printf("Error: %s:%s\n%s" %(tryUsername, tryPassword, error), "bad")
 		return False
 		
-
-	proc.close()
+	finally:
+		proc.close()
 	return True

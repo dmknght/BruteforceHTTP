@@ -9,16 +9,20 @@ from core import utils
 def submit(URL, tryUsername, tryPassword, proxy, verbose, result):
 	if verbose:
 		utils.printf("Trying: %s:%s" %(tryUsername, tryPassword), 'norm')
-
-	resp = requests.get(URL, auth = HTTPBasicAuth(tryUsername, tryPassword))
 	
-	if resp.status_code == 200:
-		result.put([tryUsername, tryPassword])
-		utils.printf("Match found: %s:%s" %(tryUsername, tryPassword), "good") 
-		# pass
-	elif resp.status_code == 401:
-		if verbose:
-			utils.printf("Failed: %s:%s" %(tryUsername, tryPassword), "bad")
-	else:
-		# unknown
-		pass
+	try:
+
+		resp = requests.get(URL, auth = HTTPBasicAuth(tryUsername, tryPassword))
+		
+		if resp.status_code == 200:
+			result.put([tryUsername, tryPassword])
+			utils.printf("Match found: %s:%s" %(tryUsername, tryPassword), "good") 
+			# pass
+		elif resp.status_code == 401:
+			if verbose:
+				utils.printf("Failed: %s:%s" %(tryUsername, tryPassword), "bad")
+		else:
+			# unknown
+			pass
+	except Exception as err:
+		utils.die("Runtime error", err)
