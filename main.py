@@ -5,7 +5,7 @@
 try:
 	import sys
 	from core import actions, utils, tbrowser, options
-	from plugins import loginbrute
+	from plugins import loginbrute, httpauth
 
 except ImportError as err:
 	print(err)
@@ -85,19 +85,20 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 	proc = tbrowser.startBrowser()
 	proc.addheaders = [('User-Agent', tbrowser.useragent())]
 
+	if optionRunMode not in ["--httpauth"]:
 
-	try:
-		utils.printf("Checking connection...")
-		proc.open(optionURL)
-		#TODO PROXY
-		loginInfo = tbrowser.getLoginForm(optionURL, proc, optionVerbose)
-		utils.printf("Connect success!", "good")
+		try:
+			utils.printf("Checking connection...")
+			proc.open(optionURL)
+			#TODO PROXY
+			loginInfo = tbrowser.getLoginForm(optionURL, proc, optionVerbose)
+			utils.printf("Connect success!", "good")
 
-	except Exception as err:
-		utils.die("Error while parsing login form", err)
+		except Exception as err:
+			utils.die("Error while parsing login form", err)
 
-	finally:
-		proc.close()
+		finally:
+			proc.close()
 	
 	utils.printf("Starting attack.... %s tasks" %(sizeUserlist * sizePasslist))
 	
@@ -115,11 +116,18 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 					worker = threading.Thread(
 						target = loginbrute.submit,
 						args = (
-							optionURL, username.replace("\n", ""), password.replace("\n", ""), sizeUserlist * sizePasslist,
+							optionURL, username.replace("\n", ""), password.replace("\n", ""),
 							optionProxy, optionKeyFalse, optionVerbose, loginInfo, result
 						)
 					)
-					
+				elif optionRunMode == "--httpauth":
+					worker = threading.Thread(
+						target = httpauth.submit,
+						args = (
+							optionURL, username.replace("\n", ""), password.replace("\n", ""),
+							optionProxy, optionVerbose, result
+						)
+					)
 				worker.daemon = True
 				workers.append(worker)
 		

@@ -22,7 +22,7 @@
 import mechanize
 from core import utils, actions, tbrowser		
 
-def submit(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFalse, optionVerbose, loginInfo, result):
+def submit(optionURL, tryUsername, tryPassword, setProxyList, setKeyFalse, optionVerbose, loginInfo, result):
 	############################################
 	#	Old code logic:
 	#		Create 1 browser object per password
@@ -76,8 +76,6 @@ def submit(optionURL, tryUsername, tryPassword, sizeTask, setProxyList, setKeyFa
 			if setProxyList:
 				utils.printf("Using proxy: %s" %(proxyAddr), 'norm')
 		
-		#utils.printp(trying, sizeTask)
-
 
 		#proc.submit()
 		#	Reload - useful for redirect to dashboard

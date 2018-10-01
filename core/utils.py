@@ -123,7 +123,7 @@ def print_help():
 	menu = [
 		[ "%-25s" %("--brute [Default]"), "Brute Forcing credentials"],
 		[ "%-25s" %("--sqli [Not Available]"), "SQL Injection bypass"],
-		[ "%-25s" %("--httpauth [Not Available]"), "HTTP Basic Authentication"],
+		[ "%-25s" %("--httpauth [Testing]"), "HTTP Basic Authentication"],
 	]
 	print_table(title, *menu)
 
