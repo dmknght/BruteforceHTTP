@@ -91,7 +91,7 @@ def submit(optionURL, tryUsername, tryPassword, setProxyList, setKeyFalse, optio
 					# Add creds to success list
 					# If verbose: print
 					
-					utils.printf("Match found: %s:%s" %(tryUsername, tryPassword), "good")
+					utils.printf("[*] Match found: %s:%s" %(tryUsername, tryPassword), "good")
 					result.put([tryUsername, tryPassword])
 
 					#	Clear object and try new username
@@ -99,27 +99,27 @@ def submit(optionURL, tryUsername, tryPassword, setProxyList, setKeyFalse, optio
 
 				else:
 					if optionVerbose:
-						utils.printf("Failed: %s:%s" %(tryUsername, tryPassword), "bad")
+						utils.printf("[-] Failed: %s:%s" %(tryUsername, tryPassword), "bad")
 					
 			else:
-				utils.printf("Match found: %s:%s" %(tryUsername, tryPassword), "good")
+				utils.printf("[*] Match found: %s:%s" %(tryUsername, tryPassword), "good")
 				result.put([tryUsername, tryPassword])
 
 				#	Clear object and try new username
 				#proc.close()
 		else:
 			if optionVerbose:
-				utils.printf("Failed: %s:%s" %(tryUsername, tryPassword), "bad")
+				utils.printf("[-] Failed: %s:%s" %(tryUsername, tryPassword), "bad")
 
 	except mechanize.HTTPError as error:
 		#	Get blocked
 		if optionVerbose:
-			utils.printf("Error: %s:%s\n%s" %(tryUsername, tryPassword, error), "bad")
+			utils.printf("[x] Error: %s:%s\n%s" %(tryUsername, tryPassword, error), "bad")
 		return False
 	except Exception as error:
 		
 		if optionVerbose:
-			utils.printf("Error: %s:%s\n%s" %(tryUsername, tryPassword, error), "bad")
+			utils.printf("[x] Error: %s:%s\n%s" %(tryUsername, tryPassword, error), "bad")
 		return False
 		
 	finally:
