@@ -15,12 +15,12 @@ def prints(mtext):
 	print(mtext)
 	sys.stdout.write("\033[F \033[K" * actions.size_o(mtext))
 
-def printp(index, total, bar_size = 50):
-	completed = (index * bar_size) / total
+def printp(count, total, bar_size = 50):
+	completed = (count * bar_size) / total
 	prints("|%s%s| %s/%s"%(
 		completed * '#',
 		(bar_size - completed) * '-',
-		index,
+		count,
 		total)
 	)
 

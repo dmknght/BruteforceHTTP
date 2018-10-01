@@ -22,7 +22,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 	def do_job(jobs):
 		for job in jobs:
 			job.start()
-			
+			utils.printp
 		for job in jobs:
 			job.join()
 
@@ -100,10 +100,10 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 		finally:
 			proc.close()
 	
-	utils.printf("Starting attack.... %s tasks" %(sizeUserlist * sizePasslist))
+	utils.printf("Starting attack....\nTask count: %s tasks" %(sizeUserlist * sizePasslist))
 	
 	workers = []
-	trying = 0
+	#trying = 0
 	
 	try:
 		for password in optionPasslist:
@@ -159,7 +159,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 		try:
 			credentials = list(result.queue)
 			if len(credentials) == 0:
-				utils.printf("[-] No valid password found!", "bad")
+				utils.printf("[-] No match found!", "bad")
 				
 			else:
 				utils.printf("\n[*] %s valid password[s] found:\n" %(len(credentials)), "norm")
@@ -194,7 +194,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 			utils.printf("\nError while getting result.\n", "bad")
 			utils.printf(err, "bad")
 
-		utils.printf("\nCompleted. Run time: %0.5s [s]\n" %(runtime))
+		utils.printf("\nTime elapsed: %0.5s [s]\n" %(runtime))
 
 		########################################
 		#	Clear resources
