@@ -95,7 +95,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 			utils.printf("Connect success!", "good")
 
 		except Exception as err:
-			utils.die("Error while parsing login form", err)
+			utils.die("Can't connect to target", err)
 
 		finally:
 			proc.close()
