@@ -10,5 +10,5 @@
 - [ ] Password generating
 - [ ] Captcha
 - [ ] Python 3 and better browser module
-- [ ] Password form only (webshell, etc..) login
+- [x] Password form only (webshell, etc..) login
 - [ ] Docker
