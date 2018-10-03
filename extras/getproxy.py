@@ -97,7 +97,7 @@ def check(target, threads, verbose, PROXY_PATH):
 		workers = []
 		result = Queue()
 		for tryProxy in proxylist:
-			if len(workers) == threads:
+			if actions.size_o(workers) == threads:
 				do_job(workers)
 				del workers[:]
 			
