@@ -91,8 +91,10 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 			utils.printf("Checking connection...")
 			proc.open(optionURL)
 			#TODO PROXY
-			loginInfo = tbrowser.getLoginForm(optionURL, proc, optionVerbose)
 			utils.printf("Connect success!", "good")
+			loginInfo = tbrowser.getLoginForm(optionURL, proc, optionVerbose)
+			if not loginInfo:
+				utils.die("URL error", "No login field found")
 
 		except Exception as err:
 			utils.die("Can't connect to target", err)
