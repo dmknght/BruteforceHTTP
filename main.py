@@ -96,7 +96,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 
 			elif actions.size_o(loginInfo[1]) == 1: # Password checking only
 				utils.printf("[*] Form with password field", "good")
-				#del optionUserlist[:]
+				del optionUserlist[:]
 				optionUserlist = [""]
 				IS_REGULAR = False
 
