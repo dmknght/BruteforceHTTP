@@ -1,7 +1,5 @@
 import sys, actions
 
-# TODO write stderr and stdout instead of print
-
 def prints(mtext):
 	#############################################
 	#	print message and replace it after
@@ -32,11 +30,6 @@ def printf(mtext, mtype = 'warn'):
 	###########################################
 
 	print(craft_msg(mtext, mtype))
-	# TODO move print to std write
-	# if mtype == 'bad':
-	# 	sys.stderr.write("%s\n" %(craft_msg(mtext, mtype)))
-	# else:
-	# 	sys.stdout.write("%s\n" %(craft_msg(mtext, mtype)))
 
 def craft_msg(mtext, mtype = 'warn'):
 	# https://misc.flogisoft.com/bash/tip_colors_and_formatting
@@ -165,7 +158,7 @@ def fixLen(text, lim):
 
 	return ret
 
-def report_banner(url, mode, proxy, thread, creds, daytime, runtime):
+def report_banner(url, mode, proxy, thread, creds, daytime, runtime, regular):
 	# if option != "--sqli" and "--single":
 	def n_body(creds):
 		ret = ""
@@ -176,12 +169,16 @@ def report_banner(url, mode, proxy, thread, creds, daytime, runtime):
 			ret += "\n  |%s|\n  " %("+" * 73)
 		return ret
 	
-	def s_body(creds):
+	def s_body(creds, mode):
 		ret = ""
+		name = "Payload" if mode == "--sqli" else "Password"
 		for match in creds:
-			ret += "  |  Payload: %-50s |\n" %(
-				fixLen(match, 50)
+			payload = match[0] if match[0] else match[1]
+			ret += "|  %-10s: %-58s |" %(
+				name, 
+				fixLen(payload, 50)
 			)
+			ret += "\n  |%s|\n  " %("+" * 73)
 		return ret
 	
 	header = """
@@ -211,7 +208,7 @@ def report_banner(url, mode, proxy, thread, creds, daytime, runtime):
 	  =======================================================================
 	  """ %(runtime)
 	
-	body = n_body(creds) if mode not in ["--sqli"] else s_body(creds)
+	body = n_body(creds) if regular else s_body(creds, mode)
 
 	return header.replace("\t", "  ") + body + footer.replace("\t", "  ")
 

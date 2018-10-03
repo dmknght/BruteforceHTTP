@@ -12,7 +12,12 @@ def startBrowser():
 	#browser._factory.is_html = True #https://stackoverflow.com/a/4201003
 	return browser
 
-def parsePasswdForm(objBrowserForm):
+def useragent():
+	agents = data.getAgent()
+	
+	return actions.randomFromList(agents.split("\n"))
+
+def checkPasswdForm(objBrowserForm):
 	##########################################
 	#	Get Password-only form
 	#	Need form ID for select_form(nr = ID)
@@ -31,12 +36,12 @@ def parsePasswdForm(objBrowserForm):
 			#retTextField = re.findall(regTextField, str(form).encode('utf-8'), re.MULTILINE)[0]
 			#retPassField = re.findall(regPassField, str(form).encode('utf-8'), re.MULTILINE)[0]
 			retPassField = re.findall(regPassField, str(form), re.MULTILINE)[0]
-			return (retFormID, [retPassField, retTextField])
+			return (retFormID, [retPassField])
 		except:
 			retFormID += 1
 	return None
 
-def parseLoginForm(objBrowserForm):
+def checkLoginForm(objBrowserForm):
 	##########################################
 	#	Get Login Form Information
 	#	Need form ID for select_form(nr = ID)
@@ -64,31 +69,17 @@ def parseLoginForm(objBrowserForm):
 		except:
 			retFormID += 1
 	return None
-	
-def useragent():
-	agents = data.getAgent()
-	
-	return actions.randomFromList(agents.split("\n"))
-	
-	
-def getLoginForm(optionURL, browser, verbose):
-	######################################
-	#	Test connect to URL
-	#	Fetch login field
-	#
-	#####################################
 
-	try:
-		
-		browser.open(optionURL)
-		
-		formInfo = parseLoginForm(browser.forms())
-		if verbose:
-			utils.printf("[*] Found login form", "good")
-		return formInfo
+def parseLoginForm(objForm):
+	# https://stackoverflow.com/a/4945175
+	import itertools
+	form1, form2 = itertools.tee(objForm)
 
-	# except TypeError as error:
-	# 	utils.die("getLoginForm: Can not find login form", error)
+	login, passwd = checkLoginForm(form1), checkPasswdForm(form2)
 
-	except Exception as error:
-		utils.die("getLoginForm: Runtime error", error)
+	if login:
+		return login
+	elif passwd:
+		return passwd
+	else:
+		return None

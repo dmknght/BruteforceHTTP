@@ -1,3 +1,11 @@
+## 03/10/2018
+* Password form only brute
+
+
+## 02/10/2018
+* Bugs fixed and codes improved
+* Added Basic HTTP Get Authentication
+
 ## 1.4
 * Add new wordlists by default and using option
 * Add getproxy option

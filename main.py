@@ -3,7 +3,7 @@
 # CHECK IMPORTING MODULES
 
 try:
-	import sys
+	import sys, ssl, itertools
 	from core import actions, utils, tbrowser, options
 	from plugins import loginbrute, httpauth
 
@@ -31,7 +31,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 
 	# CHECK IMPORTING ALL LIBS. IMPORT HERE -> CALL HELP_BANNER ONLY FASTER
 	try:
-		import mechanize, re, ssl, requests # for basichttpauthentication, not useless, use later
+		import mechanize, re, requests # for basichttpauthentication, not useless, use later
 	except ImportError as err:
 		utils.die(err, "Try: pip install %s" %(str(err).split(" ")[-1]))
 
@@ -52,8 +52,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 	
 	result = Queue()
 
-	
-	
+
 	# BUG bad memory management
 	
 	optionUserlist, optionThreads, optionKeyFalse, optionPasslist = setOptions.values()
@@ -62,25 +61,23 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 	try:
 		optionUserlist = optionUserlist.split("\n")
 	except:
-		#optionUserlist = optionUserlist.readlines()
 		pass
 
-	# TODO Must testing cases with list and file object
 	try:
 		optionPasslist = optionPasslist.split("\n")
 	except:
 		pass
-	
-	
+
+
 	## End of testing
-	
+
 	timeStarting = time.time()
 
 	# get login form info 
 	# call brute
-		
-	sizePasslist = actions.size_o(optionPasslist)
-	sizeUserlist = actions.size_o(optionUserlist)
+	
+	IS_REGULAR = True
+	
 
 	proc = tbrowser.startBrowser()
 	proc.addheaders = [('User-Agent', tbrowser.useragent())]
@@ -92,12 +89,19 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 			proc.open(optionURL)
 			#TODO PROXY
 			utils.printf("[*] Connect success!", "good")
-			loginInfo = tbrowser.getLoginForm(optionURL, proc, optionVerbose)
+			loginInfo = tbrowser.parseLoginForm(proc.forms())
 
 			if not loginInfo:
 				utils.die("[x] URL error", "No login field found")
-			elif len(loginInfo[1]) == 1:
-				del optionUserlist[:] # Password checking only
+
+			elif actions.size_o(loginInfo[1]) == 1: # Password checking only
+				utils.printf("[*] Form with password field", "good")
+				#del optionUserlist[:]
+				optionUserlist = [""]
+				IS_REGULAR = False
+
+			elif actions.size_o(loginInfo[1] == 2):
+				utils.printf("[*] Form username+password field", "good")
 
 		except Exception as err:
 			utils.die("[x] Can't connect to target", err)
@@ -105,16 +109,20 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 		finally:
 			proc.close()
 	
-	utils.printf("Starting attack....\nTask count: %s tasks" %(sizeUserlist * sizePasslist))
 	
+	sizePasslist = actions.size_o(optionPasslist)
+	sizeUserlist = actions.size_o(optionUserlist)
 	workers = []
+	
+	utils.printf("Starting attack....\nTask count: %s tasks" %(sizeUserlist * sizePasslist))
+
 	
 	try:
 		for password in optionPasslist:
 			for username in optionUserlist:
 				username, password = username.replace("\n", ""), password.replace("\n", "")
 				
-				if len(workers) == optionThreads:
+				if actions.size_o(workers) == optionThreads:
 					do_job(workers)
 					del workers[:]
 
@@ -164,17 +172,23 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 
 		try:
 			credentials = list(result.queue)
-			if len(credentials) == 0:
+			if actions.size_o(credentials) == 0:
 				utils.printf("[-] No match found!", "bad")
 				
 			else:
-				utils.printf("\n[*] %s valid password[s] found:\n" %(len(credentials)), "norm")
-				utils.print_table(("Username", "Password"), *credentials)
+				utils.printf("\n[*] %s valid password[s] found:\n" %(actions.size_o(credentials)), "norm")
 
+				if IS_REGULAR:
+					utils.print_table(("Username", "Password"), *credentials)
+				else:
+					if optionRunMode != "--sqli":
+						utils.print_table(("", "Password"), *credentials)
+					else:
+						utils.print_table(("Payload", ""), *credentials) # TODO: test more
 			
 			if optionReport:
 				try:
-					import report
+					import reports
 
 					optionProxy = "True" if optionProxy else "False"
 					report_name = "%s_%s" %(time.strftime("%Y.%m.%d_%H.%M"), optionURL.split("/")[2])
@@ -188,7 +202,8 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 							optionThreads,
 							credentials,
 							report_name,
-							runtime),
+							runtime,
+							IS_REGULAR),
 						report_path)
 					
 					utils.printf("\n[*] Report file at:\n%s" %(report_path), "good")
