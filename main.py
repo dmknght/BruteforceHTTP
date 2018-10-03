@@ -91,13 +91,16 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 			utils.printf("Checking connection...")
 			proc.open(optionURL)
 			#TODO PROXY
-			utils.printf("Connect success!", "good")
+			utils.printf("[*] Connect success!", "good")
 			loginInfo = tbrowser.getLoginForm(optionURL, proc, optionVerbose)
+
 			if not loginInfo:
-				utils.die("URL error", "No login field found")
+				utils.die("[x] URL error", "No login field found")
+			elif len(loginInfo[1]) == 1:
+				del optionUserlist[:] # Password checking only
 
 		except Exception as err:
-			utils.die("Can't connect to target", err)
+			utils.die("[x] Can't connect to target", err)
 
 		finally:
 			proc.close()
@@ -105,7 +108,6 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 	utils.printf("Starting attack....\nTask count: %s tasks" %(sizeUserlist * sizePasslist))
 	
 	workers = []
-	#trying = 0
 	
 	try:
 		for password in optionPasslist:
@@ -141,13 +143,13 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 
 	except KeyboardInterrupt:# as error:
 		# TODO: kill running threads here
-		utils.die("Terminated by user!", "KeyboardInterrupt")
+		utils.die("[x] Terminated by user!", "KeyboardInterrupt")
 
 	except SystemExit:# as error
-		utils.die("Terminated by system!", "SystemExit")
+		utils.die("[x] Terminated by system!", "SystemExit")
 
 	except Exception as error:
-		utils.die("Error while running", error)
+		utils.die("[x] Runtime error", error)
 
 	finally:
 		runtime = time.time() - timeStarting
@@ -189,30 +191,16 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 							runtime),
 						report_path)
 					
-					utils.printf("\n[*]Report file at:\n%s" %(report_path), "good")
+					utils.printf("\n[*] Report file at:\n%s" %(report_path), "good")
 					
 				except Exception as err:
-					utils.printf("Error while creating report: %s" %(err), "bad")
+					utils.printf("[x] Error while creating report: %s" %(err), "bad")
 						
 		except Exception as err:
-			utils.printf("\nError while getting result.\n", "bad")
+			utils.printf("\n[x] Error while getting result.\n", "bad")
 			utils.printf(err, "bad")
 
-		utils.printf("\nTime elapsed: %0.5s [s]\n" %(runtime))
-
-		########################################
-		#	Clear resources
-		#
-		########################################
-
-		try:
-			optionPasslist.close()
-		except:
-			pass
-		try:
-			optionUserlist.close()
-		except:
-			pass
+		utils.printf("\n[*] Time elapsed: %0.5s [s]\n" %(runtime), "good")
 
 		sys.exit(0)
 
