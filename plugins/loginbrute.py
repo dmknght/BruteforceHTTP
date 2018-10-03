@@ -22,7 +22,7 @@
 import mechanize
 from core import utils, actions, tbrowser		
 
-def submit(optionURL, tryUsername, tryPassword, setProxyList, setKeyFalse, optionVerbose, loginInfo, result):
+def submit(optionURL, tryCred, setProxyList, setKeyFalse, optionVerbose, loginInfo, result):
 	############################################
 	#	Old code logic:
 	#		Create 1 browser object per password
@@ -33,8 +33,8 @@ def submit(optionURL, tryUsername, tryPassword, setProxyList, setKeyFalse, optio
 	############################################
 
 	#	Get login form field informations
-	frmLoginID, frmUserfield, frmPassfield = loginInfo
-	#	Get single Username in username list / file	
+	frmLoginID, frmFields = loginInfo
+	tryPassword, tryUsername = tryCred
 	
 	proc = tbrowser.startBrowser()
 
@@ -63,8 +63,25 @@ def submit(optionURL, tryUsername, tryPassword, setProxyList, setKeyFalse, optio
 
 		#	Select login form
 		proc.select_form(nr = frmLoginID)
-		proc.form[frmUserfield] = tryUsername
-		proc.form[frmPassfield] = tryPassword
+		# FILLS ALL FIELDS https://stackoverflow.com/a/5389578
+		"""
+			>>> def craft(x, z):
+					for a, b in zip(x, z):
+						print "%s:%s" %(a,b)
+
+			>>> fields = ["fUsername", "fPasswd"]
+			>>> craft(fields, send)
+			fUsername:tryUsername
+			fPasswd:tryPasswd
+			>>> craft(fields, send)
+			fPasswd:tryUsername
+		"""
+		
+		for field, cred in zip(frmFields, tryCred):
+			proc.form[field] = cred
+		
+		# proc.form[frmUserfield] = tryUsername
+		# proc.form[frmPassfield] = tryPassword
 
 
 		#	Send request

@@ -36,7 +36,8 @@ def parseLoginForm(objBrowserForm):
 			#retPassField = re.findall(regPassField, str(idxSingleForm).encode('utf-8'), re.MULTILINE)[0]
 			retTextField = re.findall(regTextField, str(idxSingleForm), re.MULTILINE)[0]
 			retPassField = re.findall(regPassField, str(idxSingleForm), re.MULTILINE)[0]
-			return retFormID, retTextField, retPassField
+			#return retFormID, retTextField, retPassField
+			return (retFormID, [retPassField, retTextField])
 		except:
 			retFormID += 1
 	return None
@@ -58,13 +59,13 @@ def getLoginForm(optionURL, browser, verbose):
 		
 		browser.open(optionURL)
 		
-		formLoginID, formUserfield, formPasswdfield = parseLoginForm(browser.forms())
+		formInfo = parseLoginForm(browser.forms())
 		if verbose:
-			utils.printf("Found login form", "good")
-		return formLoginID, formUserfield, formPasswdfield
+			utils.printf("[*] Found login form", "good")
+		return formInfo
 
 	except TypeError as error:
-		utils.die("Can not find login form", error)
+		utils.die("getLoginForm: Can not find login form", error)
 
 	except Exception as error:
-		utils.die("Checking connection error", error)
+		utils.die("getLoginForm: Runtime error", error)

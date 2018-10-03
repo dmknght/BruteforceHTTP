@@ -118,7 +118,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 					worker = threading.Thread(
 						target = loginbrute.submit,
 						args = (
-							optionURL, username, password,
+							optionURL, [password, username],
 							optionProxy, optionKeyFalse, optionVerbose, loginInfo, result
 						)
 					)
