@@ -100,7 +100,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 				optionUserlist = [""]
 				IS_REGULAR = False
 
-			elif actions.size_o(loginInfo[1] == 2):
+			elif actions.size_o(loginInfo[1]) == 2:
 				utils.printf("[*] Form username+password field", "good")
 
 		except Exception as err:
