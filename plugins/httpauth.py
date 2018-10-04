@@ -7,6 +7,11 @@ from core import utils
 # TODO Using proxy
 
 def submit(URL, tryUsername, tryPassword, proxy, verbose, result):
+
+	for cred in list(result.queue):
+		if tryUsername == cred[0]:
+			return 0 # don't run if find password of username
+			
 	if verbose:
 		utils.printf("Trying: %s:%s" %(tryUsername, tryPassword), 'norm')
 	
