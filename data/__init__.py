@@ -1,5 +1,18 @@
 #https://github.com/rapid7/metasploit-framework/tree/master/data/wordlists
 
+def webshell_user():
+	return """admin
+	root
+	r00t
+	b374k"""
+
+def webshell_password():
+	return """r00t
+	admin
+	p4kl0nc4t
+	IndoXploit
+	b374k"""
+
 def router_user():
 	return """acc
 	adfexc

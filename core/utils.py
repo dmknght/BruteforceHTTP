@@ -139,6 +139,7 @@ def print_help():
 		["%-25s" %("unix"), "Top unix usernames+passwords"],
 		["%-25s" %("http"), "Top http usernames+passwords"],
 		["%-25s" %("mirai"), "List usernames+passwords used by mirai botnet"],
+		["%-25s" %("webshell"), "Common webshell usernames+passwords"],
 	]
 	print_table(title, *menu)
 	print("")
