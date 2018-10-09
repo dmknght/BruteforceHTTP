@@ -1,6 +1,8 @@
+## 09/10/2018
+* Code improvment
+
 ## 03/10/2018
 * Password form only brute
-
 
 ## 02/10/2018
 * Bugs fixed and codes improved
