@@ -103,8 +103,6 @@ def getUserOptions():
 	#	-t: Number of threads using
 	#	-k: Set key for false condition (for special cases)
 	
-	DEF_OPS = ("-u", "-U", "-p", "-t", "-k")
-	
 	# Default wordlist: default, router, unix, tomcat, cctv, mirai, http
 		
 	options = {
@@ -153,7 +151,7 @@ def getUserOptions():
 					utils.die("Error while parsing arguments", "Invalid option %s" %(sys.argv[idx]))
 
 			elif sys.argv[idx][:1] == "-":
-				if sys.argv[idx] in DEF_OPS:
+				if sys.argv[idx] in options.keys():
 					# "-u", "-U", "-p", "-t", "-k"
 					options[sys.argv[idx]], idx = sys.argv[idx + 1], idx + 1
 				else:
