@@ -85,7 +85,7 @@ def getUserOptions():
 	# Default operation modes:
 	#	--brute: brute force
 	#	--sqli: sql injection bypass login (TODO)
-	#	--httpauth: http basic authentication (TODO)
+	#	--httpauth: http basic authentication
 	
 	DEF_R_MODE = ("--brute", "--sqli", "--httpauth")
 	
