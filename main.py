@@ -79,6 +79,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 	IS_REGULAR = True
 	
 
+	# IF NOT HTTP BASIC AUTHENTICATION, CHECK RESULT AND PARSE LOGIN FORM
 	proc = tbrowser.startBrowser()
 	proc.addheaders = [('User-Agent', tbrowser.useragent())]
 
@@ -108,6 +109,8 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 
 		finally:
 			proc.close()
+			
+	#### END OF CHECKING TARGET
 	
 	
 	sizePasslist = actions.size_o(optionPasslist)
@@ -158,6 +161,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 		do_job(workers)
 		del workers[:]
 
+	### CATCH ERRORS ###
 	except KeyboardInterrupt:# as error:
 		# TODO: kill running threads here
 		utils.die("[x] Terminated by user!", "KeyboardInterrupt")
@@ -168,6 +172,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 	except Exception as error:
 		utils.die("[x] Runtime error", error)
 
+	### ALL TASKS DONE ####
 	finally:
 		runtime = time.time() - timeStarting
 		"""
@@ -195,6 +200,8 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 					else:
 						utils.print_table(("Payload", ""), *credentials) # TODO: test more
 			
+			
+			### CREATE REPORT ####
 			if optionReport:
 				try:
 					import reports
