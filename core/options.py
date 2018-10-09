@@ -87,15 +87,13 @@ def getUserOptions():
 	#	--sqli: sql injection bypass login (TODO)
 	#	--httpauth: http basic authentication (TODO)
 	
-	DEF_A_MODE = ("--brute", "--sqli", "--httpauth")
+	DEF_R_MODE = ("--brute", "--sqli", "--httpauth")
 	
 	# Default running mode:
 	#	--verbose: display informations
 	#	--report: create task report
 	#	--proxy: Running using proxy
-	
-	DEF_R_MODE = ("--verbose", "--report", "--proxy")
-	
+		
 	# Default options:
 	#	-u: Read userlist from file
 	#	-p: Read passlit from file
@@ -129,11 +127,11 @@ def getUserOptions():
 			
 		else:
 			if sys.argv[idx][:2] == "--":
-				if sys.argv[idx] in DEF_R_MODE:
+				if sys.argv[idx] in r_options.keys():
 					# --verbose", "--report", "--proxy"
 					r_options[sys.argv[idx]] = True
 
-				elif sys.argv[idx] in DEF_A_MODE:
+				elif sys.argv[idx] in DEF_R_MODE:
 					# "--brute", "--sqli", "--httpauth"
 					MODE = sys.argv[idx]
 					
