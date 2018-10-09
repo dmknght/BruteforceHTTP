@@ -116,12 +116,19 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 	
 	utils.printf("Starting attack....\nTask count: %s tasks" %(sizeUserlist * sizePasslist))
 
+	############################
+	#	Setting up threads
+	############################
 	
 	try:
 		for password in optionPasslist:
 			for username in optionUserlist:
 				username, password = username.replace("\n", ""), password.replace("\n", "")
 				
+				
+				####
+				#	IF HAVE ENOUGH THREAD, DO IT ALL
+				###
 				if actions.size_o(workers) == optionThreads:
 					do_job(workers)
 					del workers[:]
@@ -144,6 +151,8 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 					)
 				worker.daemon = True
 				workers.append(worker)
+	
+	######### END SETTING UP THREADS ################
 		
 		#DO ALL LAST TASKs
 		do_job(workers)
