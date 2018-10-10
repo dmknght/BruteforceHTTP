@@ -46,7 +46,7 @@ def lread(strUsername):
 	##################################
 
 	for char in (":", ","):
-		if char in string.punctuation:
+		if char in strUsername:
 			break
 
 	return strUsername.split(char)
