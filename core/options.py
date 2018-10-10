@@ -63,6 +63,7 @@ def checkOption(options, r_options):
 		
 		if options["-U"]:
 			finalOption["userlist"] = actions.lread(options["-U"])
+			
 		else:
 			finalOption["userlist"] = eval("data.%s_user()" %(options["-u"])) if options["-u"] in DEF_WORDLIST else actions.fread(options["-u"])
 	
