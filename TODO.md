@@ -12,3 +12,4 @@
 - [ ] Python 3 and better browser module
 - [x] Password form only (webshell, etc..) login
 - [ ] Docker
+- [ ] Javascript Login Form

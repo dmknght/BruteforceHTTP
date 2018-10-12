@@ -48,7 +48,7 @@ def checkLoginForm(objBrowserForm):
 	#	Username field's name for submiting
 	#	Password field's name for submiting
 	#
-	#	*** NEED IMPROVE ***
+	#	*** TODO NEED IMPROVE ***
 	#
 	###########################################
 
