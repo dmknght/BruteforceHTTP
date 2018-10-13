@@ -130,11 +130,11 @@ def print_help():
 	#	Print project's help table
 	print_fast_help()
 	print("\nOptions:\n")
-	title = ("Format", "Example")
+	title = ("Formats", "Examples")
 	menu = [
 		[ "%-25s" %("-u <path_to_wordlist>"), "-u /usr/share/wordlists/nmap.lst"],
 		[ "%-25s" %("-p <path_to_wordlist>"), "-p /usr/share/wordlists/fasttrack.txt"],
-		[ "%-25s" %("-U <username>"), "-U admin | -U admin:user1:user2:user3"],
+		[ "%-25s" %("-U <username>"), "-U admin | -U admin:user1 | -U admin,root,user"],
 		[ "%-25s" %("-t <threads>"), "-t 32"],
 		[ "%-25s" %("-k <false_key>"), "-k 'Invalid username'"]
 	]
@@ -144,8 +144,8 @@ def print_help():
 	title = ("Attack Modes", "Ony ONE attack mode can be used")
 	menu = [
 		[ "%-25s" %("--brute [Default]"), "Brute Forcing credentials"],
-		[ "%-25s" %("--sqli [Not Available]"), "SQL Injection bypass"],
 		[ "%-25s" %("--httpauth"), "HTTP Basic Authentication"],
+		[ "%-25s" %("--sqli [Not Available]"), "SQL Injection bypass"],
 	]
 	print_table(title, *menu)
 
@@ -161,10 +161,10 @@ def print_help():
 	print("\nWordlists:\n")
 	title = ("Values", "Informations")
 	menu = [
+		["%-25s" %("default"), "Top usernames+passwords"],
 		["%-25s" %("router"), "Default router usernames+passwords"],
 		["%-25s" %("tomcat"), "Default tomcat usernames+passwords"],
 		["%-25s" %("cctv"), "Default cctv usernames+passwords"],
-		["%-25s" %("default"), "Top usernames+passwords"],
 		["%-25s" %("unix"), "Top unix usernames+passwords"],
 		["%-25s" %("http"), "Top http usernames+passwords"],
 		["%-25s" %("mirai"), "List usernames+passwords used by mirai botnet"],
