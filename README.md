@@ -64,6 +64,10 @@ Problems:
 
 Further improvement (See TODO.md)
 
+## How this tool DOES NOT work
+- Mechanize does not execute Javascript. This tool will not work if it is provided any website that uses Javascript to display form.
+- Gmail login is having error
+
 ## Author
 - [@Ic3W4ll](https://github.com/dmknght)
 - [@ZeroX-DG](https://github.com/ZeroX-DG)
