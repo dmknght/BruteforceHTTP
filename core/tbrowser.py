@@ -11,7 +11,7 @@ def startBrowser():
 	browser.set_handle_redirect(True)
 	browser.set_handle_equiv(True)
 	browser.set_handle_refresh(True) 
-	#browser._factory.is_html = True #https://stackoverflow.com/a/4201003
+	browser._factory.is_html = True #https://stackoverflow.com/a/4201003
 	return browser
 
 def useragent():
