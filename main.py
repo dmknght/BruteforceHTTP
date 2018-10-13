@@ -86,7 +86,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 	if optionRunMode not in ["--httpauth"]:
 
 		try:
-			utils.printf("Checking connection...")
+			utils.printf("[+] Checking connection...")
 			proc.open(optionURL)
 			#TODO PROXY
 			utils.printf("[*] Connect success!", "good")
@@ -117,7 +117,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 	sizeUserlist = actions.size_o(optionUserlist)
 	workers = []
 	
-	utils.printf("Starting attack....\nTask count: %s tasks" %(sizeUserlist * sizePasslist))
+	utils.printf("[+] Starting attack....\n[+] Task count: %s tasks" %(sizeUserlist * sizePasslist))
 
 	############################
 	#	Setting up threads
