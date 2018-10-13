@@ -96,13 +96,17 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 				utils.die("[x] URL error", "No login field found")
 
 			elif actions.size_o(loginInfo[1]) == 1: # Password checking only
-				utils.printf("[*] Form with password field", "good")
-				del optionUserlist[:]
+				if optionVerbose:
+					utils.printf("[*] Form ID: %s\n  [*] Password field: %s"
+						%(loginInfo[0], loginInfo[1][0]), "good")
+					del optionUserlist[:]
 				optionUserlist = [""]
 				IS_REGULAR = False
 
 			elif actions.size_o(loginInfo[1]) == 2:
-				utils.printf("[*] Form username+password field", "good")
+				if optionVerbose:
+					utils.printf("[*] Form ID: %s\n  [*] Username field: %s\n  [*] Password field: %s"
+						%(loginInfo[0], loginInfo[1][0], loginInfo[1][1]), "good")
 
 		except Exception as err:
 			utils.die("[x] Can't connect to target", err)
