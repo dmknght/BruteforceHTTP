@@ -1,3 +1,7 @@
+## 14/10/2018
+* Upgrade print table function
+* Fix bugs
+
 ## 09/10/2018
 * Code improvment
 
