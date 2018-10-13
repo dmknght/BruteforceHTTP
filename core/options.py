@@ -72,7 +72,7 @@ def checkOption(options, r_options):
 	if r_options["--proxy"]:
 		try:
 			import data
-			r_options["--proxy"] = actions.fread("%s/liveproxy.txt" %(data.__path__[0]))
+			r_options["--proxy"] = actions.fread("%s/liveproxy.txt" %(data.__path__[0])).split("\n")
 		except Exception as err:
 			utils.printf("Argument error", err)
 	
