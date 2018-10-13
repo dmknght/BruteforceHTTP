@@ -122,11 +122,14 @@ def print_table(headers, *args, **kwargs):
 	# Print end line
 	print(headers_separator_line)
 
+def print_fast_help():
+	print('\nUsage: %s [<option> <value>] [mode] [--list <value>] URL\n' %(sys.argv[0]))
+
 def print_help():
 
 	#	Print project's help table
-
-	print('\nUsage: %s [<option> <value>] [--list <value>] [mode] [--getproxy] URL\n\nOptions:\n' %(sys.argv[0]))
+	print_fast_help()
+	print("\nOptions:\n")
 	title = ("Format", "Example")
 	menu = [
 		[ "%-25s" %("-u <path_to_wordlist>"), "-u /usr/share/wordlists/nmap.lst"],
@@ -147,7 +150,7 @@ def print_help():
 	print_table(title, *menu)
 
 	print("")
-	title = ("Running Modes", "")
+	title = ("Running Modes", "Descriptions")
 	menu = [
 		[ "%-25s" %("--proxy"), "Use Proxy each connection"],
 		[ "%-25s" %("--verbose"), "Display more information"],
@@ -156,7 +159,7 @@ def print_help():
 	print_table(title, *menu)
 
 	print("\nWordlists:\n")
-	title = ("Value", "")
+	title = ("Values", "Informations")
 	menu = [
 		["%-25s" %("router"), "Default router usernames+passwords"],
 		["%-25s" %("tomcat"), "Default tomcat usernames+passwords"],
