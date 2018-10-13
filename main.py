@@ -91,7 +91,14 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 			#TODO PROXY
 			utils.printf("[*] Connect success!", "good")
 			loginInfo = tbrowser.parseLoginForm(proc.forms())
+			
+		except Exception as err:
+			utils.die("[x] Connection error", err)
 
+		finally:
+			proc.close()
+
+		try:
 			if not loginInfo:
 				utils.die("[x] URL error", "No login field found")
 
@@ -109,10 +116,8 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 						%(loginInfo[0], loginInfo[1][0], loginInfo[1][1]), "good")
 
 		except Exception as err:
-			utils.die("[x] Can't connect to target", err)
+			utils.die("[x] Geting login information error", err)
 
-		finally:
-			proc.close()
 			
 	#### END OF CHECKING TARGET
 	
