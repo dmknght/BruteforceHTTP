@@ -4,6 +4,8 @@ from core import utils, actions, tbrowser
 def submit(optionURL, tryCred, setProxyList, setKeyFalse, optionVerbose, loginInfo, result):
 
 	#	Get login form field informations
+	
+	# BUG parse form issue with gmail, move to tbrowser.parseLoginForm
 	frmLoginID, frmFields = loginInfo
 	tryPassword, tryUsername = tryCred
 	
@@ -23,11 +25,13 @@ def submit(optionURL, tryCred, setProxyList, setKeyFalse, optionVerbose, loginIn
 			utils.printf("Proxy: %s" %(proxyAddr))
 		proc.set_proxies({"http": proxyAddr})
 
-	proc.open(optionURL)
 	
 	try:
 
+		proc.open(optionURL)
+
 		#	Select login form
+
 		proc.select_form(nr = frmLoginID)
 		
 		# FILLS ALL FIELDS https://stackoverflow.com/a/5389578
@@ -47,7 +51,7 @@ def submit(optionURL, tryCred, setProxyList, setKeyFalse, optionVerbose, loginIn
 		proc.reload()
 		#	If no login form -> success
 		#	TODO improve condition to use captcha
-
+		
 		if not tbrowser.parseLoginForm(proc.forms()):
 
 			if setKeyFalse:
@@ -55,8 +59,12 @@ def submit(optionURL, tryCred, setProxyList, setKeyFalse, optionVerbose, loginIn
 					
 					# Add creds to success list
 					# If verbose: print
-					
-					utils.printf("[*] Match found: %s:%s" %(tryUsername, tryPassword), "good")
+					if tryUsername:
+						utils.printf("[*] Match found: %s:%s" %(tryUsername, tryPassword), "good")
+						#result.put([tryUsername, tryPassword])
+					else:
+						utils.printf("[*] Password found: %s" %(tryPassword), "good")
+						#result.put([tryPassword])
 					result.put([tryUsername, tryPassword])
 
 					#	Clear object and try new username
@@ -66,7 +74,12 @@ def submit(optionURL, tryCred, setProxyList, setKeyFalse, optionVerbose, loginIn
 						utils.printf("[-] Failed: %s:%s" %(tryUsername, tryPassword), "bad")
 					
 			else:
-				utils.printf("[*] Match found: %s:%s" %(tryUsername, tryPassword), "good")
+				if tryUsername:
+					utils.printf("[*] Match found: %s:%s" %(tryUsername, tryPassword), "good")
+					#result.put([tryUsername, tryPassword])
+				else:
+					utils.printf("[*] Password found: %s" %(tryPassword), "good")
+					#result.put([tryPassword])
 				result.put([tryUsername, tryPassword])
 
 				#	Clear object and try new username
