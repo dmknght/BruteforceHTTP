@@ -3,7 +3,9 @@ from core import actions, utils
 
 def startBrowser():
 	import mechanize
-	browser = mechanize.Browser()
+	#https://stackoverflow.com/a/27096416
+	browser = mechanize.Browser(factory=mechanize.RobustFactory())
+	#browser = mechanize.Browser()
 	browser.set_handle_robots(False)
 	browser.set_handle_referer(True)
 	browser.set_handle_redirect(True)
