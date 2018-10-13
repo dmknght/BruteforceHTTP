@@ -21,8 +21,6 @@ def submit(optionURL, tryCred, setProxyList, setKeyFalse, optionVerbose, loginIn
 	if setProxyList:
 		#Set proxy connect
 		proxyAddr = actions.randomFromList(setProxyList)
-		if optionVerbose:
-			utils.printf("Proxy: %s" %(proxyAddr))
 		proc.set_proxies({"http": proxyAddr})
 
 	
