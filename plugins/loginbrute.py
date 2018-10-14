@@ -1,7 +1,7 @@
 import mechanize
 from core import utils, actions, tbrowser		
 
-def submit(optionURL, tryCred, setProxyList, setKeyFalse, optionVerbose, loginInfo, result):
+def submit(optionURL, tryCred, setProxyList, setKeyFalse, optionVerbose, loginInfo, result, optionReauth):
 
 	#	Get login form field informations
 	
@@ -63,7 +63,10 @@ def submit(optionURL, tryCred, setProxyList, setKeyFalse, optionVerbose, loginIn
 					else:
 						utils.printf("[*] Password found: %s" %(tryPassword), "good")
 						#result.put([tryPassword])
-					result.put([tryUsername, tryPassword])
+					if not optionReauth:
+						result.put([tryUsername, tryPassword])
+					else:
+						result.put(optionURL)
 
 					#	Clear object and try new username
 
@@ -78,7 +81,10 @@ def submit(optionURL, tryCred, setProxyList, setKeyFalse, optionVerbose, loginIn
 				else:
 					utils.printf("[*] Password found: %s" %(tryPassword), "good")
 					#result.put([tryPassword])
-				result.put([tryUsername, tryPassword])
+				if not optionReauth:
+					result.put([tryUsername, tryPassword])
+				else:
+					result.put(optionURL)
 
 				#	Clear object and try new username
 		else:
