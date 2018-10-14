@@ -1,3 +1,7 @@
+# 15/10/2018
+* Added --reauth option: Check password for other social URLs
+* Change --httpauth to --httpget
+
 ## 14/10/2018
 * Upgrade print table function
 * Fix bugs
