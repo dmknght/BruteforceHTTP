@@ -17,7 +17,7 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 
-def main(optionURL, setOptions, optionRunMode, setRunOptions):
+def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 	
 	def do_job(jobs):
 		for job in jobs:
@@ -206,6 +206,9 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 
 				if IS_REGULAR:
 					utils.print_table(("Username", "Password"), *credentials)
+					if optionReauth:
+						from extras import reauth
+						reauth.run(optionURL, credentials, optionThreads, optionProxy, optionVerbose)
 				else:
 					if optionRunMode != "--sqli":
 						utils.print_table(("", "Password"), *credentials)
