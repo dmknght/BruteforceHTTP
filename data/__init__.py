@@ -3,13 +3,14 @@
 def social_urls():
 	# https://accounts.google.com/signin
 	# TODO include gmail
-	return """https://mega.nz/login
-	https://www.facebook.com/login.php
+	# https://mega.nz/login
+	# https://mail.protonmail.com/login
+	# TODO Seems like using JS
+	return """	https://www.facebook.com/login.php
 	https://mobile.twitter.com/login
 	https://ask.fm/login
 	https://www.linkedin.com/uas/login
 	https://github.com/login
-	https://mail.protonmail.com/login
 	https://www.virustotal.com/en/account/signin/
 	https://signin.ebay.com/ws/eBayISAPI.dll
 	https://en.wikipedia.org/w/index.php?title=Special:UserLogin
