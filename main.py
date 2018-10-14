@@ -5,7 +5,7 @@
 try:
 	import sys, ssl, itertools
 	from core import actions, utils, tbrowser, options
-	from plugins import loginbrute, httpauth
+	from plugins import loginbrute, httpget
 
 except ImportError as err:
 	print(err)
@@ -86,7 +86,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 	proc = tbrowser.startBrowser()
 	proc.addheaders = [('User-Agent', tbrowser.useragent())]
 
-	if optionRunMode not in ["--httpauth"]:
+	if optionRunMode not in ["--httpget"]:
 
 		try:
 			utils.printf("[+] Checking connection...")
@@ -156,9 +156,9 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 							optionProxy, optionKeyFalse, optionVerbose, loginInfo, result, False
 						)
 					)
-				elif optionRunMode == "--httpauth":
+				elif optionRunMode == "--httpget":
 					worker = threading.Thread(
-						target = httpauth.submit,
+						target = httpget.submit,
 						args = (
 							optionURL, username, password,
 							optionProxy, optionVerbose, result

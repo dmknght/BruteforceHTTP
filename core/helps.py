@@ -23,7 +23,7 @@ def print_help():
 	title = ("Attack Modes", "Ony ONE attack mode can be used")
 	menu = [
 		[ "%-25s" %("--brute [Default]"), "Brute Forcing credentials"],
-		[ "%-25s" %("--httpauth"), "HTTP Basic Authentication"],
+		[ "%-25s" %("--httpget"), "HTTP GET Basic Authentication"],
 		[ "%-25s" %("--reauth"), "Checks valid credentials on other social-networks"],
 		[ "%-25s" %("--sqli [Not Available]"), "SQL Injection bypassing"],
 	]
