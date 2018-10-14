@@ -3,7 +3,10 @@ from core import utils, tbrowser, actions
 from plugins import loginbrute
 import data, threading
 
-# BUG stackoverflow wrong result randomly
+# BUG [x] ReAuth: Can't find login form at https://mail.protonmail.com/login
+	#[x] ReAuth: Can't find login form at https://mega.nz/login
+# BUG: Form matching id wrong after submit
+
 
 try:
 	from Queue import Queue
@@ -21,7 +24,6 @@ def submit(optionURL, tryCreds, optionProxy, optionVerbose, result):
 
 	try:
 		proc = tbrowser.startBrowser()
-
 		proc.addheaders = [('User-Agent', tbrowser.useragent())]
 
 		utils.printf("[+] Checking %s" %(optionURL))
@@ -31,7 +33,7 @@ def submit(optionURL, tryCreds, optionProxy, optionVerbose, result):
 
 	except Exception as err:
 		if optionVerbose:
-			utils.printf("[x] ReAuth: %s" %(err), "bad")
+			utils.printf("[x] ReAuth: %s at %s" %(err, optionURL), "bad")
 		
 
 	if not loginInfo:
