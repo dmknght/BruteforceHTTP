@@ -1,5 +1,24 @@
 #https://github.com/rapid7/metasploit-framework/tree/master/data/wordlists
 
+def social_urls():
+	# https://accounts.google.com/signin
+	# TODO include gmail
+	return """https://www.facebook.com/login.php
+	https://mobile.twitter.com/login
+	https://ask.fm/login
+	https://www.linkedin.com/uas/login
+	https://github.com/login
+	https://mail.protonmail.com/login
+	https://www.virustotal.com/en/account/signin/
+	https://signin.ebay.com/ws/eBayISAPI.dll
+	https://en.wikipedia.org/w/index.php?title=Special:UserLogin
+	https://stackoverflow.com/users/login
+	https://foursquare.com/login
+	https://gitlab.com/users/sign_in
+	https://www.airdroid.com/en/signin/
+	https://login.yahoo.com
+	https://www.mediafire.com/login/"""
+
 def webshell_user():
 	return """admin
 	root
