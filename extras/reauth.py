@@ -34,6 +34,8 @@ def run(checkedURL, creds, optionThreads, optionProxy, optionVerbose):
 				# TODO better threads: this thread is shits
 				# both checking and doing in threading
 				# currently checking is single threads
+				# create new function that checking and calling (without thread)
+				# Threading it
 				utils.printf("[+] Checking %s" %(optionURL))
 		
 				proc = tbrowser.startBrowser()
