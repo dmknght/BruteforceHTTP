@@ -120,12 +120,12 @@ def getUserOptions():
 	
 	if len(sys.argv) == 1:
 		helps.print_fast_help()
-		utils.printf("  Use [-h / --help / help] for more information!\n")
+		utils.printf("  Use [-h / -help / --help / help] for more information!\n")
 		sys.exit(0)
 	
 	idx = 1
 	while idx < len(sys.argv):
-		if sys.argv[idx] in ("-h", "--help", "help"):
+		if sys.argv[idx] in ("-h", "-help", "--help", "help"):
 			helps.print_help()
 			sys.exit(0)
 			
