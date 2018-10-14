@@ -11,11 +11,11 @@ except ImportError as err:
 	print(err)
 	sys.exit("Error while importing modules")
 
+# A FIX FOR FORM HASH UTF8
+# https://stackoverflow.com/a/33025422
+reload(sys)
+sys.setdefaultencoding('utf8')
 
-########################## SSL
-#	https://stackoverflow.com/a/35960702
-#
-########################## End ssl
 
 def main(optionURL, setOptions, optionRunMode, setRunOptions):
 	
@@ -35,7 +35,10 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 	except ImportError as err:
 		utils.die(err, "Try: pip install %s" %(str(err).split(" ")[-1]))
 
-			
+	########################## SSL
+	#	https://stackoverflow.com/a/35960702
+	#
+	########################## End ssl
 	try:
 		_create_unverified_https_context = ssl._create_unverified_context
 	except AttributeError:
