@@ -5,7 +5,8 @@ import data, threading
 
 # BUG [x] ReAuth: Can't find login form at https://mail.protonmail.com/login
 	#[x] ReAuth: Can't find login form at https://mega.nz/login
-# BUG: Form matching id wrong after submit
+# BUG: no control matching name 'session[password]' at https://mobile.twitter.com/login
+# BUG: no control matching name 'password' at https://github.com/login
 
 
 try:
