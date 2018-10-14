@@ -22,7 +22,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 	def do_job(jobs):
 		for job in jobs:
 			job.start()
-			utils.printp
+
 		for job in jobs:
 			job.join()
 
