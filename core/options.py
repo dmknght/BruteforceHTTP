@@ -1,5 +1,5 @@
 import sys, data
-from core import utils, actions
+from core import utils, actions, helps
 
 ##############################################
 #	Parse user's options
@@ -19,7 +19,7 @@ MODE = "--brute"
 DEF_WORDLIST = ("default", "router", "unix", "tomcat", "cctv", "mirai", "http", "webshell")
 
 
-r_options = {
+run_options = {
 	"--proxy": False,
 	"--report": False,
 	"--verbose": False,
@@ -36,7 +36,7 @@ def checkURL(url):
 	except:
 		return None
 	
-def checkOption(options, r_options):
+def checkOption(options, run_options):
 	
 	finalOption = {}
 	global MODE, DEF_WORDLIST
@@ -69,26 +69,26 @@ def checkOption(options, r_options):
 	
 	finalOption["falsekey"] = options["-k"]
 		
-	if r_options["--proxy"]:
+	if run_options["--proxy"]:
 		try:
 			import data
-			r_options["--proxy"] = actions.fread("%s/liveproxy.txt" %(data.__path__[0])).split("\n")
+			run_options["--proxy"] = actions.fread("%s/liveproxy.txt" %(data.__path__[0])).split("\n")
 		except Exception as err:
 			utils.printf("Argument error", err)
 	
-	return finalOption, r_options
+	return finalOption, run_options
 
 
 def getUserOptions():
 		
-	global URL, MODE, r_options, DEF_WORDLIST
+	global URL, MODE, run_options, DEF_WORDLIST
 	
 	# Default operation modes:
 	#	--brute: brute force
 	#	--sqli: sql injection bypass login (TODO)
 	#	--httpauth: http basic authentication
 	
-	DEF_R_MODE = ("--brute", "--sqli", "--httpauth")
+	RUN_MODE = ("--brute", "--sqli", "--httpauth")
 	
 	# Default running mode:
 	#	--verbose: display informations
@@ -117,23 +117,23 @@ def getUserOptions():
 	########### STARTING ##################
 	
 	if len(sys.argv) == 1:
-		utils.print_fast_help()
+		helps.print_fast_help()
 		utils.printf("  Use [-h / --help / help] for more information!\n")
 		sys.exit(0)
 	
 	idx = 1
 	while idx < len(sys.argv):
 		if sys.argv[idx] in ("-h", "--help", "help"):
-			utils.print_help()
+			helps.print_help()
 			sys.exit(0)
 			
 		else:
 			if sys.argv[idx][:2] == "--":
-				if sys.argv[idx] in r_options.keys():
+				if sys.argv[idx] in run_options.keys():
 					# --verbose", "--report", "--proxy"
-					r_options[sys.argv[idx]] = True
+					run_options[sys.argv[idx]] = True
 
-				elif sys.argv[idx] in DEF_R_MODE:
+				elif sys.argv[idx] in RUN_MODE:
 					# "--brute", "--sqli", "--httpauth"
 					MODE = sys.argv[idx]
 					
@@ -176,18 +176,18 @@ def getUserOptions():
 		except Exception as err:
 			utils.die("GetProxy: Error while parsing arguments", err)
 			
-		getproxy.main(URL, threads, r_options["--verbose"])
+		getproxy.main(URL, threads, run_options["--verbose"])
 		
 		
 		# GET NEW PROXY LIST ONLY
 		if not URL:
 			sys.exit(0)
 		# else: CHECK PROXY TO TARGET DONE, AUTO ATTACK?
-		# 	r_options["--proxy"] == True		
+		# 	run_options["--proxy"] == True		
 
 	if not URL:
 		utils.die("Error while parsing arguments", "Invalid URL")
-	utils.printf(utils.start_banner(URL, options, MODE, r_options), "good")
-	options, r_options = checkOption(options, r_options)
+	utils.printf(utils.start_banner(URL, options, MODE, run_options), "good")
+	options, run_options = checkOption(options, run_options)
 
-	return URL, options, MODE, r_options
+	return URL, options, MODE, run_options
