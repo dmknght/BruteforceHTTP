@@ -78,7 +78,7 @@ Windows platform is unsupported
 
 ## Credit
 Special thank to all authors of these projects:
-- [Mechanize Project](http://wwwsearch.sourceforge.net/mechanize/)
+- [Mechanize Project](https://github.com/python-mechanize/)
 - [Fuzzdb-project: user-agent list](https://github.com/fuzzdb-project/fuzzdb/blob/master/discovery/UserAgent/UserAgentListCommon.txt)
 - [routersploit project: print_table function](https://github.com/threat9/routersploit/blob/master/routersploit/core/exploit/printer.py)
 - [Metasploit-framework project: Wordlists](https://github.com/rapid7/metasploit-framework/tree/master/data/wordlists)
