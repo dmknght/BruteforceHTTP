@@ -3,7 +3,8 @@
 def social_urls():
 	# https://accounts.google.com/signin
 	# TODO include gmail
-	return """https://www.facebook.com/login.php
+	return """https://mega.nz/login
+	https://www.facebook.com/login.php
 	https://mobile.twitter.com/login
 	https://ask.fm/login
 	https://www.linkedin.com/uas/login
