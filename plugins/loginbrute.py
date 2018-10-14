@@ -66,7 +66,7 @@ def submit(optionURL, tryCred, setProxyList, setKeyFalse, optionVerbose, loginIn
 					if not optionReauth:
 						result.put([tryUsername, tryPassword])
 					else:
-						result.put(optionURL)
+						result.put([optionURL.split("/")[2], tryUsername, tryPassword])
 
 					#	Clear object and try new username
 
@@ -84,7 +84,7 @@ def submit(optionURL, tryCred, setProxyList, setKeyFalse, optionVerbose, loginIn
 				if not optionReauth:
 					result.put([tryUsername, tryPassword])
 				else:
-					result.put(optionURL)
+					result.put([optionURL.split("/")[2], tryUsername, tryPassword])
 
 				#	Clear object and try new username
 		else:
