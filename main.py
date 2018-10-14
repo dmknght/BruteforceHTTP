@@ -248,4 +248,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions):
 		sys.exit(0)
 
 if __name__ == "__main__":
-	main(*options.getUserOptions())
+	try:
+		main(*options.getUserOptions())
+	except Exception as err:
+		utils.die("", err)
