@@ -10,7 +10,6 @@ from core import utils, actions, helps
 """
 	Format: python main.py [--<mode>] [-<option> <value>] <url>
 	mode and option are optinal
-	Todo: add working modules (likes getproxy) to main		
 """
 
 	
@@ -112,8 +111,11 @@ def getUserOptions():
 		"-U": None,
 	}
 	
-	GETPROXY = False
-	
+	extras_mode = {
+		"--getproxy": False,
+		"--reauth": False,
+	}
+		
 	########### STARTING ##################
 	
 	if len(sys.argv) == 1:
@@ -144,8 +146,8 @@ def getUserOptions():
 					else:
 						utils.die("Error while parsing arguments", "Invalid wordlist %s" %(sys.argv[idx + 1]))
 				
-				elif sys.argv[idx] == "--getproxy":
-					GETPROXY = True
+				elif sys.argv[idx] in extras_mode.keys():
+					extras_mode[sys.argv[idx]] = True
 
 				else:
 					utils.die("Error while parsing arguments", "Invalid option %s" %(sys.argv[idx]))
@@ -165,7 +167,7 @@ def getUserOptions():
 	
 	URL = checkURL(URL)
 
-	if GETPROXY:
+	if extras_mode["--getproxy"]:
 		# TODO Auto brute using proxy after get new proxy
 		# TODO New help banner
 		
@@ -190,4 +192,4 @@ def getUserOptions():
 	utils.printf(utils.start_banner(URL, options, MODE, run_options), "good")
 	options, run_options = checkOption(options, run_options)
 
-	return URL, options, MODE, run_options
+	return URL, options, MODE, run_options, extras_mode["--reauth"]
