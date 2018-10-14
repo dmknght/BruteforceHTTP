@@ -30,4 +30,4 @@ def submit(URL, tryUsername, tryPassword, proxy, verbose, result):
 			# unknown
 			pass
 	except Exception as err:
-		utils.printf("[x] Error: %s:%s\n%s" %(tryUsername, tryPassword, error), "bad")
+		utils.printf("[x] Error: %s:%s\n%s at %s" %(tryUsername, tryPassword, error, URL), "bad")
