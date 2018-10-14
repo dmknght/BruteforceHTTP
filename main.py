@@ -153,7 +153,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 						target = loginbrute.submit,
 						args = (
 							optionURL, [password, username],
-							optionProxy, optionKeyFalse, optionVerbose, loginInfo, result
+							optionProxy, optionKeyFalse, optionVerbose, loginInfo, result, False
 						)
 					)
 				elif optionRunMode == "--httpauth":
@@ -186,7 +186,6 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 
 	### ALL TASKS DONE ####
 	finally:
-		runtime = time.time() - timeStarting
 		"""
 			All threads have been set daemon
 			Running threads should be stopped after main task done
@@ -206,6 +205,8 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 
 				if IS_REGULAR:
 					utils.print_table(("Username", "Password"), *credentials)
+					utils.printf("")
+					
 					if optionReauth:
 						from extras import reauth
 						reauth.run(optionURL, credentials, optionThreads, optionProxy, optionVerbose)
@@ -246,6 +247,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 			utils.printf("\n[x] Error while getting result.\n", "bad")
 			utils.printf(err, "bad")
 
+		runtime = time.time() - timeStarting
 		utils.printf("\n[*] Time elapsed: %0.5s [s]\n" %(runtime), "good")
 
 		sys.exit(0)
