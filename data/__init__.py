@@ -27,7 +27,7 @@ def webshell_user():
 	r00t
 	b374k"""
 
-def webshell_password():
+def webshell_pass():
 	return """r00t
 	admin
 	p4kl0nc4t
