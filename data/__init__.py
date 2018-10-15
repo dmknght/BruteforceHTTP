@@ -23,12 +23,14 @@ def social_urls():
 
 def webshell_user():
 	return """admin
+	123
 	root
 	r00t
 	b374k"""
 
 def webshell_pass():
 	return """r00t
+	123
 	admin
 	p4kl0nc4t
 	IndoXploit
