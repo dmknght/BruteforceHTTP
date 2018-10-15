@@ -15,7 +15,7 @@ def submit(optionURL, tryCred, setProxyList, setKeyFalse, optionVerbose, loginIn
 	proc.addheaders = [('User-Agent', user_agent)]
 	
 	for cred in list(result.queue):
-		if tryUsername == cred[1]:
+		if tryUsername == cred[0]:
 			return 0 # don't run if find password of username
 	
 	if setProxyList:
