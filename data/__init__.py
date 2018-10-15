@@ -5,6 +5,7 @@ def social_urls():
 	# TODO include gmail
 	# https://mega.nz/login
 	# https://mail.protonmail.com/login
+	# https://www.mediafire.com/login/
 	# TODO Seems like using JS
 	return """	https://www.facebook.com/login.php
 	https://mobile.twitter.com/login
@@ -18,8 +19,7 @@ def social_urls():
 	https://foursquare.com/login
 	https://gitlab.com/users/sign_in
 	https://www.airdroid.com/en/signin/
-	https://login.yahoo.com
-	https://www.mediafire.com/login/"""
+	https://login.yahoo.com"""
 
 def webshell_user():
 	return """admin
