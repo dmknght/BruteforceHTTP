@@ -58,13 +58,13 @@ def checkOption(options, run_options):
 		
 	else:
 		# WARNING eval() is called. It can be unsafe
-		finalOption["passlist"] = eval("data.%s_pass()" %(options["-p"])) if options["-p"] in DEF_WORDLIST else actions.fread(options["-p"])
+		finalOption["passlist"] = eval("data.%s_pass()" %(options["-p"])).replace("\t", "") if options["-p"] in DEF_WORDLIST else actions.fread(options["-p"])
 		
 		if options["-U"]:
 			finalOption["userlist"] = actions.lread(options["-U"])
 			
 		else:
-			finalOption["userlist"] = eval("data.%s_user()" %(options["-u"])) if options["-u"] in DEF_WORDLIST else actions.fread(options["-u"])
+			finalOption["userlist"] = eval("data.%s_user()" %(options["-u"])).replace("\t", "") if options["-u"] in DEF_WORDLIST else actions.fread(options["-u"])
 	
 	finalOption["falsekey"] = options["-k"]
 		
