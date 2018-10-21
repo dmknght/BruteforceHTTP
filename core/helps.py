@@ -13,7 +13,7 @@ def print_help():
 	menu = [
 		[ "%-25s" %("-u <path_to_wordlist>"), "-u /usr/share/wordlists/nmap.lst"],
 		[ "%-25s" %("-p <path_to_wordlist>"), "-p /usr/share/wordlists/fasttrack.txt"],
-		[ "%-25s" %("-U <username>"), "-U admin | -U admin:user1 | -U admin,root,user"],
+		[ "%-25s" %("-U <username>"), "-U admin | -U admin:user1"],
 		[ "%-25s" %("-t <threads>"), "-t 32"],
 		[ "%-25s" %("-k <false_key>"), "-k 'Invalid username'"]
 	]

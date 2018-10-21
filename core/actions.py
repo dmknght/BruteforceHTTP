@@ -45,11 +45,7 @@ def lread(strUsername):
 	#
 	##################################
 
-	for char in (":", ","):
-		if char in strUsername:
-			break
-
-	return strUsername.split(char)
+	return strUsername.split(":")
 
 def fload(pathFileLocation):
 	###################################
