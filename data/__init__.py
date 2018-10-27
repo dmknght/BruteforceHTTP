@@ -26,6 +26,7 @@ def webshell_user():
 	123
 	root
 	r00t
+	dn
 	b374k"""
 
 def webshell_pass():
@@ -34,6 +35,8 @@ def webshell_pass():
 	admin
 	p4kl0nc4t
 	IndoXploit
+	angel
+	dn
 	b374k"""
 
 def router_user():
