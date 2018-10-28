@@ -3,6 +3,6 @@
 #
 
 
-from ..core import options
+from BruteforceHTTP.core import options
 
 print options.getUserOptions()
