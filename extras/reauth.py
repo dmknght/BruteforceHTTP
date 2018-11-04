@@ -1,6 +1,6 @@
 
 from core import utils, tbrowser, actions
-from plugins import loginbrute
+from modules import loginbrute
 import data, threading
 
 # BUG [x] ReAuth: Can't find login form at https://mail.protonmail.com/login

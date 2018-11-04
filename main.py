@@ -5,7 +5,7 @@
 try:
 	import sys, ssl, itertools
 	from core import actions, utils, tbrowser, options
-	from plugins import loginbrute, httpget
+	from modules import loginbrute, httpget
 
 except ImportError as err:
 	print(err)
