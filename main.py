@@ -94,7 +94,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 			#TODO PROXY
 			utils.printf("[*] Connect success!", "good")
 			loginInfo = tbrowser.parseLoginForm(proc.forms())
-			
+
 		except Exception as err:
 			utils.die("[x] Connection error", err)
 
@@ -116,7 +116,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 			elif actions.size_o(loginInfo[1]) == 2:
 				if optionVerbose:
 					utils.printf("[*] Form ID: %s\n  [*] Username field: %s\n  [*] Password field: %s"
-						%(loginInfo[0], loginInfo[1][0], loginInfo[1][1]), "good")
+						%(loginInfo[0], loginInfo[1][1], loginInfo[1][0]), "good")
 
 		except Exception as err:
 			utils.die("[x] Geting login information error", err)
