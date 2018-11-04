@@ -35,7 +35,6 @@ def checkPasswdForm(objBrowserForm):
 	# Find login form
 	for form in objBrowserForm:
 		try:
-			#retTextField = re.findall(regTextField, str(form).encode('utf-8'), re.MULTILINE)[0]
 			#retPassField = re.findall(regPassField, str(form).encode('utf-8'), re.MULTILINE)[0]
 			retPassField = re.findall(regPassField, str(form), re.MULTILINE)[0]
 			return (retFormID, [retPassField])
