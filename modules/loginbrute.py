@@ -50,7 +50,7 @@ def submit(optionURL, tryCred, setProxyList, setKeyFalse, optionVerbose, loginIn
 		#	If no login form -> success
 		#	TODO improve condition to use captcha
 		
-		if not tbrowser.parseLoginForm(proc.forms()):
+		if tbrowser.parseLoginForm(proc.forms()) != loginInfo:
 
 			if setKeyFalse:
 				if setKeyFalse not in proc.response().read():
