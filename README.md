@@ -11,9 +11,8 @@ Requirements
 | name        |
 |-------------|
 | python2     |
-| python2-pip [optional]|
+| python2-pip |
 | python-regex |
-| python-mechanize |
 
 1.
 ```

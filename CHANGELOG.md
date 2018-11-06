@@ -1,3 +1,8 @@
+# 07/11/2018
+* Print username, password in message now using list format so space characters won't be missed
+* Remove -k option (key false)
+* New way for detecting user's session
+
 # 15/10/2018
 * Added --reauth option: Check password for other social URLs
 * Change --httpauth to --httpget

@@ -58,7 +58,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 
 	# BUG bad memory management
 	
-	optionUserlist, optionThreads, optionKeyFalse, optionPasslist = setOptions.values()
+	optionUserlist, optionThreads, optionPasslist = setOptions.values()
 	optionProxy, optionReport, optionVerbose = setRunOptions.values()
 		
 	try:
@@ -153,7 +153,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 						target = loginbrute.submit,
 						args = (
 							optionURL, [password, username],
-							optionProxy, optionKeyFalse, optionVerbose, loginInfo, result, False
+							optionProxy, optionVerbose, loginInfo, result, False
 						)
 					)
 				elif optionRunMode == "--httpget":

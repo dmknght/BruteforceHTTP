@@ -65,9 +65,7 @@ def checkOption(options, run_options):
 			
 		else:
 			finalOption["userlist"] = eval("data.%s_user()" %(options["-u"])).replace("\t", "") if options["-u"] in DEF_WORDLIST else actions.fread(options["-u"])
-	
-	finalOption["falsekey"] = options["-k"]
-		
+			
 	if run_options["--proxy"]:
 		try:
 			import data
@@ -99,7 +97,6 @@ def getUserOptions():
 	#	-p: Read passlit from file
 	#	-U: Read username / userlist directly from argument
 	#	-t: Number of threads using
-	#	-k: Set key for false condition (for special cases)
 	
 	# Default wordlist: default, router, unix, tomcat, cctv, mirai, http
 		
@@ -107,7 +104,6 @@ def getUserOptions():
 		"-u": "default",
 		"-p": "default",
 		"-t": 16,
-		"-k": None,
 		"-U": None,
 	}
 	

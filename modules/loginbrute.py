@@ -1,7 +1,7 @@
 import mechanize
 from core import utils, actions, tbrowser		
 
-def submit(optionURL, tryCred, setProxyList, setKeyFalse, optionVerbose, loginInfo, result, optionReauth):
+def submit(optionURL, tryCred, setProxyList, optionVerbose, loginInfo, result, optionReauth):
 
 	#	Get login form field informations
 	
@@ -51,45 +51,71 @@ def submit(optionURL, tryCred, setProxyList, setKeyFalse, optionVerbose, loginIn
 		#	TODO improve condition to use captcha
 		
 		if tbrowser.parseLoginForm(proc.forms()) != loginInfo:
-
-			if setKeyFalse:
-				if setKeyFalse not in proc.response().read():
-					
-					# Add creds to success list
-					# If verbose: print
-					if tryUsername:
-						utils.printf("[*] Match found: %s:%s" %(tryUsername, tryPassword), "good")
-						#result.put([tryUsername, tryPassword])
-					else:
-						utils.printf("[*] Password found: %s" %(tryPassword), "good")
-						#result.put([tryPassword])
-					if not optionReauth:
-						result.put([tryUsername, tryPassword])
-					else:
-						result.put([optionURL.split("/")[2], tryUsername, tryPassword])
-
-					#	Clear object and try new username
-
-				else:
-					if optionVerbose:
-						utils.printf("[-] Failed: %s:%s" %(tryUsername, tryPassword), "bad")
-					
-			else:
+			
+			# NEW TESTING BLOCK: CHECK AS SESSION
+			proc.open(optionURL)
+			# Reopen index url, if no login form -> loged in (??)
+			# BUG: if url is login url (not index), this might not work
+			# how about blocked messages?
+			
+			if tbrowser.parseLoginForm(proc.forms()) != loginInfo:
 				if tryUsername:
-					utils.printf("[*] Match found: %s:%s" %(tryUsername, tryPassword), "good")
+					utils.printf("[*] Match found: %s" %([tryUsername, tryPassword]), "good")
 					#result.put([tryUsername, tryPassword])
 				else:
-					utils.printf("[*] Password found: %s" %(tryPassword), "good")
+					utils.printf("[*] Password found: %s" %([tryPassword]), "good")
 					#result.put([tryPassword])
 				if not optionReauth:
 					result.put([tryUsername, tryPassword])
 				else:
 					result.put([optionURL.split("/")[2], tryUsername, tryPassword])
-
-				#	Clear object and try new username
+			
+			else:
+				utils.printf("[x] Unknow page %s" %([tryUsername, tryPassword]), "norm")
+				# if optionVerbose:
+				# 	utils.printf("[x] Unknow page (%s:%s)" %(tryUsername, tryPassword), "norm")
 		else:
 			if optionVerbose:
-				utils.printf("[-] Failed: %s:%s" %(tryUsername, tryPassword), "bad")
+				utils.printf("[-] Failed: %s" %([tryUsername, tryPassword]), "bad")
+			# END OF NEW TESTING BLOCK
+		# 	if setKeyFalse:
+		# 		if setKeyFalse not in proc.response().read():
+		# 
+		# 			# Add creds to success list
+		# 			# If verbose: print
+		# 			if tryUsername:
+		# 				utils.printf("[*] Match found: %s:%s" %(tryUsername, tryPassword), "good")
+		# 				#result.put([tryUsername, tryPassword])
+		# 			else:
+		# 				utils.printf("[*] Password found: %s" %(tryPassword), "good")
+		# 				#result.put([tryPassword])
+		# 			if not optionReauth:
+		# 				result.put([tryUsername, tryPassword])
+		# 			else:
+		# 				result.put([optionURL.split("/")[2], tryUsername, tryPassword])
+		# 
+		# 			#	Clear object and try new username
+		# 
+		# 		else:
+		# 			if optionVerbose:
+		# 				utils.printf("[-] Failed: %s:%s" %(tryUsername, tryPassword), "bad")
+		# 
+		# 	else:
+		# 		if tryUsername:
+		# 			utils.printf("[*] Match found: %s:%s" %(tryUsername, tryPassword), "good")
+		# 			#result.put([tryUsername, tryPassword])
+		# 		else:
+		# 			utils.printf("[*] Password found: %s" %(tryPassword), "good")
+		# 			#result.put([tryPassword])
+		# 		if not optionReauth:
+		# 			result.put([tryUsername, tryPassword])
+		# 		else:
+		# 			result.put([optionURL.split("/")[2], tryUsername, tryPassword])
+		# 
+		# 		#	Clear object and try new username
+		# else:
+		# 	if optionVerbose:
+		# 		utils.printf("[-] Failed: %s:%s" %(tryUsername, tryPassword), "bad")
 
 	except mechanize.HTTPError as error:
 		#	Get blocked

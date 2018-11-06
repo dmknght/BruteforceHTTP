@@ -206,8 +206,6 @@ def start_banner(url, options, mode, r_options):
 	|    Attack mode: %-8s   |  Using Proxy: %-6s |   Threads: %-4s   |
 	|                                                                       |
 	|-----------------------------------------------------------------------|
-	|     False keyword: %-50s |
-	|-----------------------------------------------------------------------|
 	\\           Verbose: %-11s       |         Report: %-11s    /
 	  =====================================================================
 	""" %( " " * 23 + "HTTP LOGIN BRUTE FORCER",
@@ -218,7 +216,6 @@ def start_banner(url, options, mode, r_options):
 		mode.replace("--", ""),
 		r_options["--proxy"],
 		options["-t"],
-		fixLen(str(options["-k"]), 49),
 		r_options["--verbose"],
 		r_options["--report"],
 	)
