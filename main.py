@@ -257,4 +257,4 @@ if __name__ == "__main__":
 		utils.die("", err)
 	finally:
 		runtime = time.time() - runtime
-		utils.printf("\n[*] Time elapsed: %0.5s [s]\n" %(runtime), "good")
+		utils.printf("\n[*] Time elapsed: %0.5f [s]\n" %(runtime), "good")
