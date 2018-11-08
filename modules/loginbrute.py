@@ -41,9 +41,10 @@ def submit(optionURL, tryCred, setProxyList, optionVerbose, loginInfo, result, o
 		proc.submit()
 
 		if optionVerbose:
-			utils.printf("Trying: %s:%s" %(tryUsername, tryPassword), 'norm')
 			if setProxyList:
-				utils.printf("Using proxy: %s" %(proxyAddr), 'norm')
+				utils.printf("[+] Trying: %s through %s" %([tryUsername, tryPassword], proxyAddr), 'norm')
+			else:
+				utils.printf("[+] Trying: %s" %([tryUsername, tryPassword]), 'norm')
 		
 		#	Reload - useful for redirect to dashboard
 		proc.reload()
@@ -73,7 +74,7 @@ def submit(optionURL, tryCred, setProxyList, optionVerbose, loginInfo, result, o
 			else:
 				# IF USER PROVIDES INDEX URL, THIS CONDITION IS USAULLY TRUE
 				# IF USER PROVIDES LOGIN URL, THIS CONDITION WILL NOT TRUE
-				utils.printf("[x] Unknow page %s" %([tryUsername, tryPassword]), "norm")
+				utils.printf("[+] Possibly successful %s" %([tryUsername, tryPassword]), "norm")
 				# if optionVerbose:
 				# 	utils.printf("[x] Unknow page (%s:%s)" %(tryUsername, tryPassword), "norm")
 		else:

@@ -22,11 +22,11 @@ def getNewProxy(PROXY_PATH):
 			result = [element.replace("</td><td>", ":") for element in result]
 			return result
 		except Exception as error:
-			utils.die("GetProxy: Error while parsing proxies.", error)
+			utils.die("[x] GetProxy: Error while parsing proxies.", error)
 			
 	def checProxyConnProvider(url = "https://free-proxy-list.net/"):
 		try:
-			utils.printf("Connecting to %s." %(url))
+			utils.printf("[+] Connecting to %s." %(url))
 
 			getproxy = tbrowser.startBrowser()
 
@@ -34,11 +34,11 @@ def getNewProxy(PROXY_PATH):
 			
 			getproxy.addheaders = [('User-Agent', user_agent)]
 			getproxy.open(url)
-			utils.printf("Gathering proxies completed.", "good")
+			utils.printf("[*] Gathering proxies completed.", "good")
 			return getproxy.response().read()
 
 		except Exception as error:
-			utils.die("GetProxy: Error while connecting to proxy server!", error)
+			utils.die("[x] GetProxy: Error while connecting to proxy server!", error)
 		finally:
 			getproxy.close()
 			
@@ -50,12 +50,12 @@ def getNewProxy(PROXY_PATH):
 	finally:
 		try:
 			listproxy = "\n".join(listproxy)
-			utils.printf("Write data to %s." %(PROXY_PATH))
+			utils.printf("[+] Writing data to %s" %(PROXY_PATH))
 			actions.fwrite(PROXY_PATH, listproxy)
-			utils.printf("Write data to %s completed!" %(PROXY_PATH), "good")
+			utils.printf("[x] Write data to %s completed!" %(PROXY_PATH), "good")
 
 		except Exception as error:
-			utils.die("GetProxy: Error while writting data", error)
+			utils.die("[x] GetProxy: Error while writting data", error)
 
 
 def check(target, threads, verbose, PROXY_PATH):
@@ -74,17 +74,17 @@ def check(target, threads, verbose, PROXY_PATH):
 			proxyTest.set_proxies({"http": proxyAddr})
 
 			if verbose:
-				utils.printf("Trying: %s" %(proxyAddr))
+				utils.printf("[+] Trying: %s" %(proxyAddr))
 
 			proxyTest.open(target)
 
 			if verbose:
-				utils.printf("Success: %s" %(proxyAddr), "good")
+				utils.printf("[*] Success: %s" %(proxyAddr), "good")
 			result.put(proxyAddr)
 
 		except Exception as error:
 			if verbose:
-				utils.printf("%s %s" %(proxyAddr, error), "bad")
+				utils.printf("[x] %s %s" %(proxyAddr, error), "bad")
 		finally:
 			try:
 				proxyTest.close()
@@ -113,17 +113,17 @@ def check(target, threads, verbose, PROXY_PATH):
 		del workers[:]
 
 	except KeyboardInterrupt as error:
-		utils.die("GetProxy: Terminated by user!", error)
+		utils.die("[x] GetProxy: Terminated by user!", error)
 	except Exception as error:
-		utils.die("GetProxy: Error while checking proxy connection to target", error)
+		utils.die("[x] GetProxy: Error while checking proxy connection to target", error)
 
 	finally:
 		try:
-			utils.printf("GetProxy: Write working proxies")
+			utils.printf("[+] Write working proxies")
 			actions.fwrite(PROXY_PATH, "\n".join(list(result.queue)))
-			utils.printf("Write working proxies completed", "good")
+			utils.printf("[*] Write working proxies completed", "good")
 		except Exception as err:
-			utils.die("GetProxy: Error while writing result", err)
+			utils.die("[x] GetProxy: Error while writing result", err)
 
 def main(URL, threads, verbose):
 	try:
@@ -133,4 +133,4 @@ def main(URL, threads, verbose):
 		if URL:
 			check(URL, threads, verbose, save)
 	except Exception as err:
-		utils.die("GetProxy: Error while running module", err)
+		utils.die("[x] GetProxy: Runtime error", err)

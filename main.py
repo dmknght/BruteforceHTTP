@@ -9,7 +9,7 @@ try:
 
 except ImportError as err:
 	print(err)
-	sys.exit("Error while importing modules")
+	sys.exit("[x] Error while importing modules")
 
 # A FIX FOR FORM HASH UTF8
 # https://stackoverflow.com/a/33025422
@@ -33,7 +33,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 	try:
 		import mechanize, re, requests # for basichttpauthentication, not useless, use later
 	except ImportError as err:
-		utils.die(err, "Try: pip install %s" %(str(err).split(" ")[-1]))
+		utils.die(err, "[x] Try: pip install %s" %(str(err).split(" ")[-1]))
 
 	########################## SSL
 	#	https://stackoverflow.com/a/35960702
@@ -92,9 +92,9 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 			utils.printf("[+] Checking connection...")
 			proc.open(optionURL)
 			if proc.geturl() != optionURL:
-				utils.printf("[*] Website directs to: %s" %(proc.geturl()), "good")
+				utils.printf("[*] Website directs to: %s" %(proc.geturl()), "norm")
 			#TODO PROXY
-			utils.printf("[*] Connect success! Starting attack....", "good")
+			utils.printf("[+] Connect success! Detecting login form....")
 			loginInfo = tbrowser.parseLoginForm(proc.forms())
 
 		except Exception as err:
@@ -106,22 +106,24 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 		try:
 			if not loginInfo:
 				utils.die("[x] URL error", "No login field found")
+			
+			else:
+				if actions.size_o(loginInfo[1]) == 1: # Password checking only
+					if optionVerbose:
+						utils.printf("[*] Form ID: %s\n  [*] Password field: %s"
+							%(loginInfo[0], loginInfo[1][0]), "good")
+						del optionUserlist[:]
+					optionUserlist = [""]
+					IS_REGULAR = False
 
-			elif actions.size_o(loginInfo[1]) == 1: # Password checking only
-				if optionVerbose:
-					utils.printf("[*] Form ID: %s\n  [*] Password field: %s"
-						%(loginInfo[0], loginInfo[1][0]), "good")
-					del optionUserlist[:]
-				optionUserlist = [""]
-				IS_REGULAR = False
-
-			elif actions.size_o(loginInfo[1]) == 2:
-				if optionVerbose:
-					utils.printf("[*] Form ID: %s\n  [*] Username field: %s\n  [*] Password field: %s"
-						%(loginInfo[0], loginInfo[1][1], loginInfo[1][0]), "good")
+				elif actions.size_o(loginInfo[1]) == 2:
+					if optionVerbose:
+						utils.printf("[*] Form ID: %s\n  [*] Username field: %s\n  [*] Password field: %s"
+							%(loginInfo[0], loginInfo[1][1], loginInfo[1][0]), "good")
+				utils.printf("[+] Login form detected! Starting attack...")
 
 		except Exception as err:
-			utils.die("[x] Geting login information error", err)
+			utils.die("[x] Getting login information error", err)
 
 			
 	#### END OF CHECKING TARGET
