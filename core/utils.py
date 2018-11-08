@@ -61,7 +61,7 @@ def print_table(headers, *args, **kwargs):
 	#	ALL input data must be string
 	################################################
 
-	extra_fill = kwargs.get("extra_fill", 5)
+	extra_fill = kwargs.get("extra_fill", 3)
 	header_separator = kwargs.get("header_separator", "-")
 	if not all(map(lambda x: len(x) == len(headers), args)):
 		printf("[x] PrintTable: Error headers", 'bad')
