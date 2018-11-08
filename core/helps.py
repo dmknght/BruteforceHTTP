@@ -2,38 +2,44 @@ import sys
 from core import utils
 
 def print_fast_help():
-	print('\nUsage: %s [<option> <value>] [mode] [--list <value>] URL\n' %(sys.argv[0]))
+	print('\nUsage: %s [<option> <value>] [mode] [--list <values>] URL\n' %(sys.argv[0]))
 
 def print_help():
 
 	#	Print project's help table
 	print_fast_help()
 	print("\nOptions:\n")
-	title = ("Formats", "Examples")
+	title = ("Formats", "Default values", "Examples")
 	menu = [
-		[ "%-25s" %("-u <path_to_wordlist>"), "-u /usr/share/wordlists/nmap.lst"],
-		[ "%-25s" %("-p <path_to_wordlist>"), "-p /usr/share/wordlists/fasttrack.txt"],
-		[ "%-25s" %("-U <username>"), "-U admin | -U admin:user1"],
-		[ "%-25s" %("-t <threads>"), "-t 32"],
+		[ "%-25s" %("-u <path_to_wordlist>"), "default (list)", "-u /usr/share/wordlists/nmap.lst"],
+		[ "%-25s" %("-p <path_to_wordlist>"), "default (list)", "-p /usr/share/wordlists/fasttrack.txt"],
+		[ "%-25s" %("-U <username>"), "None", "-U admin | -U admin:user1"],
+		[ "%-25s" %("-t <threads>"), "16 (threads)", "-t 32"],
 	]
 	utils.print_table(title, *menu)
 	
-	print("\nModes:\n")
-	title = ("Attack Modes", "Ony ONE attack mode can be used")
+	print("\nModes: Only ONE attack mode can be used\n")
+	title = ("Attack Modes", "Descriptions")
 	menu = [
-		[ "%-25s" %("--brute [Default]"), "Brute Forcing credentials"],
-		[ "%-25s" %("--httpget"), "HTTP GET Basic Authentication"],
-		[ "%-25s" %("--reauth"), "Checks valid credentials on other social-networks"],
-		[ "%-25s" %("--sqli [Not Available]"), "SQL Injection bypassing"],
+		[ "%-25s" %("--brute [Default]"), "HTTP POST Form attack"],
+		[ "%-25s" %("--httpget"), "HTTP Basic Authentication attack"],
+		[ "%-25s" %("--sqli [Not Available]"), "SQL Injection login bypass attack"],
 	]
 	utils.print_table(title, *menu)
 
 	print("")
 	title = ("Running Modes", "Descriptions")
 	menu = [
-		[ "%-25s" %("--proxy"), "Use Proxy each connection"],
-		[ "%-25s" %("--verbose"), "Display more information"],
-		[ "%-25s" %("--getproxy"), "Get proxy list [Auto check connect to target]"],
+		[ "%-25s" %("--proxy"), "Attack using proxies"],
+		[ "%-25s" %("--verbose"), "Display running information"],
+	]
+	utils.print_table(title, *menu)
+	
+	print("")
+	title = ("Extra Modes", "Descriptions")
+	menu = [
+		[ "%-25s" %("--reauth"), "Checks valid credentials on other social-networks"],
+		[ "%-25s" %("--getproxy"), "Get list of proxy, check connection though each address"],
 	]
 	utils.print_table(title, *menu)
 
