@@ -62,10 +62,10 @@ def submit(optionURL, tryCred, setProxyList, optionVerbose, loginInfo, result, o
 			if tbrowser.parseLoginForm(proc.forms()) != loginInfo:
 				if tryUsername:
 					utils.printf("[*] Match found: %s" %([tryUsername, tryPassword]), "good")
-					#result.put([tryUsername, tryPassword])
+
 				else:
 					utils.printf("[*] Password found: %s" %([tryPassword]), "good")
-					#result.put([tryPassword])
+
 				if not optionReauth:
 					result.put([tryUsername, tryPassword])
 				else:
