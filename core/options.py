@@ -107,7 +107,7 @@ def getUserOptions():
 		"-U": None,
 	}
 	
-	extras_mode = {
+	extra_mode = {
 		"--getproxy": False,
 		"--reauth": False,
 	}
@@ -142,8 +142,8 @@ def getUserOptions():
 					else:
 						utils.die("[x] Options: Arguments error", "Invalid wordlist %s" %(sys.argv[idx + 1]))
 				
-				elif sys.argv[idx] in extras_mode.keys():
-					extras_mode[sys.argv[idx]] = True
+				elif sys.argv[idx] in extra_mode.keys():
+					extra_mode[sys.argv[idx]] = True
 
 				else:
 					utils.die("[x] Options: Arguments error", "Invalid option %s" %(sys.argv[idx]))
@@ -163,7 +163,7 @@ def getUserOptions():
 	
 	URL = checkURL(URL)
 
-	if extras_mode["--getproxy"]:
+	if extra_mode["--getproxy"]:
 		# TODO Auto brute using proxy after get new proxy
 		# TODO New help banner
 		
@@ -193,4 +193,4 @@ def getUserOptions():
 	utils.printf(utils.start_banner(URL, options, MODE, run_options), "good")
 	options, run_options = checkOption(options, run_options)
 
-	return URL, options, MODE, run_options, extras_mode["--reauth"]
+	return URL, options, MODE, run_options, extra_mode["--reauth"]
