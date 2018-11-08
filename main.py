@@ -3,7 +3,7 @@
 # CHECK IMPORTING MODULES
 
 try:
-	import sys, ssl, itertools
+	import sys, ssl, time
 	from core import actions, utils, tbrowser, options
 	from modules import loginbrute, httpget
 
@@ -27,7 +27,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 			job.join()
 
 
-	import time, os, threading
+	import os, threading
 
 	# CHECK IMPORTING ALL LIBS. IMPORT HERE -> CALL HELP_BANNER ONLY FASTER
 	try:
@@ -70,11 +70,6 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 		optionPasslist = optionPasslist.split("\n")
 	except:
 		pass
-
-
-	## End of testing
-
-	timeStarting = time.time()
 
 	# get login form info 
 	# call brute
@@ -251,13 +246,15 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 			utils.printf("\n[x] Error while getting result.\n", "bad")
 			utils.printf(err, "bad")
 
-		runtime = time.time() - timeStarting
-		utils.printf("\n[*] Time elapsed: %0.5s [s]\n" %(runtime), "good")
 
 		sys.exit(0)
 
 if __name__ == "__main__":
 	try:
+		runtime = time.time()
 		main(*options.getUserOptions())
 	except Exception as err:
 		utils.die("", err)
+	finally:
+		runtime = time.time() - runtime
+		utils.printf("\n[*] Time elapsed: %0.5s [s]\n" %(runtime), "good")

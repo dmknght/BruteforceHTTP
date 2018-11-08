@@ -79,7 +79,10 @@ def submit(optionURL, tryCred, setProxyList, optionVerbose, loginInfo, result, o
 				# 	utils.printf("[x] Unknow page (%s:%s)" %(tryUsername, tryPassword), "norm")
 		else:
 			if optionVerbose:
-				utils.printf("[-] Failed: %s" %([tryUsername, tryPassword]), "bad")
+				if setProxyList:
+					utils.printf("[-] Failed: %s through %s" %([tryUsername, tryPassword], proxyAddr), "bad")
+				else:
+					utils.printf("[-] Failed: %s" %([tryUsername, tryPassword]), "bad")
 			# END OF NEW TESTING BLOCK
 		# 	if setKeyFalse:
 		# 		if setKeyFalse not in proc.response().read():

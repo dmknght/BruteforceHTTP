@@ -48,9 +48,9 @@ def checkOption(options, run_options):
 	try:
 		finalOption["threads"] = int(options["-t"])
 		if finalOption["threads"] < 1:
-			utils.die("Argument error", "Threads must be > 1")
+			utils.die("[x] Options: Arguments error", "Threads must be > 1")
 	except Exception as ConvertError:
-		utils.die("Invalid threads", ConvertError)
+		utils.die("[x] Options: Arguments error - Invalid threads", ConvertError)
 		
 	if MODE == "--sqli":
 		finalOption["passlist"] = "MyP@ssW0rd"
@@ -71,7 +71,7 @@ def checkOption(options, run_options):
 			import data
 			run_options["--proxy"] = actions.fread("%s/liveproxy.txt" %(data.__path__[0])).split("\n")
 		except Exception as err:
-			utils.printf("Argument error", err)
+			utils.printf("[x] Options: Arguments error", err)
 	
 	return finalOption, run_options
 
@@ -140,20 +140,20 @@ def getUserOptions():
 					if sys.argv[idx + 1] in DEF_WORDLIST:
 						options["-u"], options["-p"], idx = sys.argv[idx + 1], sys.argv[idx + 1], idx + 1
 					else:
-						utils.die("Error while parsing arguments", "Invalid wordlist %s" %(sys.argv[idx + 1]))
+						utils.die("[x] Options: Arguments error", "Invalid wordlist %s" %(sys.argv[idx + 1]))
 				
 				elif sys.argv[idx] in extras_mode.keys():
 					extras_mode[sys.argv[idx]] = True
 
 				else:
-					utils.die("Error while parsing arguments", "Invalid option %s" %(sys.argv[idx]))
+					utils.die("[x] Options: Arguments error", "Invalid option %s" %(sys.argv[idx]))
 
 			elif sys.argv[idx][:1] == "-":
 				if sys.argv[idx] in options.keys():
 					# "-u", "-U", "-p", "-t", "-k"
 					options[sys.argv[idx]], idx = sys.argv[idx + 1], idx + 1
 				else:
-					utils.die("Error while parsing arguments", "Invalid option %s" %(sys.argv[idx]))
+					utils.die("[x] Options: Arguments error", "Invalid option %s" %(sys.argv[idx]))
 				
 			else:
 				URL  = sys.argv[idx]
@@ -172,19 +172,24 @@ def getUserOptions():
 		try:
 			threads = int(options["-t"])
 		except Exception as err:
-			utils.die("GetProxy: Error while parsing arguments", err)
+			utils.die("[x] GetProxy: Error while parsing arguments", err)
 			
 		getproxy.main(URL, threads, run_options["--verbose"])
 		
 		
 		# GET NEW PROXY LIST ONLY
 		if not URL:
+			utils.printf("[-] No URL provided. Refresh list only.")
 			sys.exit(0)
-		# else: CHECK PROXY TO TARGET DONE, AUTO ATTACK?
-		# 	run_options["--proxy"] == True		
+		
+		if not run_options["--proxy"]:
+			utils.printf("[-] No --proxy after --getproxy. Refresh list only!", "bad")
+			utils.printf("[+] Use --proxy to attack with proxies and downloaded list.")
+			utils.printf("[+] Use --getproxy --proxy to attack automatically after refresh list")
+			sys.exit(0)		
 
 	if not URL:
-		utils.die("Error while parsing arguments", "Invalid URL")
+		utils.die("[x] Options: Arguments error", "Invalid URL")
 	utils.printf(utils.start_banner(URL, options, MODE, run_options), "good")
 	options, run_options = checkOption(options, run_options)
 

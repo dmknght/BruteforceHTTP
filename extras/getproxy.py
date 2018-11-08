@@ -50,9 +50,9 @@ def getNewProxy(PROXY_PATH):
 	finally:
 		try:
 			listproxy = "\n".join(listproxy)
-			utils.printf("[+] Writing data to %s" %(PROXY_PATH))
+			utils.printf("[+] Saving to %s" %(PROXY_PATH))
 			actions.fwrite(PROXY_PATH, listproxy)
-			utils.printf("[x] Write data to %s completed!" %(PROXY_PATH), "good")
+			utils.printf("[*] Data saved!", "good")
 
 		except Exception as error:
 			utils.die("[x] GetProxy: Error while writting data", error)
