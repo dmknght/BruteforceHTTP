@@ -126,14 +126,14 @@ def submit(optionURL, tryCred, setProxyList, optionVerbose, loginInfo, result, o
 	except mechanize.HTTPError as error:
 		#	Get blocked
 		if optionVerbose:
-			utils.printf("[x] Error: %s:%s\n%s at %s" %(tryUsername, tryPassword, error, optionURL), "bad")
+			utils.printf("[x] Attacking: %s %s" %(error, [tryUsername, tryPassword]), "bad")
 		return False
 
-	except Exception as error:		
+	except Exception as error:
 		if optionVerbose:
-			utils.printf("[x] Error: %s:%s\n%s at %s" %(tryUsername, tryPassword, error, optionURL), "bad")
+			utils.printf("[x] Attacking: %s %s" %(error, [tryUsername, tryPassword]), "bad")
 		return False
 		
 	finally:
 		proc.close()
-	return True
+		return True
