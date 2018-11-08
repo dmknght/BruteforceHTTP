@@ -71,6 +71,8 @@ def submit(optionURL, tryCred, setProxyList, optionVerbose, loginInfo, result, o
 					result.put([optionURL.split("/")[2], tryUsername, tryPassword])
 			
 			else:
+				# IF USER PROVIDES INDEX URL, THIS CONDITION IS USAULLY TRUE
+				# IF USER PROVIDES LOGIN URL, THIS CONDITION WILL NOT TRUE
 				utils.printf("[x] Unknow page %s" %([tryUsername, tryPassword]), "norm")
 				# if optionVerbose:
 				# 	utils.printf("[x] Unknow page (%s:%s)" %(tryUsername, tryPassword), "norm")

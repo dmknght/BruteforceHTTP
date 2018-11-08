@@ -91,12 +91,14 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 		try:
 			utils.printf("[+] Checking connection...")
 			proc.open(optionURL)
+			if proc.geturl() != optionURL:
+				utils.printf("[*] Website directs to: %s" %(proc.geturl()), "good")
 			#TODO PROXY
-			utils.printf("[*] Connect success!", "good")
+			utils.printf("[*] Connect success! Starting attack....", "good")
 			loginInfo = tbrowser.parseLoginForm(proc.forms())
 
 		except Exception as err:
-			utils.die("[x] Connection error", err)
+			utils.die("[x] Connection error. Exit!", err)
 
 		finally:
 			proc.close()
@@ -129,7 +131,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 	sizeUserlist = actions.size_o(optionUserlist)
 	workers = []
 	
-	utils.printf("[+] Starting attack....\n[+] Task count: %s tasks" %(sizeUserlist * sizePasslist))
+	utils.printf("[+] Task counts: %s tasks" %(sizeUserlist * sizePasslist))
 
 	############################
 	#	Setting up threads
