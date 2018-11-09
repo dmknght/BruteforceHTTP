@@ -53,9 +53,9 @@ def checkOption(options, run_options):
 	except Exception as ConvertError:
 		utils.die("[x] Options: Arguments error - Invalid threads", ConvertError)
 		
-	if MODE == "--sqli":
-		finalOption["passlist"] = "MyP@ssW0rd"
-		finalOption["userlist"] = data.getSQL()
+	# if MODE == "--sqli":
+	# 	finalOption["passlist"] = "MyP@ssW0rd"
+	# 	finalOption["userlist"] = data.getSQL()
 		
 	else:
 		# WARNING eval() is called. It can be unsafe
@@ -141,20 +141,25 @@ def getUserOptions():
 					if sys.argv[idx + 1] in DEF_WORDLIST:
 						options["-u"], options["-p"], idx = sys.argv[idx + 1], sys.argv[idx + 1], idx + 1
 					else:
-						utils.die("[x] Options: Arguments error", "Invalid wordlist %s" %(sys.argv[idx + 1]))
+						utils.die("[x] Options: Arguments error",
+						"Invalid wordlist %s" %(sys.argv[idx + 1]))
 				
 				elif sys.argv[idx] in extra_mode.keys():
 					extra_mode[sys.argv[idx]] = True
 
 				else:
-					utils.die("[x] Options: Arguments error", "Invalid option %s" %(sys.argv[idx]))
+					utils.die(
+						"[x] Options: Arguments error",
+						"Invalid option %s" %(sys.argv[idx]))
 
 			elif sys.argv[idx][:1] == "-":
 				if sys.argv[idx] in options.keys():
 					# "-u", "-U", "-p", "-t", "-k"
 					options[sys.argv[idx]], idx = sys.argv[idx + 1], idx + 1
 				else:
-					utils.die("[x] Options: Arguments error", "Invalid option %s" %(sys.argv[idx]))
+					utils.die(
+						"[x] Options: Arguments error",
+						"Invalid option %s" %(sys.argv[idx]))
 				
 			else:
 				URL  = sys.argv[idx]
