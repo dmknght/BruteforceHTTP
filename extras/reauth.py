@@ -5,7 +5,8 @@ import data, threading
 
 # BUG [x] ReAuth: Can't find login form at https://mail.protonmail.com/login
 	#[x] ReAuth: Can't find login form at https://mega.nz/login
-# BUG: no control matching name 'session[password]' at https://mobile.twitter.com/login
+# BUG: no control matching name 'session[password]'
+# 	at https://mobile.twitter.com/login
 # BUG: no control matching name 'password' at https://github.com/login
 
 
@@ -43,8 +44,9 @@ def submit(optionURL, tryCreds, optionProxy, optionVerbose, result):
 	else:
 		try:
 			loginbrute.submit(
-				optionURL, tryCreds[::-1], optionProxy, # Reverse username + password. Dynamic submit in loginbrute
-				"", optionVerbose, loginInfo, result, True # No key false by default, result now should be url
+				# Reverse username + password. Dynamic submit in loginbrute
+				optionURL, tryCreds[::-1], optionProxy, 
+				optionVerbose, loginInfo, result, True
 			)
 		except Exception as err:
 			if optionVerbose:

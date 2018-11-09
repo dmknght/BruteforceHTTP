@@ -1,7 +1,8 @@
 import mechanize
 from core import utils, actions, tbrowser		
 
-def submit(optionURL, tryCred, setProxyList, optionVerbose, loginInfo, result, optionReauth):
+def submit(optionURL, tryCred, setProxyList, optionVerbose,\
+	loginInfo, result, optionReauth):
 
 	#	Get login form field informations
 	
@@ -42,9 +43,14 @@ def submit(optionURL, tryCred, setProxyList, optionVerbose, loginInfo, result, o
 
 		if optionVerbose:
 			if setProxyList:
-				utils.printf("[+] Trying: %s through %s" %([tryUsername, tryPassword], proxyAddr), 'norm')
+				utils.printf("[+] Trying: %s through %s" %(
+					[tryUsername, tryPassword],
+					proxyAddr),
+				'norm')
 			else:
-				utils.printf("[+] Trying: %s" %([tryUsername, tryPassword]), 'norm')
+				utils.printf("[+] Trying: %s" %(
+					[tryUsername, tryPassword]),
+				'norm')
 		
 		#	Reload - useful for redirect to dashboard
 		proc.reload()
@@ -53,7 +59,6 @@ def submit(optionURL, tryCred, setProxyList, optionVerbose, loginInfo, result, o
 		
 		if tbrowser.parseLoginForm(proc.forms()) != loginInfo:
 			
-			# NEW TESTING BLOCK: CHECK AS SESSION
 			proc.open(optionURL)
 			# Reopen index url, if no login form -> loged in (??)
 			# BUG: if url is login url (not index), this might not work
@@ -61,7 +66,9 @@ def submit(optionURL, tryCred, setProxyList, optionVerbose, loginInfo, result, o
 			
 			if tbrowser.parseLoginForm(proc.forms()) != loginInfo:
 				if tryUsername:
-					utils.printf("[*] Match found: %s" %([tryUsername, tryPassword]), "good")
+					utils.printf("[*] Match found: %s" %(
+						[tryUsername, tryPassword]),
+					"good")
 
 				else:
 					utils.printf("[*] Password found: %s" %([tryPassword]), "good")
@@ -74,64 +81,37 @@ def submit(optionURL, tryCred, setProxyList, optionVerbose, loginInfo, result, o
 			else:
 				# IF USER PROVIDES INDEX URL, THIS CONDITION IS USAULLY TRUE
 				# IF USER PROVIDES LOGIN URL, THIS CONDITION WILL NOT TRUE
-				utils.printf("[+] Possibly successful %s" %([tryUsername, tryPassword]), "norm")
-				# if optionVerbose:
-				# 	utils.printf("[x] Unknow page (%s:%s)" %(tryUsername, tryPassword), "norm")
+				utils.printf("[+] Possibly successful %s" %(
+					[tryUsername, tryPassword]),
+				"norm")
+
 		else:
 			if optionVerbose:
 				if setProxyList:
-					utils.printf("[-] Failed: %s through %s" %([tryUsername, tryPassword], proxyAddr), "bad")
+					utils.printf("[-] Failed: %s through %s" %(
+						[tryUsername, tryPassword],
+						proxyAddr),
+					"bad")
 				else:
-					utils.printf("[-] Failed: %s" %([tryUsername, tryPassword]), "bad")
-			# END OF NEW TESTING BLOCK
-		# 	if setKeyFalse:
-		# 		if setKeyFalse not in proc.response().read():
-		# 
-		# 			# Add creds to success list
-		# 			# If verbose: print
-		# 			if tryUsername:
-		# 				utils.printf("[*] Match found: %s:%s" %(tryUsername, tryPassword), "good")
-		# 				#result.put([tryUsername, tryPassword])
-		# 			else:
-		# 				utils.printf("[*] Password found: %s" %(tryPassword), "good")
-		# 				#result.put([tryPassword])
-		# 			if not optionReauth:
-		# 				result.put([tryUsername, tryPassword])
-		# 			else:
-		# 				result.put([optionURL.split("/")[2], tryUsername, tryPassword])
-		# 
-		# 			#	Clear object and try new username
-		# 
-		# 		else:
-		# 			if optionVerbose:
-		# 				utils.printf("[-] Failed: %s:%s" %(tryUsername, tryPassword), "bad")
-		# 
-		# 	else:
-		# 		if tryUsername:
-		# 			utils.printf("[*] Match found: %s:%s" %(tryUsername, tryPassword), "good")
-		# 			#result.put([tryUsername, tryPassword])
-		# 		else:
-		# 			utils.printf("[*] Password found: %s" %(tryPassword), "good")
-		# 			#result.put([tryPassword])
-		# 		if not optionReauth:
-		# 			result.put([tryUsername, tryPassword])
-		# 		else:
-		# 			result.put([optionURL.split("/")[2], tryUsername, tryPassword])
-		# 
-		# 		#	Clear object and try new username
-		# else:
-		# 	if optionVerbose:
-		# 		utils.printf("[-] Failed: %s:%s" %(tryUsername, tryPassword), "bad")
+					utils.printf("[-] Failed: %s" %(
+						[tryUsername, tryPassword]),
+					"bad")
 
 	except mechanize.HTTPError as error:
 		#	Get blocked
 		if optionVerbose:
-			utils.printf("[x] Attacking: %s %s" %(error, [tryUsername, tryPassword]), "bad")
+			utils.printf("[x] Attacking: %s %s" %(
+				error,
+				[tryUsername, tryPassword])
+			, "bad")
 		return False
 
 	except Exception as error:
 		if optionVerbose:
-			utils.printf("[x] Attacking: %s %s" %(error, [tryUsername, tryPassword]), "bad")
+			utils.printf("[x] Attacking: %s %s" %(
+				error,
+				[tryUsername, tryPassword]),
+			"bad")
 		return False
 		
 	finally:

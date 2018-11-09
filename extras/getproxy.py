@@ -115,7 +115,8 @@ def check(target, threads, verbose, PROXY_PATH):
 	except KeyboardInterrupt as error:
 		utils.die("[x] GetProxy: Terminated by user!", error)
 	except Exception as error:
-		utils.die("[x] GetProxy: Error while checking proxy connection to target", error)
+		utils.die("[x] GetProxy: Error while checking proxy connection to target",
+			error)
 
 	finally:
 		try:

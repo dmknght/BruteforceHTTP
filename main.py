@@ -104,7 +104,9 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 
 				elif actions.size_o(loginInfo[1]) == 2:
 					if optionVerbose:
-						utils.printf("[*] Form ID: %s\n  [*] Username field: %s\n  [*] Password field: %s"
+						utils.printf("[*] Form ID: %s\n"
+							"   [*] Username field: %s\n"
+							"   [*] Password field: %s"
 							%(loginInfo[0], loginInfo[1][1], loginInfo[1][0]), "good")
 				utils.printf("[+] Login form detected! Starting attack...")
 
@@ -128,9 +130,9 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 	try:
 		for password in optionPasslist:
 			for username in optionUserlist:
-				username, password = username.replace("\n", ""), password.replace("\n", "")
-				
-				
+				username = username.replace("\n", "")
+				password = password.replace("\n", "")
+
 				####
 				#	IF HAVE ENOUGH THREAD, DO IT ALL
 				###
@@ -191,7 +193,12 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 				utils.printf("[-] No match found!", "bad")
 				
 			else:
-				utils.printf("\n[*] %s valid password[s] found:\n" %(actions.size_o(credentials)), "norm")
+				utils.printf(
+					"\n[*] %s valid password[s] found:\n" %(
+						actions.size_o(credentials)
+					),
+					"norm"
+				)
 
 				if IS_REGULAR:
 					utils.print_table(("Username", "Password"), *credentials)
@@ -199,7 +206,8 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 					
 					if optionReauth:
 						from extras import reauth
-						reauth.run(optionURL, credentials, optionThreads, optionProxy, optionVerbose)
+						reauth.run(optionURL, credentials, optionThreads,
+							optionProxy, optionVerbose)
 				else:
 					if optionRunMode != "--sqli":
 						utils.print_table(("", "Password"), *credentials)
@@ -213,7 +221,9 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 					import reports
 
 					optionProxy = "True" if optionProxy else "False"
-					report_name = "%s_%s" %(time.strftime("%Y.%m.%d_%H.%M"), optionURL.split("/")[2])
+					report_name = "%s_%s" %(
+						time.strftime("%Y.%m.%d_%H.%M"), optionURL.split("/")[2]
+					)
 					report_path = "%s/%s.txt" %(reports.__path__[0], report_name)
 					
 					reports.makeReport(

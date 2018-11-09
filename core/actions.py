@@ -73,7 +73,7 @@ def fread(pathFileLocation):
 
 def fwrite(pathFileLocation, writeData):
 	try:
-		objFileWrite = open(pathFileLocation, "w'")
+		objFileWrite = open(pathFileLocation, "w")
 		objFileWrite.write(writeData)
 	except Exception as error:
 		utils.die("Error while writing data", error)
@@ -87,7 +87,7 @@ def fwrite_c(pathFileLocation, writeData):
 		fileWrite = open(pathFileLocation, "a")
 		fileWrite.write(writeData)
 	except Exception as error:
-		utils.die("Error while continuing write file", err)
+		utils.die("Error while continuing write file", error)
 	finally:
 		fileWrite.close()
 

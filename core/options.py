@@ -15,7 +15,8 @@ from core import utils, actions, helps
 	
 URL = None
 MODE = "--brute"
-DEF_WORDLIST = ("default", "router", "unix", "tomcat", "cctv", "mirai", "http", "webshell")
+DEF_WORDLIST = ("default", "router", "unix", "tomcat", "cctv",
+	"mirai", "http", "webshell")
 
 
 run_options = {
