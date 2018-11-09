@@ -19,12 +19,16 @@ sys.setdefaultencoding('utf8')
 
 def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 	
-	def do_job(jobs):
+	def do_job(jobs, trying, total):
 		for job in jobs:
 			job.start()
 
 		for job in jobs:
+			trying += 1
+			utils.progress_bar(trying, total)
 			job.join()
+		
+		return trying
 
 	########################## SSL
 	#	https://stackoverflow.com/a/35960702
@@ -119,9 +123,11 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 	
 	sizePasslist = actions.size_o(optionPasslist)
 	sizeUserlist = actions.size_o(optionUserlist)
+	total, trying = sizeUserlist * sizePasslist, 0
+
 	workers = []
 	
-	utils.printf("[+] Task counts: %s tasks" %(sizeUserlist * sizePasslist))
+	utils.printf("[+] Task counts: %s tasks" %(total))
 
 	############################
 	#	Setting up threads
@@ -137,7 +143,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 				#	IF HAVE ENOUGH THREAD, DO IT ALL
 				###
 				if actions.size_o(workers) == optionThreads:
-					do_job(workers)
+					trying = do_job(workers, trying, total)
 					del workers[:]
 
 				if optionRunMode == "--brute":
@@ -162,7 +168,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 	######### END SETTING UP THREADS ################
 		
 		#DO ALL LAST TASKs
-		do_job(workers)
+		trying = do_job(workers, trying, total)
 		del workers[:]
 
 	### CATCH ERRORS ###

@@ -15,20 +15,27 @@ def prints(mtext):
 	#	https://stackoverflow.com/a/3173338
 	#######
 
-	sys.stdout.write("\r%s\r" %(mtext)) # Print to screen
-	sys.stdout.flush() # Flush code
-	sys.stdout.write("\r%s\r" %(" " * len(mtext))) # Clean characters in line
+	# Create empty lines before bar
+	bspace = 2
+	sys.stdout.write("\n" * bspace)
+
+	# Print bar to screen
+	sys.stdout.write("\r%s\r" %(mtext))
+	sys.stdout.flush()
+	# Clean line, remove all characters
+	sys.stdout.write("\r%s\r" %(" " * len(mtext)))
+	# Return lines
+	sys.stdout.write("\033[F \033[K" * bspace)
 
 
-# def printp(count, total, bar_size = 50):
-# 	completed = (count * bar_size) / total
-# 	prints("|%s%s| %s/%s"%(
-# 		completed * '#',
-# 		(bar_size - completed) * '-',
-# 		count,
-# 		total)
-# 	)
-
+def progress_bar(trying, total, bsize = 60):
+	complete = (trying * bsize) / total
+	prints("|%s%s| %5s/%s" %(
+		complete * "#",
+		(bsize - complete) * '-',
+		trying,
+		total
+	))
 
 def printf(mtext, mtype = 'warn'):
 	############################################
