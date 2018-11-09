@@ -10,17 +10,24 @@ def prints(mtext):
 	#	https://stackoverflow.com/a/41511658
 	#############################################
 
-	print(mtext)
-	sys.stdout.write("\033[F \033[K" * actions.size_o(mtext))
+	#######
+	#	Newer version:
+	#	https://stackoverflow.com/a/3173338
+	#######
 
-def printp(count, total, bar_size = 50):
-	completed = (count * bar_size) / total
-	prints("|%s%s| %s/%s"%(
-		completed * '#',
-		(bar_size - completed) * '-',
-		count,
-		total)
-	)
+	sys.stdout.write("\r%s\r" %(mtext)) # Print to screen
+	sys.stdout.flush() # Flush code
+	sys.stdout.write("\r%s\r" %(" " * len(mtext))) # Clean characters in line
+
+
+# def printp(count, total, bar_size = 50):
+# 	completed = (count * bar_size) / total
+# 	prints("|%s%s| %s/%s"%(
+# 		completed * '#',
+# 		(bar_size - completed) * '-',
+# 		count,
+# 		total)
+# 	)
 
 
 def printf(mtext, mtype = 'warn'):
