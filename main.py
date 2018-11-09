@@ -3,7 +3,7 @@
 # CHECK IMPORTING MODULES
 
 try:
-	import sys, ssl, time
+	import sys, ssl, time, mechanize, re, threading, os, requests
 	from core import actions, utils, tbrowser, options
 	from modules import loginbrute, httpget
 
@@ -25,15 +25,6 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 
 		for job in jobs:
 			job.join()
-
-
-	import os, threading
-
-	# CHECK IMPORTING ALL LIBS. IMPORT HERE -> CALL HELP_BANNER ONLY FASTER
-	try:
-		import mechanize, re, requests # for basichttpauthentication, not useless, use later
-	except ImportError as err:
-		utils.die(err, "[x] Try: pip install %s" %(str(err).split(" ")[-1]))
 
 	########################## SSL
 	#	https://stackoverflow.com/a/35960702
