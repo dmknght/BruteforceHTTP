@@ -13,7 +13,6 @@ def submit(optionURL, tryCred, setProxyList, optionVerbose,\
 	proc = tbrowser.startBrowser()
 
 	user_agent = tbrowser.useragent()
-	proc.addheaders = [('User-Agent', user_agent)]
 	
 	for cred in list(result.queue):
 		if tryUsername == cred[0]:

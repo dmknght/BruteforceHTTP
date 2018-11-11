@@ -4,7 +4,6 @@ from core import actions, utils
 def startBrowser():
 	import mechanize
 	#https://stackoverflow.com/a/27096416
-	#browser = mechanize.Browser(factory=mechanize.RobustFactory())
 	browser = mechanize.Browser()
 	browser.set_handle_robots(False)
 	browser.set_handle_referer(True)
@@ -12,6 +11,7 @@ def startBrowser():
 	browser.set_handle_equiv(True)
 	browser.set_handle_refresh(True) 
 	browser._factory.is_html = True #https://stackoverflow.com/a/4201003
+	browser.addheaders = [('User-Agent', useragent())]
 	return browser
 
 def useragent():

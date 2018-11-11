@@ -24,8 +24,8 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 			job.start()
 
 		for job in jobs:
-			trying += 1
 			utils.progress_bar(trying, total)
+			trying += 1
 			job.join()
 		
 		return trying
@@ -74,7 +74,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 
 	# IF NOT HTTP BASIC AUTHENTICATION, CHECK RESULT AND PARSE LOGIN FORM
 	proc = tbrowser.startBrowser()
-	proc.addheaders = [('User-Agent', tbrowser.useragent())]
+	#proc.addheaders = [('User-Agent', tbrowser.useragent())]
 
 	if optionRunMode not in ["--httpget"]:
 
