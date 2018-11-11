@@ -28,7 +28,8 @@ def webshell_user():
 	r00t
 	dn
 	b374k
-	abcdef1234567890abcdef1234567890"""
+	abcdef1234567890abcdef1234567890
+	Benutzername"""
 
 def webshell_pass():
 	return """r00t
@@ -40,7 +41,8 @@ def webshell_pass():
 	dn
 	b374k
 	cokkie
-	abcdef1234567890abcdef1234567890"""
+	abcdef1234567890abcdef1234567890
+	Kennwort"""
 
 def router_user():
 	return """acc
