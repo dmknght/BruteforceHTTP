@@ -27,7 +27,8 @@ def webshell_user():
 	root
 	r00t
 	dn
-	b374k"""
+	b374k
+	abcdef1234567890abcdef1234567890"""
 
 def webshell_pass():
 	return """r00t
@@ -37,7 +38,9 @@ def webshell_pass():
 	IndoXploit
 	angel
 	dn
-	b374k"""
+	b374k
+	cokkie
+	abcdef1234567890abcdef1234567890"""
 
 def router_user():
 	return """acc
