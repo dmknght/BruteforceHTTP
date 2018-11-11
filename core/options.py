@@ -53,9 +53,9 @@ def checkOption(options, run_options):
 	except Exception as ConvertError:
 		utils.die("[x] Options: Arguments error - Invalid threads", ConvertError)
 		
-	# if MODE == "--sqli":
-	# 	finalOption["passlist"] = "MyP@ssW0rd"
-	# 	finalOption["userlist"] = data.getSQL()
+	if MODE == "--sqli":
+		finalOption["passlist"] = "MyP@ssW0rd"
+		finalOption["userlist"] = data.getSQL()
 		
 	else:
 		# WARNING eval() is called. It can be unsafe
