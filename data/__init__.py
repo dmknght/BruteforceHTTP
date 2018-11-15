@@ -42,6 +42,7 @@ def webshell_pass():
 	b374k
 	cokkie
 	abcdef1234567890abcdef1234567890
+	vhb
 	Kennwort"""
 
 def router_user():
@@ -1957,6 +1958,7 @@ def default_pass():
 	12345
 	admin!@#
 	123456
+	123@123
 	1234567
 	12345678
 	123456789
