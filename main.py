@@ -81,6 +81,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 		try:
 			utils.printf("[+] Checking connection...")
 			proc.open(optionURL)
+			utils.printf("[*] Get page: ['%s']" %(proc.title()), "good")
 			if proc.geturl() != optionURL:
 				utils.printf("[*] Website directs to: %s" %(proc.geturl()), "norm")
 			#TODO PROXY

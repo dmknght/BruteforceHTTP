@@ -76,6 +76,8 @@ def submit(optionURL, tryCred, setProxyList, optionVerbose,\
 					result.put([tryUsername, tryPassword])
 				else:
 					result.put([optionURL.split("/")[2], tryUsername, tryPassword])
+				
+				utils.printf("[*] Get page: ['%s']" %(proc.title()), "good")
 			
 			else:
 				# IF USER PROVIDES INDEX URL, THIS CONDITION IS USAULLY TRUE
@@ -83,6 +85,8 @@ def submit(optionURL, tryCred, setProxyList, optionVerbose,\
 				utils.printf("[+] Possibly successful %s" %(
 					[tryUsername, tryPassword]),
 				"norm")
+				if optionVerbose:
+					utils.printf("[*] %s" %(proc.title()), "good")
 
 		else:
 			if optionVerbose:
