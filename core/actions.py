@@ -96,7 +96,53 @@ def randomString(min = 2, max = 5):
 	charset = string.lowercase + string.uppercase
 	return ''.join(random.choice(charset) for _ in xrange(min, max))
 
+
+def verify_url(options):
+	try:
+		if "http" not in options.url:
+			options.url = "http://%s" %(options.url)
+	except:
+		options.url = None
+
+def verify_options(options):
+	# Check url
+	import data
+
+	# CHECK threads option
+	try:
+		uopt = options.user_options # shorter name
+		uopt["-t"] = int(uopt["-t"])
+		if uopt["-t"] < 1:
+			utils.die(
+				"[x] Options: Invalid option \"threads\"",
+				"Thread number must be larger than 1"
+			)
+	except Exception as error:
+		utils.die(
+			"[x] Options: Invalid option \"threads\"",
+			error
+		)
 	
+	# CHECK username list options
+	if uopt["-U"]:
+		uopt["-u"] = lread(uopt["-U"])
+	else:
+		if uopt["-u"] in options.WORDLISTS:
+			uopt["-u"] = eval("data.%s_user()" %(
+				uopt["-u"]
+			)).replace("\t", "")
+		else:
+			uopt["-u"] = fread(uopt["-u"])
+	
+	# CHECK passlist option
+	if uopt["-p"] in options.WORDLISTS:
+		uopt["-p"] = eval("data.%s_pass()" %(
+			uopt["-p"]
+		)).replace("\t", "")
+	else:
+		uopt["-p"] = fread(uopt["-p"])
+
+
 if __name__ == "__main__":
 	utils.die("Oops! Wrong place", "Find other place")
 	

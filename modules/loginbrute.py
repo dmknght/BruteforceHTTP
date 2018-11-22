@@ -37,6 +37,7 @@ def submit(optionURL, tryCred, setProxyList, optionVerbose,\
 		for field, cred in zip(frmFields, tryCred):
 			proc.form[field] = cred
 
+		page_title = proc.title()
 		#	Send request
 		proc.submit()
 
@@ -58,12 +59,15 @@ def submit(optionURL, tryCred, setProxyList, optionVerbose,\
 		
 		if tbrowser.parseLoginForm(proc.forms()) != loginInfo:
 			
-			proc.open(optionURL)
+			#proc.reload() #proc.open(optionURL)
 			# Reopen index url, if no login form -> loged in (??)
 			# BUG: if url is login url (not index), this might not work
 			# how about blocked messages?
 			
+			proc.reload()
+
 			if tbrowser.parseLoginForm(proc.forms()) != loginInfo:
+				utils.printf("[*] Get page: ['%s']" %(proc.title()), "good")
 				if tryUsername:
 					utils.printf("[*] Match found: %s" %(
 						[tryUsername, tryPassword]),
@@ -76,15 +80,14 @@ def submit(optionURL, tryCred, setProxyList, optionVerbose,\
 					result.put([tryUsername, tryPassword])
 				else:
 					result.put([optionURL.split("/")[2], tryUsername, tryPassword])
-				
-				utils.printf("[*] Get page: ['%s']" %(proc.title()), "good")
 			
 			else:
 				# IF USER PROVIDES INDEX URL, THIS CONDITION IS USAULLY TRUE
 				# IF USER PROVIDES LOGIN URL, THIS CONDITION WILL NOT TRUE
-				utils.printf("[+] Possibly successful %s" %(
+				utils.printf("[x] Possibly error %s" %(
 					[tryUsername, tryPassword]),
-				"norm")
+				"bad")
+				utils.printf("[*] Get page: ['%s']" %(proc.title()), "bad")
 				if optionVerbose:
 					utils.printf("[*] %s" %(proc.title()), "good")
 
