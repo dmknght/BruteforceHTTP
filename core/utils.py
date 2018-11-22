@@ -16,8 +16,8 @@ def prints(mtext):
 	#######
 
 	# Create empty lines before bar
-	bspace = 2
-	sys.stdout.write("\n" * bspace)
+	#bspace = 2
+	#sys.stdout.write("\n" * bspace)
 
 	# Print bar to screen
 	sys.stdout.write("\r%s\r" %(mtext))
@@ -25,7 +25,7 @@ def prints(mtext):
 	# Clean line, remove all characters
 	sys.stdout.write("\r%s\r" %(" " * len(mtext)))
 	# Return lines
-	sys.stdout.write("\033[F \033[K" * bspace)
+	#sys.stdout.write("\033[F \033[K" * bspace)
 
 
 def progress_bar(trying, total, bsize = 60):
