@@ -103,8 +103,7 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 					if optionVerbose:
 						utils.printf("[*] Form ID: %s\n  [*] Password field: %s"
 							%(loginInfo[0], loginInfo[1][0]), "good")
-						del optionUserlist[:]
-					optionUserlist = [""]
+					del optionUserlist[:]
 					IS_REGULAR = False
 
 				elif actions.size_o(loginInfo[1]) == 2:
