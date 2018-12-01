@@ -203,8 +203,8 @@ def report_banner(url, mode, proxy, thread, creds, daytime, runtime, regular):
 
 	return header.replace("\t", "  ") + body + footer.replace("\t", "  ")
 
-def start_banner(url, options, mode, r_options):
-	usr = options["-U"] if options["-U"] else options["-u"]
+def start_banner(options):
+	usr = options.options["-U"] if options.options["-U"] else options.options["-u"]
 
 	banner = """
 	  =====================================================================
@@ -220,18 +220,21 @@ def start_banner(url, options, mode, r_options):
 	|    Attack mode: %-8s   |  Using Proxy: %-6s |   Threads: %-4s   |
 	|                                                                       |
 	|-----------------------------------------------------------------------|
+	|    Extra mode: %-52s   |
+	|-----------------------------------------------------------------------|
 	\\           Verbose: %-11s       |         Report: %-11s    /
 	  =====================================================================
 	""" %( " " * 23 + "HTTP LOGIN BRUTE FORCER",
-		fixLen(url.split("/")[2], 59),
-		fixLen(url, 62),
+		fixLen(options.url.split("/")[2], 59),
+		fixLen(options.url, 62),
 		fixLen(usr, 57),
-		fixLen(options["-p"], 57),
-		mode.replace("--", ""),
-		r_options["--proxy"],
-		options["-t"],
-		r_options["--verbose"],
-		r_options["--report"],
+		fixLen(options.options["-p"], 57),
+		options.attack_mode.replace("--", ""),
+		options.run_options["--proxy"],
+		options.threads,
+		"None" if actions.size_o(options.extras) == 0 else fixLen(str(options.extras), 51),
+		options.verbose,
+		options.report,
 	)
 	
 	return banner.replace("\t", "  ")

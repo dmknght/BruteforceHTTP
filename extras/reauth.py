@@ -22,66 +22,68 @@ def do_job(jobs):
 	for job in jobs:
 		job.join()
 		
-def submit(optionURL, tryCreds, optionProxy, optionVerbose, result):
+def submit(url, options, tryCreds, result):
 
 	try:
 		proc = tbrowser.startBrowser()
 		proc.addheaders = [('User-Agent', tbrowser.useragent())]
 
-		utils.printf("[+] Checking %s" %(optionURL))
+		utils.printf("[+] Checking %s" %(url))
 
-		proc.open(optionURL)
+		proc.open(url)
 		loginInfo = tbrowser.parseLoginForm(proc.forms())
 
 	except Exception as err:
-		if optionVerbose:
-			utils.printf("[x] ReAuth: %s at %s" %(err, optionURL), "bad")
+		if options.verbose:
+			utils.printf("[x] ReAuth: %s at %s" %(err, url), "bad")
 		
 
 	if not loginInfo:
-		if optionVerbose:
-			utils.printf("[x] ReAuth: Can't find login form at %s" %(optionURL), "bad")
+		if options.verbose:
+			utils.printf("[x] ReAuth: Can't find login form at %s" %(url), "bad")
 	else:
 		try:
+			options.url = url
+
 			loginbrute.submit(
 				# Reverse username + password. Dynamic submit in loginbrute
-				optionURL, tryCreds[::-1], optionProxy, 
-				optionVerbose, loginInfo, result, True
+				options, loginInfo, tryCreds[-2:][::-1], result
 			)
 		except Exception as err:
-			if optionVerbose:
+			if options.verbose:
 				utils.printf("[x] ReAuth: Submitting error for %s" %(err), "bad")
 
-def run(checkedURL, creds, optionThreads, optionProxy, optionVerbose):
+def run(options, creds):
 	social_urls = data.social_urls().replace("\t", "").split("\n")
 
 	for url in social_urls:
 		# BUG double_free() 
-		if checkedURL in url:
+		if options.url in url:
 			social_urls.remove(url)
 
 
 	result = Queue()
-	workers = []
+	#workers = []
 
 	try:
 		for tryCreds in creds:
 			for url in social_urls:
-				if actions.size_o(workers) == optionThreads:
-					do_job(workers)
-					del workers[:]
+				submit(url, options, tryCreds, result)
 
-				worker = threading.Thread(
-					target = submit,
-					args = (url, tryCreds, optionProxy, optionVerbose, result)
-				)
+				# if actions.size_o(workers) == options.threads:
+				# 	do_job(workers)
+				# 	del workers[:]
 
-				worker.daemon = True
-				workers.append(worker)
+				# worker = threading.Thread(
+				# 	target = submit,
+				# 	args = (url, options, tryCreds, result)
+				# )
 
+				#worker.daemon = True
+				#workers.append(worker)
 
-		do_job(workers)
-		del workers[:]
+		#do_job(workers)
+		#del workers[:]
 		
 	
 	except KeyboardInterrupt:

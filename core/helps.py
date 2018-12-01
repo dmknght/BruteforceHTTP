@@ -2,7 +2,7 @@ import sys
 from core import utils
 
 def print_fast_help():
-	print('\nUsage: %s [<option> <value>] [mode] [--list <values>] URL\n' %(
+	print('\nUsage: %s [<option> <value>] [mode] [--list <list_name>] URL\n' %(
 		sys.argv[0])
 	)
 

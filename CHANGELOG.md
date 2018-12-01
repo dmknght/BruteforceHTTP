@@ -1,3 +1,8 @@
+# 1/12/2018
+* Use oop
+* Reworked modules
+* Bug fixeds and some improvements
+
 # 07/11/2018
 * Print username, password in message now using list format so space characters won't be missed
 * Remove -k option (key false)

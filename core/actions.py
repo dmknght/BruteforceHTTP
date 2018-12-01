@@ -110,9 +110,8 @@ def verify_options(options):
 
 	# CHECK threads option
 	try:
-		uopt = options.user_options # shorter name
-		uopt["-t"] = int(uopt["-t"])
-		if uopt["-t"] < 1:
+		options.threads = int(options.options["-t"])
+		if options.threads < 1:
 			utils.die(
 				"[x] Options: Invalid option \"threads\"",
 				"Thread number must be larger than 1"
@@ -124,23 +123,25 @@ def verify_options(options):
 		)
 	
 	# CHECK username list options
-	if uopt["-U"]:
-		uopt["-u"] = lread(uopt["-U"])
+	if options.options["-U"]:
+		options.username = lread(options.options["-U"])
 	else:
-		if uopt["-u"] in options.WORDLISTS:
-			uopt["-u"] = eval("data.%s_user()" %(
-				uopt["-u"]
-			)).replace("\t", "")
+		if options.options["-u"] in options.WORDLISTS:
+			options.username = eval("data.%s_user()" %(options.options["-u"])).replace("\t", "").split("\n")
 		else:
-			uopt["-u"] = fread(uopt["-u"])
+			options.username = fread(options.options["-u"])
 	
 	# CHECK passlist option
-	if uopt["-p"] in options.WORDLISTS:
-		uopt["-p"] = eval("data.%s_pass()" %(
-			uopt["-p"]
-		)).replace("\t", "")
+	if options.options["-p"] in options.WORDLISTS:
+		options.passwd = eval("data.%s_pass()" %(options.options["-p"])).replace("\t", "").split("\n")
 	else:
-		uopt["-p"] = fread(uopt["-p"])
+		options.passwd = fread(options.options["-p"])
+
+
+	options.report = options.run_options["--report"]
+	options.verbose = options.run_options["--verbose"]
+	if options.run_options["--proxy"]:
+		options.proxy = fread("%s/liveproxy.txt" %(data.__path__[0])).split("\n")
 
 
 if __name__ == "__main__":

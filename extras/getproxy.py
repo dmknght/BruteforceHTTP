@@ -58,7 +58,7 @@ def getNewProxy(PROXY_PATH):
 			utils.die("[x] GetProxy: Error while writting data", error)
 
 
-def check(target, threads, verbose, PROXY_PATH):
+def check(options, PROXY_PATH):
 	
 	def do_job(jobs):
 		for job in jobs:
@@ -76,7 +76,7 @@ def check(target, threads, verbose, PROXY_PATH):
 			if verbose:
 				utils.printf("[+] Trying: %s" %(proxyAddr))
 
-			proxyTest.open(target)
+			proxyTest.open(options.url)
 
 			if verbose:
 				utils.printf("[*] Success: %s" %(proxyAddr), "good")
@@ -97,13 +97,13 @@ def check(target, threads, verbose, PROXY_PATH):
 		workers = []
 		result = Queue()
 		for tryProxy in proxylist:
-			if actions.size_o(workers) == threads:
+			if actions.size_o(workers) == options.threads:
 				do_job(workers)
 				del workers[:]
 			
 			worker = threading.Thread(
 				target = checProxyConn,
-				args = (tryProxy, target, result, verbose)
+				args = (tryProxy, options.url, result, options.verbose)
 			)
 
 			worker.daemon = True
@@ -126,12 +126,12 @@ def check(target, threads, verbose, PROXY_PATH):
 		except Exception as err:
 			utils.die("[x] GetProxy: Error while writing result", err)
 
-def main(URL, threads, verbose):
+def main(options):
 	try:
 		import data
 		save = "%s/liveproxy.txt" %(data.__path__[0])
 		getNewProxy(save)
-		if URL:
-			check(URL, threads, verbose, save)
+		if options.url:
+			check(options, save)
 	except Exception as err:
 		utils.die("[x] GetProxy: Runtime error", err)

