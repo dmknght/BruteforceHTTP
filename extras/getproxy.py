@@ -113,7 +113,10 @@ def check(options, PROXY_PATH):
 		del workers[:]
 
 	except KeyboardInterrupt as error:
-		utils.die("[x] GetProxy: Terminated by user!", error)
+		utils.printf("[x] Terminated by user!", "bad")
+		import os
+		os._exit(0)
+	
 	except Exception as error:
 		utils.die("[x] GetProxy: Error while checking proxy connection to target",
 			error)

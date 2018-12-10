@@ -87,7 +87,9 @@ def run(options, creds):
 		
 	
 	except KeyboardInterrupt:
-		utils.die("[x] Terminated by user!", "KeyboardInterrupt")
+		utils.printf("[x] Terminated by user!", "bad")
+		import os
+		os._exit(0)
 
 	except SystemExit:
 		utils.die("[x] Terminated by system!", "SystemExit")
