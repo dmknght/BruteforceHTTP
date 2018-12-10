@@ -31,7 +31,7 @@ def checkTarget(opts):
 			proc.open(opts.url)
 			if proc.geturl() != opts.url:
 				utils.printf(
-					"[*] Website directs to: %s" %(proc.geturl()),
+					"[*] Website moves to: %s" %(proc.geturl()),
 					"norm"
 				)
 			if opts.run_options["--verbose"]:
@@ -91,7 +91,11 @@ def _http_get(options):
 		del workers[:]
 
 	except KeyboardInterrupt:
-		utils.printf("[x] Terminated by user!", "bad")
+		if threading.activeCount() > 1:
+			utils.printf("[x] Terminated by user!", "bad")
+			import os
+			os._exit(0)
+		
 
 	except SystemExit:
 		utils.printf("[x] Terminated by system!", "bad")
@@ -139,9 +143,9 @@ def _login_brute(options):
 			if actions.size_o(loginInfo[1]) == 1:
 				tasks = actions.size_o(options.passwd)
 
-				if options.verbose:
-					utils.printf("[*] Form ID: %s\n  [*] Password field: %s"
-						%(loginInfo[0], loginInfo[1][0]), "good")
+				#if options.verbose:
+				utils.printf("[*] Form ID: %s\n  [*] Password field: %s"
+					%(loginInfo[0], loginInfo[1][0]), "good")
 
 				utils.printf("[+] Login form detected! Starting attack...")
 				utils.printf("[+] Task counts: %s tasks" %(tasks))
@@ -166,11 +170,11 @@ def _login_brute(options):
 
 				tasks = actions.size_o(options.passwd) * actions.size_o(options.username)
 
-				if options.verbose:
-					utils.printf("[*] Form ID: %s\n"
-						"   [*] Username field: %s\n"
-						"   [*] Password field: %s"
-						%(loginInfo[0], loginInfo[1][1], loginInfo[1][0]), "good")
+				#if options.verbose:
+				utils.printf("[*] Form ID: %s\n"
+					"   [*] Username field: %s\n"
+					"   [*] Password field: %s"
+					%(loginInfo[0], loginInfo[1][1], loginInfo[1][0]), "good")
 
 				utils.printf("[+] Login form detected! Starting attack...")
 				utils.printf("[+] Task counts: %s tasks" %(tasks))
@@ -194,7 +198,11 @@ def _login_brute(options):
 				del workers[:]
 				
 		except KeyboardInterrupt:
-			utils.printf("[x] Terminated by user!", "bad")
+			if threading.activeCount() > 1:
+				utils.printf("[x] Terminated by user!", "bad")
+				import os
+				os._exit(0)
+			
 
 		except SystemExit:
 			utils.printf("[x] Terminated by system!", "bad")
