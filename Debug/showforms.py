@@ -16,7 +16,7 @@ else:
 
 	count = 0
 	for form in browser.forms():
-		print u"%s" %(form)
+		print "%s" %(form)
 		count += 1
 	
 	print "Found %s form" %(count)
