@@ -29,6 +29,7 @@ def submit(options, loginInfo, tryCred, result):
 	try:
 
 		proc.open(options.url)
+		title = proc.title()
 
 		#	Select login form
 
@@ -68,7 +69,8 @@ def submit(options, loginInfo, tryCred, result):
 			
 			proc.reload()
 
-			if tbrowser.parseLoginForm(proc.forms()) != loginInfo:
+			#if tbrowser.parseLoginForm(proc.forms()) != loginInfo:
+			if title != proc.title():
 				utils.printf("[*] Get page: ['%s']" %(proc.title()), "good")
 				if tryUsername:
 					utils.printf("[*] Match found: %s" %(
