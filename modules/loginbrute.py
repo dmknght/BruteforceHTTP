@@ -67,31 +67,16 @@ def submit(options, loginInfo, tryCred, result):
 
 		if options.verbose:
 			if options.proxy:
-				utils.printf("[+] Trying: %s through %s" %(
-					[tryUsername, tryPassword],
-					proxyAddr),
-				'norm')
+				utils.printf("[+] Trying: %s through %s" %([tryUsername, tryPassword],proxyAddr), 'norm')
 			else:
-				utils.printf("[+] Trying: %s" %(
-					[tryUsername, tryPassword]),
-				'norm')
+				utils.printf("[+] Trying: %s" %([tryUsername, tryPassword]), 'norm')
 		
 		#	Reload the browser. For javascript redirection and others...
 		proc.reload()
-		#	If no login form -> success
+		#	If no login form -> maybe success. Check conditions
 		#	TODO improve condition to use captcha
 		
 		if tbrowser.parseLoginForm(proc.forms()) != loginInfo:
-			#if tbrowser.parseLoginForm(proc.forms()) != loginInfo:
-			# if check_condition():
-			# if options.panel_url:
-			# 	proc.open(options.panel_url)
-			# 	if not loginInfo:
-			# 		print "Success"
-			# 	else:
-			# 		print "Failed"
-			# else:
-			# 	print "Success"
 			test_result = check_condition(options, proc, loginInfo)
 
 			if test_result:
@@ -110,15 +95,6 @@ def submit(options, loginInfo, tryCred, result):
 					result.put([tryUsername, tryPassword])
 				else:
 					result.put([options.url.split("/")[2], tryUsername, tryPassword])
-				
-				### DEBUG ###
-				print "Debug: %s" %(proc.geturl())
-				proc.open(options.url)
-				if tbrowser.parseLoginForm(proc.forms()) != loginInfo:
-					print "Debug: No [login field]"
-				else:
-					print "Debug: Found [login field]"
-				### End Debug ###
 			
 			else:
 				# Possibly Error. But sometime it is true
@@ -128,45 +104,33 @@ def submit(options, loginInfo, tryCred, result):
 				utils.printf("[*] Get page: ['%s']" %(proc.title()), "bad")
 				if options.verbose:
 					utils.printf("[*] %s" %(proc.title()), "good")
-				
-				
-				### DEBUG ###
-				print "Debug: %s" %(proc.geturl())
-				proc.open(options.url)
-				if tbrowser.parseLoginForm(proc.forms()) != loginInfo:
-					print "Debug: No login field"
-				else:
-					print "Debug: Found login field"
-				### End Debug ###
-
+		
+		# "Login form is still there. Oops"
 		else:
-			# "Login form is still there. Oops"
 			if options.verbose:
 				if options.proxy:
-					utils.printf("[-] Failed: %s through %s" %(
-						[tryUsername, tryPassword],
-						proxyAddr),
-					"bad")
+					utils.printf(
+						"[-] Failed: %s through %s" %([tryUsername, tryPassword], proxyAddr),
+						"bad"
+					)
 				else:
-					utils.printf("[-] Failed: %s" %(
-						[tryUsername, tryPassword]),
-					"bad")
+					utils.printf(
+						"[-] Failed: %s" %([tryUsername, tryPassword]),
+						"bad"
+					)
+		return True
 
 	except mechanize.HTTPError as error:
 		# TODO get HTTP error code, show err msg as return code
 		#	Get blocked
 		if options.verbose:
-			utils.printf("[x] Attacking: %s %s" %(
-				error,
-				[tryUsername, tryPassword])
-			, "bad")
+			utils.printf("[x] Attacking: %s %s" %(error, [tryUsername, tryPassword]), "bad")
+		return False
 
 	except Exception as error:
 		if options.verbose:
-			utils.printf("[x] Attacking: %s %s" %(
-				error,
-				[tryUsername, tryPassword]),
-			"bad")
-		
+			utils.printf("[x] Attacking: %s %s" %(error, [tryUsername, tryPassword]), "bad")
+		return False
+
 	finally:
 		proc.close()

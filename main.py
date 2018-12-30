@@ -21,7 +21,7 @@
 # 		print(error)
 # 		return False
 
-# 	return True
+# BUG SSL error
 
 def checkTarget(opts):
 	if opts.attack_mode != "--httpget":
@@ -40,28 +40,19 @@ def checkTarget(opts):
 					options.url = site.com/wp-login.php -> login URL
 			"""
 			if proc.geturl() != opts.url:
-				utils.printf(
-					"[*] Website moves to: ['%s']" %(proc.geturl()),
-					"norm"
-				)
+				utils.printf("[*] Website moves to: ['%s']" %(proc.geturl()), "norm")
 				opts.panel_url, opts.login_url = opts.url, proc.geturl()
 			else:
 				opts.login_url = opts.url
 
 
 			if opts.run_options["--verbose"]:
-				utils.printf(
-					"[*] %s" %(proc.title()),
-					"good"
-				)
+				utils.printf("[*] %s" %(proc.title()), "good")
 			utils.printf("[+] Connect success! Analyzing login form....")
 			loginInfo = tbrowser.parseLoginForm(proc.forms())
 		
 		except Exception as error:
-			utils.die(
-				"[x] Runtime error: Target analyzing error!",
-				error
-			)
+			utils.die("[x] Runtime error: Target analyzing error!", error)
 		
 		finally:
 			proc.close()
@@ -125,9 +116,7 @@ def _http_get(options):
 						
 		else:
 			utils.printf(
-				"\n[*] %s valid password[s] found:\n" %(
-					actions.size_o(credentials)
-				),
+				"\n[*] %s valid password[s] found:\n" %(actions.size_o(credentials)),
 				"norm"
 			)
 			utils.print_table(("Username", "Password"), *credentials)
@@ -147,10 +136,7 @@ def _login_brute(options):
 	loginInfo = checkTarget(options)
 
 	if not loginInfo:
-		utils.die(
-			"[x] URL error",
-			"No login form"
-		)
+		utils.die("[x] URL error", "No login form")
 
 	else:
 		try:
@@ -159,8 +145,7 @@ def _login_brute(options):
 				tasks = actions.size_o(options.passwd)
 
 				#if options.verbose:
-				utils.printf("[*] Form ID: %s\n  [*] Password field: %s"
-					%(loginInfo[0], loginInfo[1][0]), "good")
+				utils.printf("[*] Form ID: %s\n  [*] Password field: %s" %(loginInfo[0], loginInfo[1][0]), "good")
 
 				utils.printf("[+] Login form detected! Starting attack...")
 				utils.printf("[+] Task counts: %s tasks" %(tasks))
@@ -295,8 +280,4 @@ if __name__ == "__main__":
 
 	finally:
 		runtime = time.time() - runtime
-			
-		utils.printf(
-			"\n[*] Time elapsed: %0.4f [s]\n" %(runtime),
-			"good"
-		)
+		utils.printf("\n[*] Time elapsed: %0.4f [s]\n" %(runtime), "good")
