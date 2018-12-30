@@ -99,7 +99,8 @@ def randomString(min = 2, max = 5):
 
 def verify_url(options):
 	try:
-		if not options.url.startswith("http://") and not options.url.startswith("https://"):
+		# Shorter startswith https://stackoverflow.com/a/20461857
+		if not options.url.startswith(("http://", "https")):
 			options.url = "http://%s" %(options.url)
 	except:
 		options.url = None

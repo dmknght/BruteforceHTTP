@@ -28,12 +28,27 @@ def checkTarget(opts):
 		try:
 			proc = tbrowser.startBrowser()
 			utils.printf("[+] Checking connection...")
+
 			proc.open(opts.url)
+
+			"""
+				Check URL type. If Website directs to other URL,
+				options.url is website's panel
+				else: it is login url.
+				Example: options.url = site.com/wp-admin/ -> panel
+					site directs user to wp-login -> login URL
+					options.url = site.com/wp-login.php -> login URL
+			"""
 			if proc.geturl() != opts.url:
 				utils.printf(
-					"[*] Website moves to: %s" %(proc.geturl()),
+					"[*] Website moves to: ['%s']" %(proc.geturl()),
 					"norm"
 				)
+				opts.panel_url, opts.login_url = opts.url, proc.geturl()
+			else:
+				opts.login_url = opts.url
+
+
 			if opts.run_options["--verbose"]:
 				utils.printf(
 					"[*] %s" %(proc.title()),
