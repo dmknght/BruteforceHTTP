@@ -50,7 +50,7 @@ def submit(options, loginInfo, tryCred, result):
 	try:
 
 		proc.open(options.login_url)
-		title = proc.title()
+		#title = proc.title()
 
 		#	Select login form
 
