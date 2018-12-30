@@ -1,3 +1,8 @@
+# 30/12/2018
+* Improve URL check condition
+* Increase login detection using URL condition
+* Syntax errors, bugs fixed
+
 # 1/12/2018
 * Use oop
 * Reworked modules
