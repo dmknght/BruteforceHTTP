@@ -31,7 +31,7 @@ def submit(options, loginInfo, tryCred, result):
 	# BUG parse form issue with gmail, move to tbrowser.parseLoginForm
 	frmLoginID, frmFields = loginInfo
 	tryPassword, tryUsername = tryCred
-	
+
 	proc = tbrowser.startBrowser()
 	
 	for cred in list(result.queue):
@@ -84,10 +84,10 @@ def submit(options, loginInfo, tryCred, result):
 				
 				# "If we tried login form with username+password field"
 				if tryUsername:
-					utils.printf("[*] Match found: %s" %([tryUsername, tryPassword]), "good")
+					utils.printf("[*] Found: %s" %([tryUsername, tryPassword]), "good")
 				# "Else If we tried login form with password field only"
 				else:
-					utils.printf("[*] Password found: %s" %([tryPassword]), "good")
+					utils.printf("[*] Found: %s" %([tryPassword]), "good")
 				# "End of condition block"
 				
 				# "Check for Extras option reauth", return result w/ right format
@@ -98,12 +98,11 @@ def submit(options, loginInfo, tryCred, result):
 			
 			else:
 				# Possibly Error. But sometime it is true
-				utils.printf("[x] Possibly error %s" %(
-					[tryUsername, tryPassword]),
-				"bad")
+				utils.printf(
+					"[x] Possibly error %s" %( [tryUsername, tryPassword]),
+					"bad"
+				)
 				utils.printf("[*] Get page: ['%s']" %(proc.title()), "bad")
-				if options.verbose:
-					utils.printf("[*] %s" %(proc.title()), "good")
 		
 		# "Login form is still there. Oops"
 		else:

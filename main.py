@@ -66,11 +66,7 @@ def _http_get(options):
 	import Queue
 	result = Queue.Queue()
 
-	def run_threads(threads):
-		for thread in threads:
-			thread.start()
-		for thread in threads:
-			thread.join()
+	trying = 0
 
 	# TODO add check login
 
@@ -83,7 +79,7 @@ def _http_get(options):
 		for username in options.username:
 			for password in options.passwd:
 				if actions.size_o(workers) == options.threads:
-					run_threads(workers)
+					trying = run_threads(workers, trying, tasks)
 					del workers[:]
 
 				worker = threading.Thread(
@@ -93,7 +89,7 @@ def _http_get(options):
 				workers.append(worker)
 				worker.daemon = True
 
-		run_threads(workers)
+		trying = run_threads(workers, trying, tasks)
 		del workers[:]
 
 	except KeyboardInterrupt:
@@ -127,11 +123,20 @@ def _login_brute(options):
 	import Queue
 	result = Queue.Queue()
 
-	def run_threads(threads):
-		for thread in threads:
-			thread.start()
-		for thread in threads:
-			thread.join()
+	trying = 0
+	# def run_threads(threads, trying, total):
+	# 	# Run threads
+	# 	for thread in threads:
+	# 		trying += 1 # Sending
+	# 		# TODO combine sending, completed tasks / total task
+	# 		thread.start()
+
+	# 	# Wait for threads completed
+	# 	for thread in threads:
+	# 		utils.progress_bar(trying, total)
+	# 		thread.join()
+
+	# 	return trying
 
 	loginInfo = checkTarget(options)
 
@@ -141,6 +146,10 @@ def _login_brute(options):
 	else:
 		try:
 			from modules import loginbrute
+
+			### SETTING UP FOR NEW ATTACK ###
+
+			## 1 PASSWORD FORM FIELD ONLY ## 
 			if actions.size_o(loginInfo[1]) == 1:
 				tasks = actions.size_o(options.passwd)
 
@@ -149,24 +158,12 @@ def _login_brute(options):
 
 				utils.printf("[+] Login form detected! Starting attack...")
 				utils.printf("[+] Task counts: %s tasks" %(tasks))
-
-				workers = []
-				for password in options.passwd:
-					if actions.size_o(workers) == options.threads:
-						run_threads(workers)
-						del workers[:]
-			
-					worker = threading.Thread(
-						target = loginbrute.submit,
-						args = (options, loginInfo, [password], result)
-					)
-					workers.append(worker)
-					worker.daemon = True
 				
-				run_threads(workers)
-				del workers[:]
-
-			elif actions.size_o(loginInfo[1]) == 2:
+				del options.username[:]
+				options.username = [""]
+			
+			## FORM FIELD WITH BOTH USERNAME AND PASSWORD ## 
+			else:#elif: actions.size_o(loginInfo[1]) == 2:
 
 				tasks = actions.size_o(options.passwd) * actions.size_o(options.username)
 
@@ -179,23 +176,24 @@ def _login_brute(options):
 				utils.printf("[+] Login form detected! Starting attack...")
 				utils.printf("[+] Task counts: %s tasks" %(tasks))
 
-				workers = []
+			#### START ATTACK ####
+			workers = []
 
-				for username in options.username:
-					for password in options.passwd:
-						if actions.size_o(workers) == options.threads:
-							run_threads(workers)
-							del workers[:]
+			for username in options.username:
+				for password in options.passwd:
+					if actions.size_o(workers) == options.threads:
+						trying = run_threads(workers, trying, tasks)
+						del workers[:]
 
-						worker = threading.Thread(
-							target = loginbrute.submit,
-							args = (options, loginInfo, [password, username], result)
-						)
-						workers.append(worker)
-						worker.daemon = True
+					worker = threading.Thread(
+						target = loginbrute.submit,
+						args = (options, loginInfo, [password, username], result)
+					)
+					workers.append(worker)
+					worker.daemon = True
 
-				run_threads(workers)
-				del workers[:]
+			trying = run_threads(workers, trying, tasks)
+			del workers[:]
 				
 		except KeyboardInterrupt:
 			if threading.activeCount() > 1:
@@ -214,7 +212,7 @@ def _login_brute(options):
 			credentials = list(result.queue)
 			if actions.size_o(credentials) == 0:
 				utils.printf("[-] No match found!", "bad")
-							
+
 			else:
 				utils.printf(
 					"\n[*] %s valid password[s] found:\n" %(
@@ -222,8 +220,12 @@ def _login_brute(options):
 					),
 					"norm"
 				)
+
 				if "--reauth" not in options.extras:
-					utils.print_table(("Username", "Password"), *credentials)
+					if actions.size_o(loginInfo[1]) == 1:
+						utils.print_table(("", "Password"), *credentials)
+					else:
+						utils.print_table(("Username", "Password"), *credentials)
 				else:
 					utils.print_table(("Target", "Username", "Password"), *credentials)
 				utils.printf("")
@@ -265,6 +267,20 @@ if __name__ == "__main__":
 				getproxy.main(options)
 
 			else:
+				def run_threads(threads, trying, total):
+					# Run threads
+					for thread in threads:
+						trying += 1 # Sending
+						# TODO combine sending, completed tasks / total task
+						thread.start()
+
+					# Wait for threads completed
+					for thread in threads:
+						utils.progress_bar(trying, total)
+						thread.join()
+
+					return trying
+
 				if options.attack_mode != "--httpget":
 					result = _login_brute(options)
 				else:
