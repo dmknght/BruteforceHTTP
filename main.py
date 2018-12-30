@@ -235,7 +235,7 @@ def _login_brute(options):
 if __name__ == "__main__":
 	#if check_import():
 		# IMPORT GLOBALY
-	import sys, time, threading
+	import sys, time, threading, ssl
 	from core import utils, options, actions, tbrowser
 
 	try:
@@ -257,9 +257,19 @@ if __name__ == "__main__":
 
 			# Print start banner
 			utils.printf(utils.start_banner(options))
-
+			
+			# Fix SSL errors https://stackoverflow.com/a/35960702
+			try:
+				_create_unverified_https_context = ssl._create_unverified_context
+			except AttributeError:
+			# Legacy Python that doesn't verify HTTPS certificates by default
+				pass
+			else:
+			# Handle target environment that doesn't support HTTPS verification
+				ssl._create_default_https_context = _create_unverified_https_context
+			
+			
 			# Ready options
-
 			# check user options, mix it together to start attack
 			# BUG does not get new proxy list
 			if "--getproxy" in options.extras:
