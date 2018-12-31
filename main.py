@@ -58,20 +58,49 @@ def checkTarget(opts):
 		finally:
 			proc.close()
 
+def attack(options):
 
-def _http_get(options):
-	from modules import httpget
+	_single_col = False
+	### SETTING UP FOR NEW ATTACK ###
+	if options.attack_mode == "--httpget":
+		from modules import httpget
+		attack_module = httpget.submit
+		loginInfo = None
+		# if not check_login(): utils.die("[x] URL error", "No login required")
+
+	else:
+		from modules import loginbrute
+		attack_module = loginbrute.submit
+		loginInfo = checkTarget(options)
+
+		if not loginInfo:
+			utils.die("[x] URL error", "No login form")
+		else:
+			utils.printf("[*] Login form detected!", "good")
+			utils.printf(
+				"   [+] Form ID: %s\n"
+				"   [+] Field: %s\n"
+				%(loginInfo[0], loginInfo[1][::-1]), "norm")
+
+			utils.printf("[+] Starting attack...")
+
+			## 1 PASSWORD FORM FIELD ONLY ## 
+			if actions.size_o(loginInfo[1]) == 1:
+				_single_col = True
+
+				# Clear username list. Process now using password list only
+				del options.username[:]
+				options.username = [""]
+
+	tasks = actions.size_o(options.passwd) * actions.size_o(options.username)
+
 	import Queue
 	result = Queue.Queue()
-
+	
 	sending, completed = 0, 0
-
-	# TODO add check login
-
 	try:
-		tasks = actions.size_o(options.passwd) * actions.size_o(options.username)
-		utils.printf("[+] Task counts: %s tasks" %(tasks), "norm")
-
+		#### START ATTACK ####
+		utils.printf("[+] Task counts: %s tasks\n" %(tasks), "norm")
 		workers = []
 
 		for username in options.username:
@@ -81,15 +110,15 @@ def _http_get(options):
 					del workers[:]
 
 				worker = threading.Thread(
-					target = httpget.submit,
-					args = (options, username, password, result)
+					target = attack_module,
+					args = (options, loginInfo, [password, username], result)
 				)
 				workers.append(worker)
 				worker.daemon = True
 
 		sending, completed = run_threads(workers, sending, completed, tasks)
 		del workers[:]
-
+			
 	except KeyboardInterrupt:
 		if threading.activeCount() > 1:
 			utils.printf("[x] Terminated by user!", "bad")
@@ -107,109 +136,24 @@ def _http_get(options):
 		credentials = list(result.queue)
 		if actions.size_o(credentials) == 0:
 			utils.printf("[-] No match found!", "bad")
-						
+
 		else:
 			utils.printf(
-				"\n[*] %s valid password[s] found:\n" %(actions.size_o(credentials)),
+				"\n[*] %s valid password[s] found:\n" %(
+					actions.size_o(credentials)
+				),
 				"norm"
 			)
-			utils.print_table(("Username", "Password"), *credentials)
+
+			if "--reauth" not in options.extras:
+				if _single_col:
+					utils.print_table(("", "Password"), *credentials)
+				else:
+					utils.print_table(("Username", "Password"), *credentials)
+			else:
+				utils.print_table(("Target", "Username", "Password"), *credentials)
 			utils.printf("")
 		return credentials
-
-def _login_brute(options):
-	import Queue
-	result = Queue.Queue()
-	loginInfo = checkTarget(options)
-
-	if not loginInfo:
-		utils.die("[x] URL error", "No login form")
-
-	else:
-		sending, completed = 0, 0
-		try:
-			from modules import loginbrute
-
-			### SETTING UP FOR NEW ATTACK ###
-
-			## 1 PASSWORD FORM FIELD ONLY ## 
-			if actions.size_o(loginInfo[1]) == 1:
-				tasks = actions.size_o(options.passwd)
-
-				# Clear username list. Process now using password list only
-				del options.username[:]
-				options.username = [""]
-			
-			## FORM FIELD WITH BOTH USERNAME AND PASSWORD ## 
-
-			#elif: actions.size_o(loginInfo[1]) == 2:
-			else:
-
-				tasks = actions.size_o(options.passwd) * actions.size_o(options.username)
-
-			utils.printf("[*] Login form detected!", "good")
-			utils.printf(
-				"   [+] Form ID: %s\n"
-				"   [+] Field: %s\n"
-				%(loginInfo[0], loginInfo[1][::-1]), "norm")
-
-			utils.printf("[+] Starting attack...")
-				
-			#### START ATTACK ####
-			utils.printf("[+] Task counts: %s tasks\n" %(tasks), "norm")
-			workers = []
-
-			for username in options.username:
-				for password in options.passwd:
-					if actions.size_o(workers) == options.threads:
-						sending, completed = run_threads(workers, sending, completed, tasks)
-						del workers[:]
-
-					worker = threading.Thread(
-						target = loginbrute.submit,
-						args = (options, loginInfo, [password, username], result)
-					)
-					workers.append(worker)
-					worker.daemon = True
-
-			sending, completed = run_threads(workers, sending, completed, tasks)
-			del workers[:]
-				
-		except KeyboardInterrupt:
-			if threading.activeCount() > 1:
-				utils.printf("[x] Terminated by user!", "bad")
-				import os
-				os._exit(0)
-			
-
-		except SystemExit:
-			utils.printf("[x] Terminated by system!", "bad")
-
-		except Exception as error:
-			utils.die("[x] Runtime error", error)
-
-		finally:
-			credentials = list(result.queue)
-			if actions.size_o(credentials) == 0:
-				utils.printf("[-] No match found!", "bad")
-
-			else:
-				utils.printf(
-					"\n[*] %s valid password[s] found:\n" %(
-						actions.size_o(credentials)
-					),
-					"norm"
-				)
-
-				if "--reauth" not in options.extras:
-					if actions.size_o(loginInfo[1]) == 1:
-						utils.print_table(("", "Password"), *credentials)
-					else:
-						utils.print_table(("Username", "Password"), *credentials)
-				else:
-					utils.print_table(("Target", "Username", "Password"), *credentials)
-				utils.printf("")
-			return credentials
 
 
 if __name__ == "__main__":
@@ -272,10 +216,7 @@ if __name__ == "__main__":
 
 					return sending, completed
 
-				if options.attack_mode != "--httpget":
-					result = _login_brute(options)
-				else:
-					result = _http_get(options)
+				attack(options)
 
 			if "--reauth" in options.extras:
 				from extras import reauth

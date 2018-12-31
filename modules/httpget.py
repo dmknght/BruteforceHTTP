@@ -7,8 +7,8 @@ from core import utils
 # TODO Using proxy
 # TODO combine with reauth
 
-def submit(options, tryUsername, tryPassword, result):
-
+def submit(options, loginInfo, creds, result):
+	tryPassword, tryUsername = creds
 	for cred in list(result.queue):
 		if tryUsername == cred[0]:
 			return 0 # don't run if find password of username
