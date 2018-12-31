@@ -41,7 +41,7 @@ def progress_bar(trying, completed, total, bsize = 60):
 	prints("|%s%s%s| %5s/%s" %(
 		complete * "+",
 		doing * "#",
-		(bsize - complete) * '-',
+		(bsize - complete - doing) * '-',
 		trying,
 		total
 	))
