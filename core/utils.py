@@ -28,10 +28,19 @@ def prints(mtext):
 	#sys.stdout.write("\033[F \033[K" * bspace)
 
 
-def progress_bar(trying, total, bsize = 60):
-	complete = (trying * bsize) / total
-	prints("|%s%s| %5s/%s" %(
-		complete * "#",
+def progress_bar(trying, completed, total, bsize = 60):
+	"""
+		Create a progress bar to show current process
+		Progessbar format [+++#####-----]
+			+ is completed tasks. Tasks should recived responses
+			# is submited tasks. Tasks have no responses
+			- is waiting tasks
+	"""
+	complete = (completed * bsize) / total
+	doing = (trying * bsize) / total - complete
+	prints("|%s%s%s| %5s/%s" %(
+		complete * "+",
+		doing * "#",
 		(bsize - complete) * '-',
 		trying,
 		total

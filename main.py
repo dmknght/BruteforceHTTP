@@ -66,7 +66,7 @@ def _http_get(options):
 	import Queue
 	result = Queue.Queue()
 
-	trying = 0
+	sending, completed = 0, 0
 
 	# TODO add check login
 
@@ -79,7 +79,7 @@ def _http_get(options):
 		for username in options.username:
 			for password in options.passwd:
 				if actions.size_o(workers) == options.threads:
-					trying = run_threads(workers, trying, tasks)
+					sending, completed = run_threads(workers, sending, completed, tasks)
 					del workers[:]
 
 				worker = threading.Thread(
@@ -89,7 +89,7 @@ def _http_get(options):
 				workers.append(worker)
 				worker.daemon = True
 
-		trying = run_threads(workers, trying, tasks)
+		sending, completed = run_threads(workers, sending, completed, tasks)
 		del workers[:]
 
 	except KeyboardInterrupt:
@@ -122,28 +122,13 @@ def _http_get(options):
 def _login_brute(options):
 	import Queue
 	result = Queue.Queue()
-
-	trying = 0
-	# def run_threads(threads, trying, total):
-	# 	# Run threads
-	# 	for thread in threads:
-	# 		trying += 1 # Sending
-	# 		# TODO combine sending, completed tasks / total task
-	# 		thread.start()
-
-	# 	# Wait for threads completed
-	# 	for thread in threads:
-	# 		utils.progress_bar(trying, total)
-	# 		thread.join()
-
-	# 	return trying
-
 	loginInfo = checkTarget(options)
 
 	if not loginInfo:
 		utils.die("[x] URL error", "No login form")
 
 	else:
+		sending, completed = 0, 0
 		try:
 			from modules import loginbrute
 
@@ -182,7 +167,7 @@ def _login_brute(options):
 			for username in options.username:
 				for password in options.passwd:
 					if actions.size_o(workers) == options.threads:
-						trying = run_threads(workers, trying, tasks)
+						sending, completed = run_threads(workers, sending, completed, tasks)
 						del workers[:]
 
 					worker = threading.Thread(
@@ -192,7 +177,7 @@ def _login_brute(options):
 					workers.append(worker)
 					worker.daemon = True
 
-			trying = run_threads(workers, trying, tasks)
+			sending, completed = run_threads(workers, sending, completed, tasks)
 			del workers[:]
 				
 		except KeyboardInterrupt:
@@ -277,19 +262,21 @@ if __name__ == "__main__":
 				getproxy.main(options)
 
 			else:
-				def run_threads(threads, trying, total):
+				def run_threads(threads, sending, completed, total):
 					# Run threads
 					for thread in threads:
-						trying += 1 # Sending
+						sending += 1 # Sending
+						utils.progress_bar(sending, completed, total)
 						# TODO combine sending, completed tasks / total task
 						thread.start()
 
 					# Wait for threads completed
 					for thread in threads:
-						utils.progress_bar(trying, total)
+						completed += 1
+						utils.progress_bar(sending, completed, total)
 						thread.join()
 
-					return trying
+					return sending, completed
 
 				if options.attack_mode != "--httpget":
 					result = _login_brute(options)
