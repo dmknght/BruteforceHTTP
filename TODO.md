@@ -2,7 +2,7 @@
 - [x] Improve multithreading
 - [x] Result, reporting
 - [ ] Memory management
-- [ ] Multithreading issue w/ status bar, result
+- [x] Multithreading issue w/ status bar, result
 - [ ] Better form detecting and parsing
 - [ ] Better password matching condition
 - [ ] SQL Injection bypass login
