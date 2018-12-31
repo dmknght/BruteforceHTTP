@@ -1,6 +1,6 @@
 import sys, actions
 
-def prints(mtext):
+def prints(mtext, spaces = 2):
 	#############################################
 	#	print message and replace it after
 	#	Use for status bar, brute forcing process
@@ -15,36 +15,53 @@ def prints(mtext):
 	#	https://stackoverflow.com/a/3173338
 	#######
 
-	# Create empty lines before bar
-	#bspace = 2
-	#sys.stdout.write("\n" * bspace)
-
 	# Print bar to screen
-	sys.stdout.write("\r%s\r" %(mtext))
+	# sys.stdout.write("%s%s\n" %("\n" * spaces, mtext))
+	# sys.stdout.flush()
+	# # Clean line, remove all characters
+	# for text in reversed(mtext.split("\n")):
+	# 	# Move up cursor 1 line
+	# 	sys.stdout.write("\033[F")
+	# 	# Clean current line
+	# 	sys.stdout.write("%s\r" %(" " * len(text)))
+	# sys.stdout.write("\033[F" * spaces)
+	
+	sys.stdout.write("%s\r" %(mtext))
 	sys.stdout.flush()
-	# Clean line, remove all characters
-	sys.stdout.write("\r%s\r" %(" " * len(mtext)))
-	# Return lines
-	#sys.stdout.write("\033[F \033[K" * bspace)
-
+	sys.stdout.write("%s\r" %(" " * len(mtext)))
 
 def progress_bar(trying, completed, total, bsize = 60):
 	"""
+		MULTIPLE LINES PROGRESS BAR IS NOT WORKING FOR WINDOWS AND ANDROID TERM
 		Create a progress bar to show current process
 		Progessbar format [+++#####-----]
 			+ is completed tasks. Tasks should recived responses
 			# is submited tasks. Tasks have no responses
 			- is waiting tasks
 	"""
-	complete = (completed * bsize) / total
-	doing = (trying * bsize) / total - complete
-	prints("|%s%s%s| %5s/%s" %(
-		complete * "+",
-		doing * "#",
-		(bsize - complete - doing) * '-',
-		trying,
-		total
+	finished = (completed * bsize) / total
+	running = (trying * bsize) / total - finished
+	
+	# TESTING MULTIPLE LINES PROGRESS BAR
+	# Draw infomation with numbers
+	# bar = "  Completed: %d%sSent: %d%sTotal: %d"%(
+	# 	completed, " " * 11, trying, " " * 11, total
+	# )
+	# Draw progress bar
+	# bar = "\n\s|%s%s%s|" %(
+	# 	bar,
+	# 	finished * "+",
+	# 	running * "#",
+	# 	(bsize - finished - running) * '-',
+	# )
+	# prints(bar)
+
+	prints("|%s%s%s|" %(
+		finished * "+",
+		running * "#",
+		(bsize - finished - running) * '-',
 	))
+
 
 def printf(mtext, mtype = 'warn'):
 	############################################
