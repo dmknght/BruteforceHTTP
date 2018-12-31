@@ -73,7 +73,7 @@ class ParseOptions(object):
 			if sys.argv[i] in self.HELP_OPTIONS:
 				self.help = True
 
-			elif sys.argv[i][:2] == "--":
+			elif sys.argv[i].startswith("--"):
 				
 				if sys.argv[i] in self.run_options.keys():
 					self.run_options[sys.argv[i]] = True
@@ -104,7 +104,7 @@ class ParseOptions(object):
 						"Unknow option %s" %(sys.argv[i])
 					)
 			
-			elif sys.argv[i][:1] == "-":
+			elif sys.argv[i].startswith("-"):
 				
 				if sys.argv[i] in self.options.keys():
 					self.options[sys.argv[i]] = sys.argv[i + 1]
