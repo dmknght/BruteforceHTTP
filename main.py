@@ -21,7 +21,7 @@
 # 		print(error)
 # 		return False
 
-# BUG SSL error
+# TODO use zip loop for SQL injection
 
 def checkTarget(opts):
 	if opts.attack_mode != "--httpget":
@@ -267,7 +267,6 @@ if __name__ == "__main__":
 					for thread in threads:
 						sending += 1 # Sending
 						utils.progress_bar(sending, completed, total)
-						# TODO combine sending, completed tasks / total task
 						thread.start()
 
 					# Wait for threads completed
