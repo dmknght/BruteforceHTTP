@@ -45,21 +45,19 @@ def checkTarget(opts):
 			else:
 				opts.login_url = opts.url
 
-
+			utils.printf("[*] Connect success!", "good")
 			if opts.run_options["--verbose"]:
-				utils.printf("[*] %s" %(proc.title()), "good")
-			utils.printf("[+] Connect success! Analyzing login form....")
+				utils.printf("[*] %s" %(proc.title()), "norm")
+			utils.printf("[+] Analyzing login form....")
 			loginInfo = tbrowser.parseLoginForm(proc.forms())
+			return loginInfo
 		
 		except Exception as error:
 			utils.die("[x] Runtime error: Target analyzing error!", error)
 		
 		finally:
 			proc.close()
-			try:
-				return loginInfo
-			except:
-				return None
+
 
 def _http_get(options):
 	from modules import httpget
@@ -72,7 +70,7 @@ def _http_get(options):
 
 	try:
 		tasks = actions.size_o(options.passwd) * actions.size_o(options.username)
-		utils.printf("[+] Task counts: %s tasks" %(tasks))
+		utils.printf("[+] Task counts: %s tasks" %(tasks), "norm")
 
 		workers = []
 
@@ -138,30 +136,27 @@ def _login_brute(options):
 			if actions.size_o(loginInfo[1]) == 1:
 				tasks = actions.size_o(options.passwd)
 
-				#if options.verbose:
-				utils.printf("[*] Form ID: %s\n  [*] Password field: %s" %(loginInfo[0], loginInfo[1][0]), "good")
-
-				utils.printf("[+] Login form detected! Starting attack...")
-				utils.printf("[+] Task counts: %s tasks" %(tasks))
-				
+				# Clear username list. Process now using password list only
 				del options.username[:]
 				options.username = [""]
 			
 			## FORM FIELD WITH BOTH USERNAME AND PASSWORD ## 
-			else:#elif: actions.size_o(loginInfo[1]) == 2:
+
+			#elif: actions.size_o(loginInfo[1]) == 2:
+			else:
 
 				tasks = actions.size_o(options.passwd) * actions.size_o(options.username)
 
-				#if options.verbose:
-				utils.printf("[*] Form ID: %s\n"
-					"   [*] Username field: %s\n"
-					"   [*] Password field: %s"
-					%(loginInfo[0], loginInfo[1][1], loginInfo[1][0]), "good")
+			utils.printf("[*] Login form detected!", "good")
+			utils.printf(
+				"   [+] Form ID: %s\n"
+				"   [+] Field: %s\n"
+				%(loginInfo[0], loginInfo[1][::-1]), "norm")
 
-				utils.printf("[+] Login form detected! Starting attack...")
-				utils.printf("[+] Task counts: %s tasks" %(tasks))
-
+			utils.printf("[+] Starting attack...")
+				
 			#### START ATTACK ####
+			utils.printf("[+] Task counts: %s tasks\n" %(tasks), "norm")
 			workers = []
 
 			for username in options.username:
