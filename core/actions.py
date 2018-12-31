@@ -125,7 +125,7 @@ def verify_options(options):
 	
 	# CHECK username list options
 	if options.options["-U"]:
-		options.username = lread(options.options["-U"])
+		options.username = list(set(lread(options.options["-U"])))
 	else:
 		if options.options["-u"] in options.WORDLISTS:
 			options.username = eval("data.%s_user()" %(options.options["-u"])).replace("\t", "").split("\n")
