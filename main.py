@@ -24,6 +24,9 @@
 # TODO use zip loop for SQL injection
 # TODO ADD WAF BLOCKED MSG
 # TODO bring back report module
+# TODO SSL
+# TODO maybe create db to save target
+
 
 def check_login(opts):
 	try:
@@ -32,6 +35,7 @@ def check_login(opts):
 
 
 		proc.open(opts.url)
+
 		"""
 			Check URL type. If Website directs to other URL,
 			options.url is website's panel
@@ -57,6 +61,8 @@ def check_login(opts):
 		if error.code == 401:
 			## GET INFORMATION
 			## TODO: GET USERNAME AND PASSWORD LABEL
+			# BUG: can't direct to new url (meta) if has error code * mechanize bug
+
 			resp_header = str(proc.response().info())
 			if "WWW-Authenticate" in resp_header:
 				loginID = tbrowser.checkHTTPGetLogin(resp_header)
