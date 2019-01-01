@@ -19,6 +19,13 @@ def useragent():
 	
 	return actions.randomFromList(agents.split("\n"))
 
+def checkHTTPGetLogin(strHeader):
+	reg = r"WWW-Authenticate: Basic realm=\"(.*)\""
+	try:
+		return re.findall(reg, strHeader, re.MULTILINE)[0]
+	except:
+		return False
+
 def checkPasswdForm(objBrowserForm):
 	##########################################
 	#	Get Password-only form

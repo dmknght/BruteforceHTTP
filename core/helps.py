@@ -43,10 +43,11 @@ def print_help():
 			"%-23s" %("--brute [Default]"),
 			"HTTP POST Form attack"
 		],
-		[
-			"%-23s" %("--httpget"),
-			"HTTP Basic Authentication attack"
-		],
+		# Remove, now automatic choose
+		# [
+		# 	"%-23s" %("--httpget"),
+		# 	"HTTP Basic Authentication attack"
+		# ],
 		[
 			"%-23s" %("--sqli [Not Available]"),
 			"SQL Injection login bypass attack"

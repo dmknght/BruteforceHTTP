@@ -119,25 +119,27 @@ def submit(options, loginInfo, tryCred, result):
 					)
 		return True
 
-	except mechanize.HTTPError as error:
+	except Exception as error:
 		"""
 			Sometimes, web servers return error code because of bad configurations,
 			but our cred is true.
 			This code block showing information, for special cases
-		"""
-		utils.printf("[x] %s" %(error), "bad")
-		
+		"""		
 		# TODO analysis result using HTTP code (WAF blocks, server error, ...)
 		# if error.code in (406,):
 		# 	utils.printf("[x] Possibly blocked by WAF", "bad")
 		# elif error.code < 500:
-		utils.printf("[x] (%s): %s" %(proc.geturl(), [tryUsername, tryPassword]), "bad")
-		
-		return False
-
-	except Exception as error:
+		# if options.verbose:
 		if options.verbose:
-			utils.printf("[x] Attacking: %s %s" %(error, [tryUsername, tryPassword]), "bad")
+			try:
+				if error.code == 401:
+					utils.printf("[-] Failed: %s" %([tryUsername, tryPassword]), "bad")
+				else:
+					utils.printf("[x] (%s): %s" %(proc.geturl(), tryCred[::-1]), "bad")
+			except:
+				# THIS BLOCKED BY WAF
+				utils.printf("[x] Loginbrute: %s" %(error), "bad")
+		
 		return False
 
 	finally:

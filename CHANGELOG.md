@@ -1,3 +1,9 @@
+# Version 1.5, 1/1/2019
+* Rework httpget module: Now use mechanize
+* Add authentication detection for httpget
+* Program now auto detecting httpget and choose mode instead of option manually
+* Small bugs fixed
+
 # 30/12/2018
 * Improve URL check condition
 * Increase login detection using URL condition

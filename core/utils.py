@@ -90,8 +90,7 @@ def craft_msg(mtext, mtype = 'warn'):
 	return (mtext[mtype])
 	
 def die(msg, error):
-	printf(msg, "bad")
-	printf(error, "bad")
+	printf("%s\n   %s" %(msg, error), "bad")
 	sys.exit(1)
 
 def print_table(headers, *args, **kwargs):

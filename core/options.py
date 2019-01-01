@@ -2,9 +2,14 @@ import sys
 from core import helps, actions, utils
 
 class ParseOptions(object):
+
+	# Deny user choosing --httpget option
+	# Program now automatic choose attack mode
+	# --httpget is still useable in attack module
+	
 	ATTACK_MODES = (
 		"--brute",
-		"--httpget",
+		#"--httpget",
 		"--sqli",
 	)
 		
