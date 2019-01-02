@@ -12,6 +12,7 @@ def check_condition(options, proc, loginInfo):
 			return 2 -> Should be SQL Injection error-based
 	"""
 	if options.panel_url:
+		# BUG wrong detection if WAF send a block msg with http code 200
 		# User provided panel url (/wp-admin/ for example, repopen this url to check sess)
 		proc.open(options.panel_url)
 		if tbrowser.parseLoginForm(proc.forms()) != loginInfo:
@@ -21,6 +22,26 @@ def check_condition(options, proc, loginInfo):
 	else:
 		# User provided direct login URL (/wp-login.php).
 		# TODO improve this condition
+		"""
+		cases: dvwa (login.php), tomcat (panel), joomla (panel)
+		found_no_login
+		if url == login_url:
+			-> true / error page / waf page
+			reopen(url) -> login failed (dvwa, wordpress), wrong
+
+		if url == panel_url (tomcat, joomla):
+			-> true / error page (tomcat) / waf page 
+			reopen(url) -> login_success, true
+
+		//if loged_in -> error_page:
+		//	always true, but wrong
+		"""
+		# DEBUG
+		# proc.open(options.url)
+		# if tbrowser.parseLoginForm(proc.forms()) != loginInfo:
+		# 	return 1
+		# else:
+		# 	return 0
 		return 1
 
 
@@ -50,7 +71,6 @@ def submit(options, loginInfo, tryCred, result):
 	try:
 
 		proc.open(options.login_url)
-		#title = proc.title()
 
 		#	Select login form
 
@@ -72,15 +92,18 @@ def submit(options, loginInfo, tryCred, result):
 				utils.printf("[+] Trying: %s" %([tryUsername, tryPassword]), 'norm')
 		
 		#	Reload the browser. For javascript redirection and others...
-		proc.reload()
+		# BUG tomcat admin login here
+		# proc.reload()
 		#	If no login form -> maybe success. Check conditions
 		#	TODO improve condition to use captcha
 		
+		# BUG wrong if prompt new login form with captcha. This should be not parseLoginForm
 		if tbrowser.parseLoginForm(proc.forms()) != loginInfo:
 			test_result = check_condition(options, proc, loginInfo)
+			
 
 			if test_result:
-				utils.printf("[*] Get page: ['%s']" %(proc.title()), "good")
+				utils.printf("[*] Page title: ['%s']" %(proc.title()), "good")
 				
 				# "If we tried login form with username+password field"
 				if tryUsername:
@@ -98,11 +121,9 @@ def submit(options, loginInfo, tryCred, result):
 			
 			else:
 				# Possibly Error. But sometime it is true
-				utils.printf(
-					"[x] Possibly error %s" %( [tryUsername, tryPassword]),
-					"bad"
-				)
-				utils.printf("[*] Get page: ['%s']" %(proc.title()), "bad")
+				if options.verbose:
+					utils.printf("[x] Get error page: %s" %([tryUsername, tryPassword]), "bad")
+					utils.printf("[x] Page title: ['%s']" %(proc.title()), "bad")
 		
 		# "Login form is still there. Oops"
 		else:
@@ -125,21 +146,26 @@ def submit(options, loginInfo, tryCred, result):
 			but our cred is true.
 			This code block showing information, for special cases
 		"""		
-		# TODO analysis result using HTTP code (WAF blocks, server error, ...)
-		# if error.code in (406,):
-		# 	utils.printf("[x] Possibly blocked by WAF", "bad")
-		# elif error.code < 500:
-		# if options.verbose:
-		if options.verbose:
-			try:
-				if error.code == 401:
+
+		# TODO improve condition
+		try:
+			# Unauthenticated
+			if error.code == 401:
+				if options.verbose:
 					utils.printf("[-] Failed: %s" %([tryUsername, tryPassword]), "bad")
-				else:
+			# Server misconfiguration? Panel URL is deleted or wrong
+			elif error.code == 404:
+				utils.printf("[x] %s: %s" %(error, tryCred[::-1]), "bad")
+				if options.verbose:
+					utils.printf("   %s" %(proc.geturl()), "bad")
+			# Other error code
+			else:
+				if options.verbose:
 					utils.printf("[x] (%s): %s" %(proc.geturl(), tryCred[::-1]), "bad")
-			except:
-				# THIS BLOCKED BY WAF
-				utils.printf("[x] Loginbrute: %s" %(error), "bad")
-		
+		except:
+			# THIS BLOCKED BY WAF
+			utils.printf("[x] Loginbrute: %s" %(error), "bad")
+	
 		return False
 
 	finally:
