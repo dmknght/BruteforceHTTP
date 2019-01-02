@@ -76,6 +76,7 @@ def check_login(opts):
 				else:
 					loginInfo = False
 			else:
+				utils.printf("[x] Target check: %s" %(error), "bad")
 				loginInfo = False
 
 		# Error != http code
