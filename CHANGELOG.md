@@ -1,3 +1,9 @@
+# 2/1/2019
+* Move run_threads function inside attack function. Code cleaning
+* Add more exception for check_target function
+* Remove reload fucntion in loginbrute module. Tomcat admin panel error
+* Improve error message based on HTTP code in loginbrute module
+
 # Version 1.5, 1/1/2019
 * Rework httpget module: Now use mechanize
 * Add authentication detection for httpget
