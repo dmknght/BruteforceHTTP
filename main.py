@@ -33,9 +33,7 @@ def check_login(opts):
 		proc = tbrowser.startBrowser()
 		utils.printf("[+] Checking connection...")
 
-
 		proc.open(opts.url)
-
 		"""
 			Check URL type. If Website directs to other URL,
 			options.url is website's panel
@@ -58,25 +56,30 @@ def check_login(opts):
 		return loginInfo
 		
 	except Exception as error:
-		if error.code == 401:
-			## GET INFORMATION
-			## TODO: GET USERNAME AND PASSWORD LABEL
-			# BUG: can't direct to new url (meta) if has error code * mechanize bug
+		try:
+			if error.code == 401:
+				## GET INFORMATION
+				## TODO: GET USERNAME AND PASSWORD LABEL
+				# BUG: can't direct to new url (meta) if has error code * mechanize bug
 
-			resp_header = str(proc.response().info())
-			if "WWW-Authenticate" in resp_header:
-				loginID = tbrowser.checkHTTPGetLogin(resp_header)
-				loginInfo = (loginID, ["Password", "User Name"])
-				utils.printf("[+] Using HTTP GET Authentication mode", "norm")
-				options.attack_mode = "--httpget"
-				# CAN BE FALSE
-				# if loginID:
-				# 	loginInfo = (loginID, ["Password", "User Name"])
-				# else:
-				# 	loginInfo = False
+				resp_header = str(proc.response().info())
+				if "WWW-Authenticate" in resp_header:
+					loginID = tbrowser.checkHTTPGetLogin(resp_header)
+					loginInfo = (loginID, ["Password", "User Name"])
+					utils.printf("[+] Using HTTP GET Authentication mode", "norm")
+					options.attack_mode = "--httpget"
+					# CAN BE FALSE
+					# if loginID:
+					# 	loginInfo = (loginID, ["Password", "User Name"])
+					# else:
+					# 	loginInfo = False
+				else:
+					loginInfo = False
 			else:
 				loginInfo = False
-		else:
+
+		# Error != http code
+		except:
 			loginInfo = False
 	
 	except KeyboardInterrupt:
@@ -89,6 +92,20 @@ def check_login(opts):
 
 
 def attack(options, loginInfo):
+	def run_threads(threads, sending, completed, total):
+		# Run threads
+		for thread in threads:
+			sending += 1 # Sending
+			utils.progress_bar(sending, completed, total)
+			thread.start()
+
+		# Wait for threads completed
+		for thread in threads:
+			completed += 1
+			utils.progress_bar(sending, completed, total)
+			thread.join()
+
+		return sending, completed
 	_single_col = False
 	### SETTING UP FOR NEW ATTACK ###
 	if options.attack_mode == "--httpget":
@@ -229,21 +246,6 @@ if __name__ == "__main__":
 				getproxy.main(options)
 
 			else:
-				def run_threads(threads, sending, completed, total):
-					# Run threads
-					for thread in threads:
-						sending += 1 # Sending
-						utils.progress_bar(sending, completed, total)
-						thread.start()
-
-					# Wait for threads completed
-					for thread in threads:
-						completed += 1
-						utils.progress_bar(sending, completed, total)
-						thread.join()
-
-					return sending, completed
-
 				loginInfo = check_login(options)
 				result = attack(options, loginInfo)
 
