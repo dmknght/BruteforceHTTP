@@ -1,7 +1,8 @@
 
-from core import utils, tbrowser, actions
 from modules import loginbrute
 import data, threading
+from core.utils import printf, die, print_table
+from core.tbrowser import startBrowser, parseLoginForm
 
 # BUG [x] ReAuth: Can't find login form at https://mail.protonmail.com/login
 	#[x] ReAuth: Can't find login form at https://mega.nz/login
@@ -25,22 +26,21 @@ def do_job(jobs):
 def submit(url, options, tryCreds, result):
 
 	try:
-		proc = tbrowser.startBrowser()
-		proc.addheaders = [('User-Agent', tbrowser.useragent())]
+		proc = startBrowser()
 
-		utils.printf("[+] Checking %s" %(url))
+		printf("[+] Checking %s" %(url))
 
 		proc.open(url)
-		loginInfo = tbrowser.parseLoginForm(proc.forms())
+		loginInfo = parseLoginForm(proc.forms())
 
 	except Exception as err:
 		if options.verbose:
-			utils.printf("[x] ReAuth: %s at %s" %(err, url), "bad")
+			printf("[x] ReAuth: %s at %s" %(err, url), "bad")
 		
 
 	if not loginInfo:
 		if options.verbose:
-			utils.printf("[x] ReAuth: Can't find login form at %s" %(url), "bad")
+			printf("[x] ReAuth: Can't find login form at %s" %(url), "bad")
 	else:
 		try:
 			options.url = url
@@ -51,7 +51,7 @@ def submit(url, options, tryCreds, result):
 			)
 		except Exception as err:
 			if options.verbose:
-				utils.printf("[x] ReAuth: Submitting error for %s" %(err), "bad")
+				printf("[x] ReAuth: Submitting error for %s" %(err), "bad")
 
 def run(options, creds):
 	social_urls = data.social_urls().replace("\t", "").split("\n")
@@ -70,7 +70,7 @@ def run(options, creds):
 			for url in social_urls:
 				submit(url, options, tryCreds, result)
 
-				# if actions.size_o(workers) == options.threads:
+				# if len(workers) == options.threads:
 				# 	do_job(workers)
 				# 	del workers[:]
 
@@ -87,20 +87,20 @@ def run(options, creds):
 		
 	
 	except KeyboardInterrupt:
-		utils.printf("[x] Terminated by user!", "bad")
+		printf("[x] Terminated by user!", "bad")
 		import os
 		os._exit(0)
 
 	except SystemExit:
-		utils.die("[x] Terminated by system!", "SystemExit")
+		die("[x] Terminated by system!", "SystemExit")
 	
 	except Exception as err:
-		utils.die("[x] ReAuth: Runtime error", err)
+		die("[x] ReAuth: Runtime error", err)
 				
 	finally:
 		result = list(result.queue)
 
-		if actions.size_o(result) == 0:
-			utils.printf("[-] No extra valid password found", "bad")
+		if len(result) == 0:
+			printf("[-] No extra valid password found", "bad")
 		else:
-			utils.print_table(("Target", "Username", "Password"), *result)
+			print_table(("Target", "Username", "Password"), *result)

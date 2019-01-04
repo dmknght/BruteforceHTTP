@@ -1,5 +1,6 @@
 import sys
-from core import helps, actions, utils
+from core.helps import print_fast_help
+from core.utils import die, printf
 
 class ParseOptions(object):
 
@@ -95,7 +96,7 @@ class ParseOptions(object):
 						i += 1
 					
 					else:
-						utils.die(
+						die(
 							"[x] Options: Arguments error",
 							"Invalid wordlist %s" %(sys.argv[i + 1])
 						)
@@ -104,7 +105,7 @@ class ParseOptions(object):
 					self.help = True
 				
 				else:
-					utils.die(
+					die(
 						"[x] Options: Arguments error",
 						"Unknow option %s" %(sys.argv[i])
 					)
@@ -115,7 +116,7 @@ class ParseOptions(object):
 					self.options[sys.argv[i]] = sys.argv[i + 1]
 					i += 1
 				else:
-					utils.die(
+					die(
 						"[x] Options: Arguments error",
 						"Unknow option %s" %(sys.argv[i])
 					)
@@ -130,9 +131,9 @@ class ParseOptions(object):
 		
 		if szOptions == 1:
 			# NO ARGUMENT
-			helps.print_fast_help()
+			print_fast_help()
 
-			utils.printf(
+			printf(
 				"Use: %s for more infomation\n" %(self.HELP_OPTIONS)
 			)
 			sys.exit(0)
@@ -141,7 +142,7 @@ class ParseOptions(object):
 			try:
 				self.parse_options(szOptions)
 			except Exception as error:
-				utils.die(
+				die(
 					"[x] Options: Parse options error",
 					error
 				)

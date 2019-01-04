@@ -1,4 +1,5 @@
-from core import utils, tbrowser
+from core.tbrowser import startBrowser
+from core.utils import printf
 
 # http://docs.python-requests.org/en/master/user/authentication/
 # USING PROXY WITH REQUESTS https://stackoverflow.com/a/13395324
@@ -15,18 +16,18 @@ def submit(options, loginInfo, creds, result):
 			return True # don't run if find password of username
 			
 	if options.verbose:
-		utils.printf("Trying: %s:%s" %(tryUsername, tryPassword), 'norm')
+		printf("Trying: %s:%s" %(tryUsername, tryPassword), 'norm')
 	
 	try:
-		proc = tbrowser.startBrowser()
+		proc = startBrowser()
 		proc.add_password(options.url, tryUsername, tryPassword, realm)
 		proc.open(options.url)
 		result.put([tryUsername, tryPassword])
-		utils.printf("[*] Match found: %s" %([tryUsername, tryPassword]), "good") 
+		printf("[*] Match found: %s" %([tryUsername, tryPassword]), "good") 
 
 	except Exception as err:
 		if err.code == 401:
 			if options.verbose:
-				utils.printf("[-] Failed %s" %(creds[::-1]), "bad")
+				printf("[-] Failed %s" %(creds[::-1]), "bad")
 		else:
-			utils.printf("[x] %s: %s" %(err, creds[::-1]), "bad")
+			printf("[x] %s: %s" %(err, creds[::-1]), "bad")

@@ -1,4 +1,5 @@
-import random, sys, utils, string
+import random, sys, string
+from utils import die
 
 # def getRootDir(pathModuleLocation):
 # 	##################################
@@ -10,18 +11,18 @@ import random, sys, utils, string
 # 	pathModuleLocation = "/".join(pathModuleLocation.split("/")[:-1])
 # 	return pathModuleLocation
 
-def size_o(objInputData):
-	#	Return length of a file object or list
-	if type(objInputData) == file:
+# def size_o(objInputData):
+# 	#	Return length of a file object or list
+# 	if type(objInputData) == file:
 
-		retFileSize = len(objInputData.readlines())
-		objInputData.seek(0)
-		return retFileSize
+# 		retFileSize = len(objInputData.readlines())
+# 		objInputData.seek(0)
+# 		return retFileSize
 
-	elif type(objInputData) == list:
-		return len(objInputData)
-	elif type(objInputData) == str:
-		return len(objInputData.split('\n'))
+# 	elif type(objInputData) == list:
+# 		return len(objInputData)
+# 	elif type(objInputData) == str:
+# 		return len(objInputData.split('\n'))
 
 def randomFromList(listData):
 	return random.choice(listData)
@@ -57,14 +58,14 @@ def fload(pathFileLocation):
 		objFileRead = open(pathFileLocation, 'r')
 		return objFileRead
 	except Exception as error:
-		utils.die("Error while loading file!", error)
+		die("Error while loading file!", error)
 		
 def fread(pathFileLocation):
 	try:
 		retObj = fload(pathFileLocation)
 		return retObj.read()
 	except Exception as error:
-		utils.die("Error while reading data", error)
+		die("Error while reading data", error)
 	finally:
 		try:
 			retObj.close()
@@ -76,7 +77,7 @@ def fwrite(pathFileLocation, writeData):
 		objFileWrite = open(pathFileLocation, "w")
 		objFileWrite.write(writeData)
 	except Exception as error:
-		utils.die("Error while writing data", error)
+		die("Error while writing data", error)
 	finally:
 		objFileWrite.close()
 
@@ -87,7 +88,7 @@ def fwrite_c(pathFileLocation, writeData):
 		fileWrite = open(pathFileLocation, "a")
 		fileWrite.write(writeData)
 	except Exception as error:
-		utils.die("Error while continuing write file", error)
+		die("Error while continuing write file", error)
 	finally:
 		fileWrite.close()
 
@@ -113,12 +114,12 @@ def verify_options(options):
 	try:
 		options.threads = int(options.options["-t"])
 		if options.threads < 1:
-			utils.die(
+			die(
 				"[x] Options: Invalid option \"threads\"",
 				"Thread number must be larger than 1"
 			)
 	except Exception as error:
-		utils.die(
+		die(
 			"[x] Options: Invalid option \"threads\"",
 			error
 		)
@@ -130,13 +131,13 @@ def verify_options(options):
 		if options.options["-u"] in options.WORDLISTS:
 			options.username = eval("data.%s_user()" %(options.options["-u"])).replace("\t", "").split("\n")
 		else:
-			options.username = fread(options.options["-u"])
+			options.username = fread(options.options["-u"]).split("\n")
 	
 	# CHECK passlist option
 	if options.options["-p"] in options.WORDLISTS:
 		options.passwd = eval("data.%s_pass()" %(options.options["-p"])).replace("\t", "").split("\n")
 	else:
-		options.passwd = fread(options.options["-p"])
+		options.passwd = fread(options.options["-p"]).split("\n")
 
 
 	options.report = options.run_options["--report"]
@@ -146,5 +147,5 @@ def verify_options(options):
 
 
 if __name__ == "__main__":
-	utils.die("Oops! Wrong place", "Find other place")
+	die("Oops! Wrong place", "Find other place")
 	

@@ -1,4 +1,4 @@
-import sys, actions
+import sys
 
 def prints(mtext, spaces = 2):
 	#############################################
@@ -100,7 +100,7 @@ def print_table(headers, *args, **kwargs):
 	#	ALL input data must be string
 	################################################
 
-	extra_fill = kwargs.get("extra_fill", 3)
+	extra_fill = kwargs.get("extra_fill", 2)
 	header_separator = kwargs.get("header_separator", "-")
 	if not all(map(lambda x: len(x) == len(headers), args)):
 		printf("[x] PrintTable: Error headers", 'bad')
@@ -117,7 +117,7 @@ def print_table(headers, *args, **kwargs):
 
 	# headers_line += label: Filling_header
 	# headers_line = headers_line + "Lable 1 | Label 2"
-	headers_line = '  | '
+	headers_line = '  |  '
 	headers_separator_line = '  +'
 
 	for idx, header in enumerate(headers):
@@ -128,10 +128,10 @@ def print_table(headers, *args, **kwargs):
 		# label: Filling_header
 		headers_line = "%s%s" %(
 			"".join((headers_line, "{header:<{fill}}".format(header = header, fill = current_line_fill))),
-			"| "
+			"|  "
 			)
 
-		headers_separator_line = "%s%s" %(
+		headers_separator_line = "%s-%s" %(
 			"-".join((
 				headers_separator_line,
 				'{:<{}}'.format(header_separator * current_line_fill, current_line_fill)
@@ -146,14 +146,14 @@ def print_table(headers, *args, **kwargs):
 
 	# Print contents
 	for arg in args:
-		content_line = '  | ' # print first character before contents
+		content_line = '  |  ' # print first character before contents
 		for idx, element in enumerate(arg):
 			content_line = "%s%s" %(
 				"".join((
 					content_line,
 					'{:{}}'.format(element, fill[idx])
 				)),
-				"| "	
+				"|  "	
 			)
 		print(content_line)
 		
@@ -257,7 +257,7 @@ def start_banner(options):
 		options.attack_mode.replace("--", ""),
 		options.run_options["--proxy"],
 		options.threads,
-		"None" if actions.size_o(options.extras) == 0 else fixLen(str(options.extras), 51),
+		"None" if len(options.extras) == 0 else fixLen(str(options.extras), 51),
 		options.verbose,
 		options.report,
 	)

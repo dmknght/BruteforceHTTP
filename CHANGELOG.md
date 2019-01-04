@@ -1,3 +1,8 @@
+# 4/1/2019
+* Code clean
+* Fix reading data from file bug
+* New help menu information
+
 # 2/1/2019
 * Move run_threads function inside attack function. Code cleaning
 * Add more exception for check_target function

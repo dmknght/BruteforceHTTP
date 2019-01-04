@@ -1,5 +1,5 @@
 import sys
-from core import utils
+from core.utils import print_table
 
 def print_fast_help():
 	print('\nUsage: %s [<option> <value>] [mode] [--list <list_name>] URL\n' %(
@@ -10,114 +10,116 @@ def print_help():
 
 	#	Print project's help table
 	print_fast_help()
-	print("\nOptions:\n")
-	title = ("Formats", "Default values", "Examples")
+	print("Options: ")
+	#title = ("Formats", "Default values", "Examples")
+	title = ("Formats", "Examples")
 	menu = [
 		[
-			"%-23s" %("-u <path_to_wordlist>"),
-			"default (list)",
-			"-u /usr/share/wordlists/nmap.lst"
+			"%-14s" %("-u <file_path>"),
+			#"--list default",
+			"-u /opt/wordlists/nmap.lst"
 		],
 		[
-			"%-23s" %("-p <path_to_wordlist>"),
-			"default (list)",
-			"-p /usr/share/wordlists/fasttrack.txt"
+			"%-14s" %("-p <file_path>"),
+			#"--list default",
+			"-p /opt/wordlists/passwd.txt"
 		],
 		[
-			"%-23s" %("-U <username>"),
-			"None",
+			"%-14s" %("-U <username>"),
+			#"None",
 			"-U admin | -U admin:user1"
 		],
 		[
-			"%-23s" %("-t <threads>"),
-			"16 (threads)",
+			"%-14s" %("-t <threads>"),
+			#"16 (threads)",
 			"-t 32"
 		],
 	]
-	utils.print_table(title, *menu)
+	print_table(title, *menu)
 	
-	print("\nModes: Only ONE attack mode can be used\n")
-	title = ("Attack Modes", "Descriptions")
-	menu = [
-		[
-			"%-23s" %("--brute [Default]"),
-			"HTTP POST Form attack"
-		],
-		# Remove, now automatic choose
-		# [
-		# 	"%-23s" %("--httpget"),
-		# 	"HTTP Basic Authentication attack"
-		# ],
-		[
-			"%-23s" %("--sqli [Not Available]"),
-			"SQL Injection login bypass attack"
-		],
-	]
-	utils.print_table(title, *menu)
+	# TODO: move sqli to extras mode, no reauth for sqli
+	# print("\nAttack mode: Attack method")
+	# title = ("Modes", "Descriptions")
+	# menu = [
+	# 	[
+	# 		"%-14s" %("--brute [Default]"),
+	# 		"Brute Force [HTTP GET / POST Form]"
+	# 	],
+	# 	# Remove, now automatic choose
+	# 	# [
+	# 	# 	"%-14s" %("--httpget"),
+	# 	# 	"HTTP Basic Authentication attack"
+	# 	# ],
+	# 	[
+	# 		"%-14s" %("--sqli [N/A]"),
+	# 		"SQL Injection login bypass"
+	# 	],
+	# ]
+	# print_table(title, *menu)
 
-	print("")
-	title = ("Running Modes", "Descriptions")
+	print("\nRunning mode:")
+	title = ("Modes", "Descriptions")
 	menu = [
 		[
-			"%-23s" %("--proxy"),
+			"%-14s" %("--proxy"),
 			"Attack using proxies"
 		],
 		[
-			"%-23s" %("--verbose"),
+			"%-14s" %("--verbose"),
 			"Display running information"
 		],
 	]
-	utils.print_table(title, *menu)
+	print_table(title, *menu)
 	
-	print("")
-	title = ("Extra Modes", "Descriptions")
+	print("\nExtra modes: Combines with attack mode")
+	title = ("Modes", "Descriptions")
 	menu = [
 		[
-			"%-23s" %("--reauth"),
-			"Checks valid credentials on other social-networks"
+			"%-14s" %("--reauth"),
+			"Re-check credentials on social networks"
 		],
 		[
-			"%-23s" %("--getproxy"),
-			"Get list of proxy, check connection though each address"
+			"%-14s" %("--getproxy"),
+			"Provide new proxy list"
 		],
 	]
-	utils.print_table(title, *menu)
+	print_table(title, *menu)
 
-	print("\nWordlists:\n")
-	title = ("Values", "Informations")
+	print("\nWordlists: Values will be replaced by [-U/-u/-p] options")
+	title = ("List name", "Descriptions")
 	menu = [
 		[
-			"%-23s" %("default"),
+			"%-14s" %("default"),
 			"Top usernames+passwords"
 		],
 		[
-			"%-23s" %("router"),
-			"Default router usernames+passwords"
+			"%-14s" %("router"),
+			"Router usernames+passwords"
 		],
 		[
-			"%-23s" %("tomcat"),
-			"Default tomcat usernames+passwords"
+			"%-14s" %("tomcat"),
+			"Tomcat manager usernames+passwords"
 		],
 		[
-			"%-23s" %("cctv"),
-			"Default cctv usernames+passwords"
+			"%-14s" %("cctv"),
+			"CCTV usernames+passwords"
 		],
 		[
-			"%-23s" %("unix"),
-			"Top unix usernames+passwords"
+			"%-14s" %("unix"),
+			"Top Unix usernames+passwords"
 		],
 		[
-			"%-23s" %("http"),
-			"Top http usernames+passwords"
+			"%-14s" %("http"),
+			"Top HTTP usernames+passwords"
 		],
 		[
-			"%-23s" %("mirai"),
-			"List usernames+passwords used by mirai botnet"
+			"%-14s" %("mirai"),
+			"Mirai botnet usernames+passwords"
 		],
 		[
-			"%-23s" %("webshell"),
-			"Common webshell usernames+passwords"
+			"%-14s" %("webshell"),
+			"Webshell usernames+passwords"
 		],
 	]
-	utils.print_table(title, *menu)
+	print_table(title, *menu)
 	print("")

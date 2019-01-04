@@ -30,8 +30,8 @@
 
 def check_login(opts):
 	try:
-		proc = tbrowser.startBrowser()
-		utils.printf("[+] Checking connection...")
+		proc = startBrowser()
+		printf("[+] Checking connection...")
 
 		proc.open(opts.url)
 		"""
@@ -43,16 +43,16 @@ def check_login(opts):
 				options.url = site.com/wp-login.php -> login URL
 		"""
 		if proc.geturl() != opts.url:
-			utils.printf("[*] Website moves to: ['%s']" %(proc.geturl()), "norm")
+			printf("[*] Website moves to: ['%s']" %(proc.geturl()), "norm")
 			opts.panel_url, opts.login_url = opts.url, proc.geturl()
 		else:
 			opts.login_url = opts.url
 
-		utils.printf("[*] Connect success!", "good")
+		printf("[*] Connect success!", "good")
 		if opts.run_options["--verbose"]:
-			utils.printf("[*] %s" %(proc.title()), "norm")
-		utils.printf("[+] Analyzing login form....")
-		loginInfo = tbrowser.parseLoginForm(proc.forms())
+			printf("[*] %s" %(proc.title()), "norm")
+		printf("[+] Analyzing login form....")
+		loginInfo = parseLoginForm(proc.forms())
 		return loginInfo
 		
 	except Exception as error:
@@ -64,9 +64,9 @@ def check_login(opts):
 
 				resp_header = str(proc.response().info())
 				if "WWW-Authenticate" in resp_header:
-					loginID = tbrowser.checkHTTPGetLogin(resp_header)
+					loginID = checkHTTPGetLogin(resp_header)
 					loginInfo = (loginID, ["Password", "User Name"])
-					utils.printf("[+] Using HTTP GET Authentication mode", "norm")
+					printf("[+] Using HTTP GET Authentication mode", "norm")
 					options.attack_mode = "--httpget"
 					# CAN BE FALSE
 					# if loginID:
@@ -76,7 +76,7 @@ def check_login(opts):
 				else:
 					loginInfo = False
 			else:
-				utils.printf("[x] Target check: %s" %(error), "bad")
+				printf("[x] Target check: %s" %(error), "bad")
 				loginInfo = False
 
 		# Error != http code
@@ -97,13 +97,13 @@ def attack(options, loginInfo):
 		# Run threads
 		for thread in threads:
 			sending += 1 # Sending
-			utils.progress_bar(sending, completed, total)
+			progress_bar(sending, completed, total)
 			thread.start()
 
 		# Wait for threads completed
 		for thread in threads:
 			completed += 1
-			utils.progress_bar(sending, completed, total)
+			progress_bar(sending, completed, total)
 			thread.join()
 
 		return sending, completed
@@ -119,25 +119,25 @@ def attack(options, loginInfo):
 
 
 	if not loginInfo:
-		utils.die("[x] Target check: URL error", "[x] No login request found")
+		die("[x] Target check: URL error", "[x] No login request found")
 	else:
-		utils.printf("[*] Login request has been found!", "good")
-		utils.printf(
+		printf("[*] Login request has been found!", "good")
+		printf(
 			"   [+] Form ID: %s\n"
 			"   [+] Field: %s\n"
 			%(loginInfo[0], loginInfo[1][::-1]), "norm")
 
-		utils.printf("[+] Starting attack...")
+		printf("[+] Starting attack...")
 
 		## 1 PASSWORD FORM FIELD ONLY ## 
-		if actions.size_o(loginInfo[1]) == 1:
+		if len(loginInfo[1]) == 1:
 			_single_col = True
 
 			# Clear username list. Process now using password list only
 			del options.username[:]
 			options.username = [""]
 
-	tasks = actions.size_o(options.passwd) * actions.size_o(options.username)
+	tasks = len(options.passwd) * len(options.username)
 
 	import Queue
 	result = Queue.Queue()
@@ -145,12 +145,12 @@ def attack(options, loginInfo):
 	sending, completed = 0, 0
 	try:
 		#### START ATTACK ####
-		utils.printf("[+] Task counts: %s tasks" %(tasks), "norm")
+		printf("[+] Task counts: %s tasks" %(tasks), "norm")
 		workers = []
 
 		for username in options.username:
 			for password in options.passwd:
-				if actions.size_o(workers) == options.threads:
+				if len(workers) == options.threads:
 					sending, completed = run_threads(workers, sending, completed, tasks)
 					del workers[:]
 
@@ -166,39 +166,35 @@ def attack(options, loginInfo):
 			
 	except KeyboardInterrupt:
 		if threading.activeCount() > 1:
-			utils.printf("[x] Terminated by user!", "bad")
+			printf("[x] Terminated by user!", "bad")
 			# STEAL FROM SQLMAP
 			# BUG: Don't print table result. Temp remove
 			# import os
 			# os._exit(0)
 
 	except SystemExit:
-		utils.printf("[x] Terminated by system!", "bad")
+		printf("[x] Terminated by system!", "bad")
 
 	except Exception as error:
-		utils.die("[x] Runtime error", error)
+		die("[x] Runtime error", error)
 
 	finally:
 		credentials = list(result.queue)
-		if actions.size_o(credentials) == 0:
-			utils.printf("[-] No match found!", "bad")
+		if len(credentials) == 0:
+			printf("[-] No match found!", "bad")
 
 		else:
-			utils.printf(
-				"\n[*] %s valid password[s] found:" %(
-					actions.size_o(credentials)
-				),
-				"norm"
-			)
+			printf(
+				"\n[*] %s valid password[s] found:" %(len(credentials)), "norm")
 
 			if "--reauth" not in options.extras:
 				if _single_col:
-					utils.print_table(("", "Password"), *credentials)
+					print_table(("", "Password"), *credentials)
 				else:
-					utils.print_table(("Username", "Password"), *credentials)
+					print_table(("Username", "Password"), *credentials)
 			else:
-				utils.print_table(("Target", "Username", "Password"), *credentials)
-			utils.printf("")
+				print_table(("Target", "Username", "Password"), *credentials)
+			printf("")
 		return credentials
 
 
@@ -206,7 +202,10 @@ if __name__ == "__main__":
 	#if check_import():
 		# IMPORT GLOBALY
 	import sys, time, threading, ssl
-	from core import utils, options, actions, tbrowser
+	from core import options
+	from core.tbrowser import startBrowser, parseLoginForm, checkHTTPGetLogin
+	from core.actions import verify_url, verify_options
+	from core.utils import printf, progress_bar, die, print_table, start_banner
 
 	try:
 		# Setting new session
@@ -221,12 +220,12 @@ if __name__ == "__main__":
 			from core import helps
 			helps.print_help()
 		else:
-			actions.verify_url(options)
+			verify_url(options)
 
-			actions.verify_options(options)
+			verify_options(options)
 
 			# Print start banner
-			utils.printf(utils.start_banner(options))
+			printf(start_banner(options))
 			
 			# Fix SSL errors https://stackoverflow.com/a/35960702
 			try:
@@ -256,8 +255,8 @@ if __name__ == "__main__":
 			# Report
 
 	except Exception as error:
-		utils.die("[x] Program stopped", error)
+		die("[x] Program stopped", error)
 
 	finally:
 		runtime = time.time() - runtime
-		utils.printf("[*] Time elapsed: %0.4f [s]\n" %(runtime), "good")
+		printf("[*] Time elapsed: %0.4f [s]\n" %(runtime), "good")

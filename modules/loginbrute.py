@@ -1,6 +1,7 @@
 import mechanize
-from core import utils, actions, tbrowser		
-
+from core.tbrowser import parseLoginForm, startBrowser
+from core.utils import printf
+from core.actions import randomFromList
 
 def check_condition(options, proc, loginInfo):
 
@@ -15,7 +16,7 @@ def check_condition(options, proc, loginInfo):
 		# BUG wrong detection if WAF send a block msg with http code 200
 		# User provided panel url (/wp-admin/ for example, repopen this url to check sess)
 		proc.open(options.panel_url)
-		if tbrowser.parseLoginForm(proc.forms()) != loginInfo:
+		if parseLoginForm(proc.forms()) != loginInfo:
 			return 1
 		else:
 			return 0
@@ -38,7 +39,7 @@ def check_condition(options, proc, loginInfo):
 		"""
 		# DEBUG
 		# proc.open(options.url)
-		# if tbrowser.parseLoginForm(proc.forms()) != loginInfo:
+		# if parseLoginForm(proc.forms()) != loginInfo:
 		# 	return 1
 		# else:
 		# 	return 0
@@ -49,11 +50,11 @@ def submit(options, loginInfo, tryCred, result):
 
 	#	Get login form field informations
 	
-	# BUG parse form issue with gmail, move to tbrowser.parseLoginForm
+	# BUG parse form issue with gmail, move to parseLoginForm
 	frmLoginID, frmFields = loginInfo
 	tryPassword, tryUsername = tryCred
 
-	proc = tbrowser.startBrowser()
+	proc = startBrowser()
 	
 	for cred in list(result.queue):
 		if "--reauth" not in options.extras:
@@ -65,7 +66,7 @@ def submit(options, loginInfo, tryCred, result):
 	
 	if options.proxy:
 		# Set proxy connect
-		proxyAddr = actions.randomFromList(options.proxy)
+		proxyAddr = randomFromList(options.proxy)
 		proc.set_proxies({"http": proxyAddr})
 	
 	try:
@@ -87,9 +88,9 @@ def submit(options, loginInfo, tryCred, result):
 
 		if options.verbose:
 			if options.proxy:
-				utils.printf("[+] Trying: %s through %s" %([tryUsername, tryPassword],proxyAddr), 'norm')
+				printf("[+] Trying: %s through %s" %([tryUsername, tryPassword],proxyAddr), 'norm')
 			else:
-				utils.printf("[+] Trying: %s" %([tryUsername, tryPassword]), 'norm')
+				printf("[+] Trying: %s" %([tryUsername, tryPassword]), 'norm')
 		
 		#	Reload the browser. For javascript redirection and others...
 		# BUG tomcat admin login here
@@ -98,19 +99,19 @@ def submit(options, loginInfo, tryCred, result):
 		#	TODO improve condition to use captcha
 		
 		# BUG wrong if prompt new login form with captcha. This should be not parseLoginForm
-		if tbrowser.parseLoginForm(proc.forms()) != loginInfo:
+		if parseLoginForm(proc.forms()) != loginInfo:
 			test_result = check_condition(options, proc, loginInfo)
 			
 
 			if test_result:
-				utils.printf("[*] Page title: ['%s']" %(proc.title()), "good")
+				printf("[*] Page title: ['%s']" %(proc.title()), "good")
 				
 				# "If we tried login form with username+password field"
 				if tryUsername:
-					utils.printf("[*] Found: %s" %([tryUsername, tryPassword]), "good")
+					printf("[*] Found: %s" %([tryUsername, tryPassword]), "good")
 				# "Else If we tried login form with password field only"
 				else:
-					utils.printf("[*] Found: %s" %([tryPassword]), "good")
+					printf("[*] Found: %s" %([tryPassword]), "good")
 				# "End of condition block"
 				
 				# "Check for Extras option reauth", return result w/ right format
@@ -122,19 +123,19 @@ def submit(options, loginInfo, tryCred, result):
 			else:
 				# Possibly Error. But sometime it is true
 				if options.verbose:
-					utils.printf("[x] Get error page: %s" %([tryUsername, tryPassword]), "bad")
-					utils.printf("[x] Page title: ['%s']" %(proc.title()), "bad")
+					printf("[x] Get error page: %s" %([tryUsername, tryPassword]), "bad")
+					printf("[x] Page title: ['%s']" %(proc.title()), "bad")
 		
 		# "Login form is still there. Oops"
 		else:
 			if options.verbose:
 				if options.proxy:
-					utils.printf(
+					printf(
 						"[-] Failed: %s through %s" %([tryUsername, tryPassword], proxyAddr),
 						"bad"
 					)
 				else:
-					utils.printf(
+					printf(
 						"[-] Failed: %s" %([tryUsername, tryPassword]),
 						"bad"
 					)
@@ -152,19 +153,19 @@ def submit(options, loginInfo, tryCred, result):
 			# Unauthenticated
 			if error.code == 401:
 				if options.verbose:
-					utils.printf("[-] Failed: %s" %([tryUsername, tryPassword]), "bad")
+					printf("[-] Failed: %s" %([tryUsername, tryPassword]), "bad")
 			# Server misconfiguration? Panel URL is deleted or wrong
 			elif error.code == 404:
-				utils.printf("[x] %s: %s" %(error, tryCred[::-1]), "bad")
+				printf("[x] %s: %s" %(error, tryCred[::-1]), "bad")
 				if options.verbose:
-					utils.printf("   %s" %(proc.geturl()), "bad")
+					printf("   %s" %(proc.geturl()), "bad")
 			# Other error code
 			else:
 				if options.verbose:
-					utils.printf("[x] (%s): %s" %(proc.geturl(), tryCred[::-1]), "bad")
+					printf("[x] (%s): %s" %(proc.geturl(), tryCred[::-1]), "bad")
 		except:
 			# THIS BLOCKED BY WAF
-			utils.printf("[x] Loginbrute: %s" %(error), "bad")
+			printf("[x] Loginbrute: %s" %(error), "bad")
 	
 		return False
 
