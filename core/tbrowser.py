@@ -1,5 +1,5 @@
 import data, re
-from core import actions, utils
+from core.actions import randomFromList
 
 def startBrowser():
 	import mechanize
@@ -17,7 +17,7 @@ def startBrowser():
 def useragent():
 	agents = data.getAgent()
 	
-	return actions.randomFromList(agents.split("\n"))
+	return randomFromList(agents.split("\n"))
 
 def checkHTTPGetLogin(strHeader):
 	reg = r"WWW-Authenticate: Basic realm=\"(.*)\""
