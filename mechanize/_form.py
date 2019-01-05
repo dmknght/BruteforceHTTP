@@ -34,7 +34,9 @@ def parse_control(elem, parent_of, default_type='text'):
 		if lt:
 			attrs["__label"] = lt
 	ctype = attrs.get('type') or default_type
-	return ctype, attrs.get('name'), attrs
+	fname = attrs.get('name') or attrs.get('id')
+	#return ctype, attrs.get('name'), attrs
+	return ctype, fname, attrs
 
 
 def parse_input(elem, parent_of, *a):
@@ -148,8 +150,7 @@ def parse_forms(root, base_url, request_class=None, select_default=False):
 				form_elem = parent_of(elem, 'form')
 			form = forms_map.get(form_elem, global_form)
 			try:
-				control_type, control_name, attrs = cfunc(elem, parent_of,
-														  attrs_map)
+				control_type, control_name, attrs = cfunc(elem, parent_of, attrs_map)
 			except SkipControl:
 				continue
 			attrs_map[elem] = attrs
