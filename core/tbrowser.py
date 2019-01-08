@@ -15,9 +15,8 @@ def startBrowser():
 	return browser
 
 def useragent():
-	agents = data.getAgent()
-	
-	return randomFromList(agents.split("\n"))
+	return randomFromList(data.getAgent().split("\n"))
+	#return agents
 
 def checkHTTPGetLogin(strHeader):
 	reg = r"WWW-Authenticate: Basic realm=\"(.*)\""
@@ -46,7 +45,8 @@ def checkPasswdForm(objBrowserForm):
 			retPassField = re.findall(regPassField, str(form), re.MULTILINE)[0]
 			return (retFormID, [retPassField])
 		except:
-			retFormID += 1
+			pass
+		retFormID += 1
 	return None
 
 def checkLoginForm(objBrowserForm):
