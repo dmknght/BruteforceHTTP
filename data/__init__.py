@@ -1953,6 +1953,7 @@ def default_user():
 	
 def default_pass():
 	return """123456a
+	123#@#@
 	123456a@
 	1234
 	12345

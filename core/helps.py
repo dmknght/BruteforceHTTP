@@ -76,7 +76,7 @@ def print_help():
 	menu = [
 		[
 			"%-14s" %("--reauth"),
-			"Re-check credentials on social networks"
+			"Check credentials on social networks"
 		],
 		[
 			"%-14s" %("--getproxy"),
@@ -90,35 +90,35 @@ def print_help():
 	menu = [
 		[
 			"%-14s" %("default"),
-			"Top usernames+passwords"
+			"Top common users+passwords"
 		],
 		[
 			"%-14s" %("router"),
-			"Router usernames+passwords"
+			"Router wordlist"
 		],
 		[
 			"%-14s" %("tomcat"),
-			"Tomcat manager usernames+passwords"
+			"Tomcat manager wordlist"
 		],
 		[
 			"%-14s" %("cctv"),
-			"CCTV usernames+passwords"
+			"CCTV wordlist"
 		],
 		[
 			"%-14s" %("unix"),
-			"Top Unix usernames+passwords"
+			"Top Unix wordlist"
 		],
 		[
 			"%-14s" %("http"),
-			"Top HTTP usernames+passwords"
+			"Top HTTP wordlist"
 		],
 		[
 			"%-14s" %("mirai"),
-			"Mirai botnet usernames+passwords"
+			"Mirai botnet wordlist"
 		],
 		[
 			"%-14s" %("webshell"),
-			"Webshell usernames+passwords"
+			"Webshell wordlist"
 		],
 	]
 	print_table(title, *menu)

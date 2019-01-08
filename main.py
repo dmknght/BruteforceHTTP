@@ -3,7 +3,7 @@
 # def check_import():
 # 	try:
 # 		import sys, threading, os, ssl, time
-# 		import requests, mechanize, re
+# 		import mechanize, re
 
 # 	except ImportError as error:
 # 		print(error)
@@ -119,6 +119,7 @@ def attack(options, loginInfo):
 
 
 	if not loginInfo:
+		# Test for 2 steps... login?
 		die("[x] Target check: URL error", "[x] No login request found")
 	else:
 		printf("[*] Login request has been found!", "good")

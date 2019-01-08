@@ -2,7 +2,7 @@
 <p align='center'><i>An automated brute forcing tool</i></p>
 
 ## About this project
-This project focusing on Brute Forcing HTTP protocol AUTOMATICALLY.
+A HTTP brute force tool bases on Mechanize browser.
 
 ## Installation
 
@@ -16,7 +16,7 @@ Requirements
 
 1.
 ```
-sudo apt install python python-mechanize python-regex git
+sudo apt install python python-regex git
 ```
 
 2.
@@ -68,7 +68,7 @@ Further improvement (See TODO.md)
 ## DOES NOT work (by now)
 - Javascript website (mechanize library problem)
 - Login with captcha
-
+(Please read WEBNOTE.md for test cases)
 
 ## Author
 - [@Ic3W4ll](https://github.com/dmknght)
