@@ -75,7 +75,8 @@ def checkLoginForm(objBrowserForm):
 			retPassField = re.findall(regPassField, str(form), re.MULTILINE)[0]
 			return (retFormID, [retPassField, retTextField])
 		except:
-			retFormID += 1
+			pass
+		retFormID += 1
 	return None
 
 def parseLoginForm(objForm):
