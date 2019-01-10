@@ -43,7 +43,8 @@ def webshell_pass():
 	cokkie
 	abcdef1234567890abcdef1234567890
 	vhb
-	Kennwort"""
+	Kennwort
+	icesword"""
 
 def router_user():
 	return """acc
