@@ -222,6 +222,8 @@ if __name__ == "__main__":
 			helps.print_help()
 		else:
 			verify_url(options)
+			if not options.url:
+				die("[x] URL error", "An URL is required")
 
 			verify_options(options)
 
