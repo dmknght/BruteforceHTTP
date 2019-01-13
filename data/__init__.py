@@ -23,6 +23,8 @@ def social_urls():
 
 def webshell_user():
 	return """admin
+	antichat
+	Anarchy
 	123
 	root
 	r00t
@@ -35,6 +37,7 @@ def webshell_pass():
 	return """r00t
 	123
 	admin
+	antichat
 	p4kl0nc4t
 	IndoXploit
 	angel
@@ -44,7 +47,10 @@ def webshell_pass():
 	abcdef1234567890abcdef1234567890
 	vhb
 	Kennwort
-	icesword"""
+	icesword
+	Chaos
+	DAws
+	changeme"""
 
 def router_user():
 	return """acc
@@ -1950,7 +1956,8 @@ def default_user():
 	user
 	username
 	test
-	demo""".replace("\t", "")
+	demo
+	sysadmin""".replace("\t", "")
 	
 def default_pass():
 	return """123456a
@@ -2008,7 +2015,8 @@ def default_pass():
 	123456q
 	12345a
 	1122334411223344
-	P4ssw0rd""".replace("\t", "")
+	P4ssw0rd
+	sysadmin""".replace("\t", "")
 	
 def getSQL():
 	return """ or true --
