@@ -1,46 +1,50 @@
 Project:
-  [ ] Docker
-  [x] Improve multithreading
-  [ ] Memory management
-  [ ] Python 3
+  ☐ Docker
+  ✔ Improve multithreading @done(19-01-13 19:45)
+  ☐ Memory management
+  ☐ Python 3
 
 Mechanize:
-  [ ] Javascript Login Form
-  [x] Fix form has name control only (no id)
-  [ ] Unsafe SSL website
-  [ ] Website redirection
+  ☐ Javascript Login Form
+  ✔ Fix form has name control only (no id) @done(19-01-13 19:45)
+  ☐ Unsafe SSL website
+  ☐ Website redirection
 
 User communication:
-  [x] Multithreading issue w/ status bar, result
-  [ ] Result, reporting
-  [x] Better module for getting user options
-  [ ] Save creds to db
+  ✔ Multithreading issue w/ status bar, result @done(19-01-13 19:45)
+  ☐ Result, reporting
+  ✔ Better module for getting user options @done(19-01-13 19:45)
+  ☐ Save creds to db
 
 Attack modules:
-  [x] HTTP Basic authenticate
-  [ ] Captcha
-  [x] Password form only (webshell, etc..) login
-  [ ] 2 submit times website (google, yahoo)
+  ✔ HTTP Basic authenticate @done(19-01-13 19:45)
+  ☐ Captcha
+  ✔ Password form only (webshell, etc..) login @done(19-01-13 19:46)
+  2 submit times website (google, yahoo):
+    ☐ Parse login form 2 times
+    ☐ Matching condition
+    ☐ Combine with project
+    ☐ Auto detect instead of choose option manually
   HTTP GET:
-    [ ] Use proxy for attacking tasks
-    [ ] Combine with reauth @extras
+    ☐ Use proxy for attacking tasks
+    ☐ Combine with reauth @extras
   Login Brute:
-    [ ] Improve exception
+    ☐ Improve exception
 
 Attack conditions:
   Scan list IPs:
-    [ ] Create new options variable
-    [x] Add help text
-    [ ] Generate tasks from IP
-    [ ] Combine with banner
+    ☐ Create new options variable
+    ✔ Add help text @done(19-01-13 19:46)
+    ☐ Generate tasks from IP
+    ☐ Combine with banner
   Better form detecting and parsing:
-    [ ] Webshell has text control only
-    [ ] Form has captcha
+    ☐ Webshell has text control only
+    ☐ Form has captcha
   Better matching condition:
-    [ ] WAF shows block messages
-    [ ] Website uses meta tag @mechanize
-    [ ] Website directs to error page with no login form
+    ☐ WAF shows block messages
+    ☐ Website uses meta tag @mechanize
+    ☐ Website directs to error page with no login form
 
 Extras:
-  [ ] Password generating
-  [ ] SQL Injection bypass login
+  ☐ Password generating
+  ☐ SQL Injection bypass login
