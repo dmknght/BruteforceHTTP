@@ -257,7 +257,7 @@ if __name__ == "__main__":
 		runtime = time.time() - runtime
 		if len(options.target) > 1:
 			if len(results) > 0:
-				printf("[*] %s target[s] has been cracked" %(len(results)), "good")
+				printf("[*] Cracked %s target[s]" %(len(results)), "good")
 				print_table(("URL", "Username", "Password"), *results)
 			else:
 				printf("[x] No target has been cracked", "bad")
