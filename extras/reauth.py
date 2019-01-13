@@ -4,12 +4,6 @@ import data, threading
 from core.utils import printf, die, print_table
 from core.tbrowser import startBrowser, parseLoginForm
 
-# BUG [x] ReAuth: Can't find login form at https://mail.protonmail.com/login
-	#[x] ReAuth: Can't find login form at https://mega.nz/login
-# BUG: no control matching name 'session[password]'
-# 	at https://mobile.twitter.com/login
-# BUG: no control matching name 'password' at https://github.com/login
-
 
 try:
 	from Queue import Queue
@@ -57,7 +51,6 @@ def run(options, creds):
 	social_urls = data.social_urls().replace("\t", "").split("\n")
 
 	for url in social_urls:
-		# BUG double_free() 
 		if options.url in url:
 			social_urls.remove(url)
 

@@ -12,8 +12,6 @@ support url:
 https://free-proxy-list.net/
 """
 
-# BUG: import modules error
-
 
 def getNewProxy(PROXY_PATH):
 	

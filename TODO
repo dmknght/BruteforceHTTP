@@ -24,27 +24,36 @@ Attack modules:
     ☐ Parse login form 2 times
     ☐ Matching condition
     ☐ Combine with project
-    ☐ Auto detect instead of choose option manually
+    ☐ Auto detect instead of choose option manually @user_communication
   HTTP GET:
-    ☐ Use proxy for attacking tasks
+    ☐ Use proxy for attacking tasks @extras @getproxy
     ☐ Combine with reauth @extras
   Login Brute:
     ☐ Improve exception
 
 Attack conditions:
   Scan list IPs:
-    ☐ Create new options variable
+    ☐ Create new options variable @started(19-01-13 19:53)
     ✔ Add help text @done(19-01-13 19:46)
-    ☐ Generate tasks from IP
-    ☐ Combine with banner
+    ☐ Generate tasks from IP @started(19-01-13 19:53)
+    ☐ Combine with banner @started(19-01-13 19:53)
+    ☐ Split proxy list and live proxy list, combine with single IP @extras @getproxy
   Better form detecting and parsing:
     ☐ Webshell has text control only
     ☐ Form has captcha
   Better matching condition:
     ☐ WAF shows block messages
-    ☐ Website uses meta tag @mechanize
+    ☐ Website redirects using meta tag @mechanize
     ☐ Website directs to error page with no login form
 
 Extras:
   ☐ Password generating
   ☐ SQL Injection bypass login
+
+BUG:
+  ☐ ReAuth: Can't find login form at https://mail.protonmail.com/login @mechanize
+  ☐ ReAuth: Can't find login form at https://mega.nz/login @mechanize
+  ☐ no control matching name 'session[password]' at https://mobile.twitter.com/login @mechanize @form_parse
+  ✔ no control matching name 'password' at https://github.com/login @done(19-01-13 20:04)
+  ☐ ReAuth: double free in remove url from list @syntax @loop
+  ☐ Tomcat manager (< 5.x) wrong @bug @critical @attack_module @form_parse @match_condition

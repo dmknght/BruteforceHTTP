@@ -13,7 +13,6 @@ def check_condition(options, proc, loginInfo):
 			return 2 -> Should be SQL Injection error-based
 	"""
 	if options.panel_url:
-		# BUG wrong detection if WAF send a block msg with http code 200
 		# User provided panel url (/wp-admin/ for example, repopen this url to check sess)
 		proc.open(options.panel_url)
 		if parseLoginForm(proc.forms()) != loginInfo:
@@ -49,7 +48,6 @@ def submit(options, loginInfo, tryCred, result):
 
 	#	Get login form field informations
 	
-	# BUG parse form issue with gmail, move to parseLoginForm
 	frmLoginID, frmFields = loginInfo
 	tryPassword, tryUsername = tryCred
 
@@ -92,11 +90,9 @@ def submit(options, loginInfo, tryCred, result):
 				printf("[+] Trying: %s" %([tryUsername, tryPassword]), 'norm')
 		
 		#	Reload the browser. For javascript redirection and others...
-		# BUG tomcat admin login here
 		# proc.reload()
 		#	If no login form -> maybe success. Check conditions
 		
-		# BUG wrong if prompt new login form with captcha. This should be not parseLoginForm
 		if parseLoginForm(proc.forms()) != loginInfo:
 			test_result = check_condition(options, proc, loginInfo)
 			

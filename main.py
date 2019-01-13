@@ -160,10 +160,11 @@ def attack(options, loginInfo):
 		del workers[:]
 			
 	except KeyboardInterrupt:
-		if threading.activeCount() > 1:
-			printf("[x] Terminated by user!", "bad")
-			# STEAL FROM SQLMAP
-			# BUG: Don't print table result. Temp remove
+		printf("[x] Terminated by user!", "bad")
+		# STEAL FROM SQLMAP
+		# Does not print_table if terminate but found
+		# if threading.activeCount() > 1:
+		# 	printf("[x] Terminated by user!", "bad")
 			# import os
 			# os._exit(0)
 
@@ -237,7 +238,6 @@ if __name__ == "__main__":
 			
 			# Ready options
 			# check user options, mix it together to start attack
-			# BUG does not get new proxy list
 			if "--getproxy" in options.extras:
 				from extras import getproxy
 				getproxy.main(options)
