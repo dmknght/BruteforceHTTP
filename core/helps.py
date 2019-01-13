@@ -33,7 +33,7 @@ def print_help():
 		],
 		[
 			"%-14s" %("-l <file_path>"),
-			"-l list_ip.txt"
+			"-l url_list.txt"
 		],
 	]
 	print_table(title, *menu)
