@@ -20,11 +20,11 @@ def do_job(jobs):
 def submit(url, options, tryCreds, result):
 
 	try:
-		proc = startBrowser()
+		proc = startBrowser(options.timeout)
 
 		printf("[+] Checking %s" %(url))
 
-		proc.open(url, timeout = options.timeout)
+		proc.open(url)
 		loginInfo = parseLoginForm(proc.forms())
 
 	except Exception as err:

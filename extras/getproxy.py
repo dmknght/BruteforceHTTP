@@ -28,9 +28,9 @@ def getNewProxy(PROXY_PATH):
 		try:
 			printf("[+] Connecting to %s." %(url))
 
-			getproxy = startBrowser()
+			getproxy = startBrowser(options.timeout)
 
-			getproxy.open(url, timeout = options.timeout)
+			getproxy.open(url)
 			printf("[*] Gathering proxies completed.", "good")
 			return getproxy.response().read()
 
@@ -65,13 +65,13 @@ def check(options, PROXY_PATH):
 
 	def checProxyConn(proxyAddr, target, result, verbose):
 		try:
-			proxyTest = startBrowser()
+			proxyTest = startBrowser(options.timeout)
 			proxyTest.set_proxies({"http": proxyAddr})
 
 			if verbose:
 				printf("[+] Trying: %s" %(proxyAddr))
 
-			proxyTest.open(options.url, timeout = options.timeout)
+			proxyTest.open(options.url)
 
 			if verbose:
 				printf("[*] Success: %s" %(proxyAddr), "good")

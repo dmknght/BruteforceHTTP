@@ -156,6 +156,7 @@ class Browser(UserAgentBase):
 
 		self.request = None
 		self._set_response(None, False)
+		self.timeout = 30
 
 		# do this last to avoid __getattr__ problems
 		UserAgentBase.__init__(self)
@@ -250,7 +251,8 @@ class Browser(UserAgentBase):
 		:param timeout: Timeout in seconds
 		:return: A :class:`mechanize.Response` object
 		'''
-		return self._mech_open(url_or_request, data, timeout=timeout)
+		# return self._mech_open(url_or_request, data, timeout=timeout)
+		return self._mech_open(url_or_request, data, timeout=self.timeout)
 
 	def _mech_open(self,
 				   url,

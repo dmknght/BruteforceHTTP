@@ -1,7 +1,7 @@
 import data, re
 from core.actions import randomFromList
 
-def startBrowser():
+def startBrowser(timeout):
 	import mechanize
 	#https://stackoverflow.com/a/27096416
 	browser = mechanize.Browser()
@@ -10,6 +10,7 @@ def startBrowser():
 	browser.set_handle_redirect(True)
 	browser.set_handle_equiv(True)
 	browser.set_handle_refresh(True)
+	browser.timeout = timeout
 	browser._factory.is_html = True #https://stackoverflow.com/a/4201003
 	browser.addheaders = [('User-Agent', useragent())]
 	return browser
