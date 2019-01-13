@@ -22,10 +22,6 @@
 # 		return False
 
 # TODO use zip loop for SQL injection
-# TODO ADD WAF BLOCKED MSG
-# TODO bring back report module
-# TODO SSL
-# TODO maybe create db to save target
 
 
 def check_login(opts):
@@ -59,8 +55,6 @@ def check_login(opts):
 		try:
 			if error.code == 401:
 				## GET INFORMATION
-				## TODO: GET USERNAME AND PASSWORD LABEL
-				# BUG: can't direct to new url (meta) if has error code * mechanize bug
 
 				resp_header = str(proc.response().info())
 				if "WWW-Authenticate" in resp_header:

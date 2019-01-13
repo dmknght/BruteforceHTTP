@@ -27,7 +27,6 @@ class ParseOptions(object):
 	)
 
 
-	# TODO get dynamically using data.__init__
 	WORDLISTS = (
 		"default",
 		"router",

@@ -22,7 +22,6 @@ def check_condition(options, proc, loginInfo):
 			return 0
 	else:
 		# User provided direct login URL (/wp-login.php).
-		# TODO improve this condition
 		"""
 		cases: dvwa (login.php), tomcat (panel), joomla (panel)
 		found_no_login
@@ -96,7 +95,6 @@ def submit(options, loginInfo, tryCred, result):
 		# BUG tomcat admin login here
 		# proc.reload()
 		#	If no login form -> maybe success. Check conditions
-		#	TODO improve condition to use captcha
 		
 		# BUG wrong if prompt new login form with captcha. This should be not parseLoginForm
 		if parseLoginForm(proc.forms()) != loginInfo:
@@ -148,7 +146,6 @@ def submit(options, loginInfo, tryCred, result):
 			This code block showing information, for special cases
 		"""		
 
-		# TODO improve condition
 		try:
 			# Unauthenticated
 			if error.code == 401:

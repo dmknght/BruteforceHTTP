@@ -2,11 +2,9 @@
 
 def social_urls():
 	# https://accounts.google.com/signin
-	# TODO include gmail
 	# https://mega.nz/login
 	# https://mail.protonmail.com/login
 	# https://www.mediafire.com/login/
-	# TODO Seems like using JS
 	return """https://www.facebook.com/login.php
 	https://mobile.twitter.com/login
 	https://ask.fm/login

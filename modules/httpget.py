@@ -3,9 +3,6 @@ from core.utils import printf
 
 # http://docs.python-requests.org/en/master/user/authentication/
 # USING PROXY WITH REQUESTS https://stackoverflow.com/a/13395324
-# TODO Using proxy
-# TODO combine with reauth
-# TODO use mechanize https://stackoverflow.com/a/40920030
 # https://stackoverflow.com/a/4089075
 
 def submit(options, loginInfo, creds, result):
