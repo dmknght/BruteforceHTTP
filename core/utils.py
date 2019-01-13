@@ -262,21 +262,12 @@ def start_banner(options):
 		options.report,
 		fixLen("%s target[s]: %-53s" %(
 			len(options.target),
-			options.target_banner),
+			options.options["-l"] if options.options["-l"] else options.url.split("/")[2]),
 			67),
 		" " * 11 + "Github: https://github.com/dmknght/BruteforceHTTP"
 	)
 	
 	return banner.replace("\t", "  ")
-
-# def target_banner(url):
-# 	banner = """  +-----------------------------------------------------------------------+
-# 	|  URL: %-63s |
-# 	+-----------------------------------------------------------------------+
-# 	""" %(
-# 		fixLen(url, 62),
-# 	)
-# 	return banner.replace("\t", "  ")
 	
 if __name__ == "__main__":
 	die("Oops! Wrong place", "Find other place")

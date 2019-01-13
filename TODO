@@ -57,6 +57,9 @@ Attack conditions:
 Extras:
   ☐ Password generating
   ☐ SQL Injection bypass login
+  Shodan:
+    ☐ Parse ip list from shodan, replace URL options
+    ☐ Add option to add URL after ip list
 
 BUG:
   ☐ ReAuth: Can't find login form at https://mail.protonmail.com/login @mechanize @extras 

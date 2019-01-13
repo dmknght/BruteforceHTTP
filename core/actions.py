@@ -110,7 +110,6 @@ def verify_options(options):
 	import data
 
 	# Check target option (from file or gives directly)
-	options.target_banner = options.options["-l"] if options.options["-l"] else options.url.split("/")[2]
 	try:
 		options.target = fread(options.options["-l"]).split("\n") if options.options["-l"] else [options.url]
 		options.target = filter(None, options.target)
