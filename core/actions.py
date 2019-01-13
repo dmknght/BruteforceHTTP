@@ -81,8 +81,6 @@ def fwrite(pathFileLocation, writeData):
 	finally:
 		objFileWrite.close()
 
-		
-
 def fwrite_c(pathFileLocation, writeData):
 	try:
 		fileWrite = open(pathFileLocation, "a")

@@ -6,6 +6,7 @@ Core:
   ✔ Improve multithreading @done(19-01-13 19:45)
   ☐ Memory management
   ☐ Improve URL handling @options @user_communication 
+  ✔ Final result combine with list IP @started(19-01-13 21:13) @done(19-01-13 22:39) @lasted(1h26m7s)
 
 Mechanize:
   ☐ Javascript Login Form
@@ -42,6 +43,9 @@ Attack conditions:
     ✔ Combine with banner @started(19-01-13 19:53) @done(19-01-13 20:54) @lasted(1h1m47s)
     ☐ Split proxy list and live proxy list, combine with single IP @extras @getproxy
     ☐ Mix with reauth @extras
+    ✔ Mix with HTTP GET @attack_module @done(19-01-13 21:52)
+    ☐ Program does not stop when Ctrl + C @bug @critical @core
+    ☐ Exception catches wrong
   Better form detecting and parsing:
     ☐ Webshell has text control only
     ☐ Form has captcha

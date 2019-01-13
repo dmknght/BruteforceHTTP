@@ -234,8 +234,6 @@ def start_banner(options):
 	banner = """
 	  =====================================================================
 	/%-71s\\
-	|-----------------------------------------------------------------------|
-	|  Target: %-60s |
 	|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
 	|  Userlist: %-58s |
 	|  Passlist: %-58s |
@@ -246,9 +244,14 @@ def start_banner(options):
 	|-----------------------------------------------------------------------|
 	|    Extra mode: %-52s   |
 	|-----------------------------------------------------------------------|
-	|           Verbose: %-11s       |         Report: %-11s    |""" %(
+	|           Verbose: %-11s       |         Report: %-11s    |
+	|***********************************************************************|
+	|  %68s |
+	+-----------------------------------------------------------------------+
+	\\ %-69s /
+	  =====================================================================
+	""" %(
 		" " * 23 + "HTTP LOGIN BRUTE FORCER",
-		fixLen(options.target_banner, 59),
 		fixLen(usr, 57),
 		fixLen(options.options["-p"], 57),
 		options.attack_mode.replace("--", ""),
@@ -257,18 +260,23 @@ def start_banner(options):
 		"None" if len(options.extras) == 0 else fixLen(str(options.extras), 51),
 		options.verbose,
 		options.report,
+		fixLen("%s target[s]: %-53s" %(
+			len(options.target),
+			options.target_banner),
+			67),
+		" " * 11 + "Github: https://github.com/dmknght/BruteforceHTTP"
 	)
 	
 	return banner.replace("\t", "  ")
 
-def target_banner(url):
-	banner = """  +-----------------------------------------------------------------------+
-	|  URL: %-63s |
-	+-----------------------------------------------------------------------+
-	""" %(
-		fixLen(url, 62),
-	)
-	return banner.replace("\t", "  ")
+# def target_banner(url):
+# 	banner = """  +-----------------------------------------------------------------------+
+# 	|  URL: %-63s |
+# 	+-----------------------------------------------------------------------+
+# 	""" %(
+# 		fixLen(url, 62),
+# 	)
+# 	return banner.replace("\t", "  ")
 	
 if __name__ == "__main__":
 	die("Oops! Wrong place", "Find other place")

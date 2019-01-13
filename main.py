@@ -27,7 +27,7 @@
 def check_login(opts):
 	try:
 		proc = startBrowser()
-		printf("[+] Checking connection...")
+		printf("[+] Checking %s" %(options.url))
 
 		proc.open(opts.url)
 		"""
@@ -70,12 +70,13 @@ def check_login(opts):
 				else:
 					loginInfo = False
 			else:
-				printf("[x] Target check: %s" %(error), "bad")
 				loginInfo = False
+				printf("[x] Target check: %s" %(error), "bad")
 
 		# Error != http code
 		except:
 			loginInfo = False
+			die("[x] Target check:", error)
 	
 	except KeyboardInterrupt:
 		loginInfo = False
@@ -83,8 +84,6 @@ def check_login(opts):
 	finally:
 		proc.close()
 		return loginInfo
-
-
 
 def attack(options, loginInfo):
 	def run_threads(threads, sending, completed, total):
@@ -159,17 +158,14 @@ def attack(options, loginInfo):
 		sending, completed = run_threads(workers, sending, completed, tasks)
 		del workers[:]
 			
-	except KeyboardInterrupt:
-		printf("[x] Terminated by user!", "bad")
-		# STEAL FROM SQLMAP
-		# Does not print_table if terminate but found
-		# if threading.activeCount() > 1:
-		# 	printf("[x] Terminated by user!", "bad")
+	# except KeyboardInterrupt:
+	# # 	printf("[x] Terminated by user!", "bad")
+	# 	# STEAL FROM SQLMAP
+	# 	# Does not print_table if terminate but found
+	# 	if threading.activeCount() > 1:
+	# 		printf("[x] Terminated by user!", "bad")
 			# import os
 			# os._exit(0)
-
-	except SystemExit:
-		printf("[x] Terminated by system!", "bad")
 
 	except Exception as error:
 		die("[x] Runtime error", error)
@@ -180,16 +176,11 @@ def attack(options, loginInfo):
 			printf("[-] No match found!", "bad")
 
 		else:
-			printf(
-				"\n[*] %s valid password[s] found:" %(len(credentials)), "norm")
-
-			if "--reauth" not in options.extras:
-				if _single_col:
-					print_table(("", "Password"), *credentials)
-				else:
-					print_table(("Username", "Password"), *credentials)
+			printf("\n[*] %s valid password[s] found:" %(len(credentials)), "norm")
+			if _single_col:
+				print_table(("", "Password"), **[creds[-1:] for creds in credentials])
 			else:
-				print_table(("Target", "Username", "Password"), *credentials)
+				print_table(("Username", "Password"), *[creds[-2:] for creds in credentials])
 			printf("")
 		return credentials
 
@@ -201,7 +192,7 @@ if __name__ == "__main__":
 	from core import options
 	from core.tbrowser import startBrowser, parseLoginForm, checkHTTPGetLogin
 	from core.actions import verify_url, verify_options
-	from core.utils import printf, progress_bar, die, print_table, start_banner, target_banner
+	from core.utils import printf, progress_bar, die, print_table, start_banner
 
 	try:
 		# Setting new session
@@ -236,14 +227,19 @@ if __name__ == "__main__":
 				from extras import getproxy
 				getproxy.main(options)
 			else:
-				for url in options.target:
+				results = []
+				try:
+					for url in options.target:
 					# In case list has End Of Line
-					if url:
-						options.url = verify_url(url)
-						printf(target_banner(url))
-						# Check proxy here
-						loginInfo = check_login(options)
-						result = attack(options, loginInfo)
+						if url:
+							options.url = verify_url(url)
+							# Check proxy here
+							loginInfo = check_login(options)
+							result = attack(options, loginInfo)
+							if result:
+								results.append(result[0])
+				except KeyboardInterrupt:
+					printf("[x] Terminated by user!", "bad")
 
 				if "--reauth" in options.extras:
 					from extras import reauth
@@ -254,4 +250,10 @@ if __name__ == "__main__":
 
 	finally:
 		runtime = time.time() - runtime
+		if len(options.target) > 1:
+			if len(results) > 0:
+				printf("[*] %s target[s] has been cracked" %(len(results)), "good")
+				print_table(("URL", "Username", "Password"), *results)
+			else:
+				printf("[x] No target has been cracked", "bad")
 		printf("[*] Time elapsed: %0.4f [s]\n" %(runtime), "good")

@@ -53,13 +53,16 @@ def submit(options, loginInfo, tryCred, result):
 
 	proc = startBrowser()
 	
+	# for cred in list(result.queue):
+	# 	if "--reauth" not in options.extras:
+	# 		if tryUsername == cred[0]:
+	# 			return True # don't run if find password of username
+	# 	else:
+	# 		if tryUsername == cred[1]:
+	# 			return True # don't run if find password of username
 	for cred in list(result.queue):
-		if "--reauth" not in options.extras:
-			if tryUsername == cred[0]:
-				return True # don't run if find password of username
-		else:
-			if tryUsername == cred[1]:
-				return True # don't run if find password of username
+		if tryUsername == cred[1]:
+			return True
 	
 	if options.proxy:
 		# Set proxy connect
@@ -109,10 +112,11 @@ def submit(options, loginInfo, tryCred, result):
 				# "End of condition block"
 				
 				# "Check for Extras option reauth", return result w/ right format
-				if "--reauth" not in options.extras:
-					result.put([tryUsername, tryPassword])
-				else:
-					result.put([options.url.split("/")[2], tryUsername, tryPassword])
+				# if "--reauth" not in options.extras:
+				# 	result.put([tryUsername, tryPassword])
+				# else:
+				# 	result.put([options.url.split("/")[2], tryUsername, tryPassword])
+				result.put([options.url, tryUsername, tryPassword])
 			
 			else:
 				# Possibly Error. But sometime it is true
