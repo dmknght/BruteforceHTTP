@@ -30,4 +30,4 @@ def submit(options, loginInfo, creds, result):
 			else:
 				printf("[x] %s: %s" %(err, creds[::-1]), "bad")
 		except:
-			die("[x] HTTP GET:", error)
+			die("[x] HTTP GET:", err)
