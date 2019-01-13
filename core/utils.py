@@ -236,7 +236,6 @@ def start_banner(options):
 	/%-71s\\
 	|-----------------------------------------------------------------------|
 	|  Target: %-60s |
-	|  URL: %-63s |
 	|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
 	|  Userlist: %-58s |
 	|  Passlist: %-58s |
@@ -247,11 +246,9 @@ def start_banner(options):
 	|-----------------------------------------------------------------------|
 	|    Extra mode: %-52s   |
 	|-----------------------------------------------------------------------|
-	\\           Verbose: %-11s       |         Report: %-11s    /
-	  =====================================================================
-	""" %( " " * 23 + "HTTP LOGIN BRUTE FORCER",
-		fixLen(options.url.split("/")[2], 59),
-		fixLen(options.url, 62),
+	|           Verbose: %-11s       |         Report: %-11s    |""" %(
+		" " * 23 + "HTTP LOGIN BRUTE FORCER",
+		fixLen(options.target_banner, 59),
 		fixLen(usr, 57),
 		fixLen(options.options["-p"], 57),
 		options.attack_mode.replace("--", ""),
@@ -262,6 +259,15 @@ def start_banner(options):
 		options.report,
 	)
 	
+	return banner.replace("\t", "  ")
+
+def target_banner(url):
+	banner = """  +-----------------------------------------------------------------------+
+	|  URL: %-63s |
+	+-----------------------------------------------------------------------+
+	""" %(
+		fixLen(url, 62),
+	)
 	return banner.replace("\t", "  ")
 	
 if __name__ == "__main__":

@@ -1,8 +1,11 @@
 Project:
   ☐ Docker
+  ☐ Python 3
+
+Core:
   ✔ Improve multithreading @done(19-01-13 19:45)
   ☐ Memory management
-  ☐ Python 3
+  ☐ Improve URL handling @options @user_communication 
 
 Mechanize:
   ☐ Javascript Login Form
@@ -33,11 +36,12 @@ Attack modules:
 
 Attack conditions:
   Scan list IPs:
-    ☐ Create new options variable @started(19-01-13 19:53)
+    ✔ Create new options variable @started(19-01-13 19:53) @done(19-01-13 21:09) @lasted(1h16m3s)
     ✔ Add help text @done(19-01-13 19:46)
-    ☐ Generate tasks from IP @started(19-01-13 19:53)
-    ☐ Combine with banner @started(19-01-13 19:53)
+    ✔ Generate tasks from IP @started(19-01-13 19:53) @done(19-01-13 21:09) @lasted(1h16m12s)
+    ✔ Combine with banner @started(19-01-13 19:53) @done(19-01-13 20:54) @lasted(1h1m47s)
     ☐ Split proxy list and live proxy list, combine with single IP @extras @getproxy
+    ☐ Mix with reauth @extras
   Better form detecting and parsing:
     ☐ Webshell has text control only
     ☐ Form has captcha
@@ -51,9 +55,9 @@ Extras:
   ☐ SQL Injection bypass login
 
 BUG:
-  ☐ ReAuth: Can't find login form at https://mail.protonmail.com/login @mechanize
-  ☐ ReAuth: Can't find login form at https://mega.nz/login @mechanize
+  ☐ ReAuth: Can't find login form at https://mail.protonmail.com/login @mechanize @extras 
+  ☐ ReAuth: Can't find login form at https://mega.nz/login @mechanize @extras 
   ☐ no control matching name 'session[password]' at https://mobile.twitter.com/login @mechanize @form_parse
   ✔ no control matching name 'password' at https://github.com/login @done(19-01-13 20:04)
-  ☐ ReAuth: double free in remove url from list @syntax @loop
+  ☐ ReAuth: double free in remove url from list @syntax @loop @extras @high 
   ☐ Tomcat manager (< 5.x) wrong @bug @critical @attack_module @form_parse @match_condition

@@ -201,7 +201,7 @@ if __name__ == "__main__":
 	from core import options
 	from core.tbrowser import startBrowser, parseLoginForm, checkHTTPGetLogin
 	from core.actions import verify_url, verify_options
-	from core.utils import printf, progress_bar, die, print_table, start_banner
+	from core.utils import printf, progress_bar, die, print_table, start_banner, target_banner
 
 	try:
 		# Setting new session
@@ -216,15 +216,12 @@ if __name__ == "__main__":
 			from core import helps
 			helps.print_help()
 		else:
-			verify_url(options)
-			if not options.url:
+			verify_options(options)
+			if not options.target:
 				die("[x] URL error", "An URL is required")
 
-			verify_options(options)
-
-			# Print start banner
 			printf(start_banner(options))
-			
+
 			# Fix SSL errors https://stackoverflow.com/a/35960702
 			try:
 				_create_unverified_https_context = ssl._create_unverified_context
@@ -234,22 +231,23 @@ if __name__ == "__main__":
 			else:
 			# Handle target environment that doesn't support HTTPS verification
 				ssl._create_default_https_context = _create_unverified_https_context
-			
-			
-			# Ready options
-			# check user options, mix it together to start attack
+
 			if "--getproxy" in options.extras:
 				from extras import getproxy
 				getproxy.main(options)
-
 			else:
-				loginInfo = check_login(options)
-				result = attack(options, loginInfo)
+				for url in options.target:
+					# In case list has End Of Line
+					if url:
+						options.url = verify_url(url)
+						printf(target_banner(url))
+						# Check proxy here
+						loginInfo = check_login(options)
+						result = attack(options, loginInfo)
 
-			if "--reauth" in options.extras:
-				from extras import reauth
-				reauth.run(options, result)
-			# Report
+				if "--reauth" in options.extras:
+					from extras import reauth
+					reauth.run(options, result)
 
 	except Exception as error:
 		die("[x] Program stopped", error)

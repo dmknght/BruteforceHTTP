@@ -1,3 +1,8 @@
+# 13/1/2019
+* Code clean
+* Support ip list
+* Minor improvement
+
 # 4/1/2019
 * Code clean
 * Fix reading data from file bug

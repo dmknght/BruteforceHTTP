@@ -98,17 +98,26 @@ def randomString(min = 2, max = 5):
 	return ''.join(random.choice(charset) for _ in xrange(min, max))
 
 
-def verify_url(options):
+def verify_url(url):
 	try:
 		# Shorter startswith https://stackoverflow.com/a/20461857
-		if not options.url.startswith(("http://", "https")):
-			options.url = "http://%s" %(options.url)
+		if not url.startswith(("http://", "https")):
+			url = "http://%s" %(url)
 	except:
-		options.url = None
+		url = None
+	return url
 
 def verify_options(options):
 	# Check url
 	import data
+
+	# Check target option (from file or gives directly)
+	options.target_banner = options.options["-l"] if options.options["-l"] else options.url.split("/")[2]
+	try:
+		options.target = fread(options.options["-l"]).split("\n") if options.options["-l"] else [options.url]
+		options.target = filter(None, options.target)
+	except Exception as error:
+		die("[x] Options: URL error", error)
 
 	# CHECK threads option
 	try:
@@ -132,12 +141,14 @@ def verify_options(options):
 			options.username = eval("data.%s_user()" %(options.options["-u"])).replace("\t", "").split("\n")
 		else:
 			options.username = fread(options.options["-u"]).split("\n")
+			options.username = filter(None, options.username)
 	
 	# CHECK passlist option
 	if options.options["-p"] in options.WORDLISTS:
 		options.passwd = eval("data.%s_pass()" %(options.options["-p"])).replace("\t", "").split("\n")
 	else:
 		options.passwd = fread(options.options["-p"]).split("\n")
+		options.passwd = filter(None, options.passwd)
 
 
 	options.report = options.run_options["--report"]

@@ -42,7 +42,8 @@ class ParseOptions(object):
 		"-u": "default",
 		"-p": "default",
 		"-t": 16,
-		"-U": None
+		"-U": None,
+		"-l": None
 	}
 
 	HELP_OPTIONS = [
@@ -54,6 +55,8 @@ class ParseOptions(object):
 
 	def __init__(self):
 		self.url = None
+		self.target = None
+		self.target_banner = None
 		self.login_url = None
 		self.panel_url = None
 		self.attack_mode = "--brute"
