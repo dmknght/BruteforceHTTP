@@ -29,5 +29,5 @@ def submit(options, loginInfo, creds, result):
 					printf("[-] Failed %s" %(creds[::-1]), "bad")
 			else:
 				printf("[x] %s: %s" %(err, creds[::-1]), "bad")
-		except Exception as error:
+		except:
 			die("[x] HTTP GET:", error)
