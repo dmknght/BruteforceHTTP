@@ -239,7 +239,8 @@ def start_banner(options):
 	|  Passlist: %-58s |
 	|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
 	|                                                                       |
-	|  %s |
+	| %s |
+	|                                                                       |
 	|-----------------------------------------------------------------------|
 	|    Extra mode: %-52s   |
 	|-----------------------------------------------------------------------|
@@ -259,7 +260,7 @@ def start_banner(options):
 				options.threads,
 				options.timeout,
 			),
-			67
+			68
 		),
 		"None" if len(options.extras) == 0 else fixLen(str(options.extras), 51),
 		options.verbose,
