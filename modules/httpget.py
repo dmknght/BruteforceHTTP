@@ -1,5 +1,5 @@
 from core.tbrowser import startBrowser
-from core.utils import printf
+from core.utils import printf, die
 
 # http://docs.python-requests.org/en/master/user/authentication/
 # USING PROXY WITH REQUESTS https://stackoverflow.com/a/13395324
@@ -23,8 +23,11 @@ def submit(options, loginInfo, creds, result):
 		printf("[*] Match found: %s" %([tryUsername, tryPassword]), "good") 
 
 	except Exception as err:
-		if err.code == 401:
-			if options.verbose:
-				printf("[-] Failed %s" %(creds[::-1]), "bad")
-		else:
-			printf("[x] %s: %s" %(err, creds[::-1]), "bad")
+		try:
+			if err.code == 401:
+				if options.verbose:
+					printf("[-] Failed %s" %(creds[::-1]), "bad")
+			else:
+				printf("[x] %s: %s" %(err, creds[::-1]), "bad")
+		except Exception as error:
+			die("[x] HTTP GET:", error)

@@ -7,6 +7,8 @@ Core:
   ☐ Memory management
   ☐ Improve URL handling @options @user_communication 
   ✔ Final result combine with list IP @started(19-01-13 21:13) @done(19-01-13 22:39) @lasted(1h26m7s)
+  ☐ Add hotkey to terminate child task only
+  ☐ Task freezy if gets blocked (set timeout) @mechanize @attack_module @high 
 
 Mechanize:
   ☐ Javascript Login Form
@@ -32,6 +34,7 @@ Attack modules:
   HTTP GET:
     ☐ Use proxy for attacking tasks @extras @getproxy
     ☐ Combine with reauth @extras
+    ☐ Show wrong creds sometimes @bug @high @match_condition 
   Login Brute:
     ☐ Improve exception
 
