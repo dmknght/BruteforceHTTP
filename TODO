@@ -1,0 +1,33 @@
+Project:
+  [ ] Docker
+  [x] Improve multithreading
+  [ ] Memory management
+  [ ] Python 3
+
+Mechanize:
+  [ ] Javascript Login Form
+  [x] Fix form has name control only (no id)
+
+User communication:
+  [x] Multithreading issue w/ status bar, result
+  [ ] Result, reporting
+  [x] Better module for getting user options
+
+Attack modules:
+  [x] HTTP Basic authenticate
+  [ ] Captcha
+  [x] Password form only (webshell, etc..) login
+
+Attack conditions:
+  [ ] Scan list IPs
+  Better form detecting and parsing:
+    [ ] Webshell has text control only
+    [ ] Form has captcha
+  Better matching condition:
+    [ ] WAF shows block messages
+    [ ] Website uses meta tag
+    [ ] Website directs to error page with no login form
+
+Extras:
+  [ ] Password generating
+  [ ] SQL Injection bypass login
