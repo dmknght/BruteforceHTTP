@@ -29,7 +29,7 @@ def check_login(opts):
 		proc = startBrowser()
 		printf("[+] Checking %s" %(options.url))
 
-		proc.open(opts.url)
+		proc.open(opts.url, timeout = options.timeout)
 		"""
 			Check URL type. If Website directs to other URL,
 			options.url is website's panel

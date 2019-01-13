@@ -14,7 +14,7 @@ def check_condition(options, proc, loginInfo):
 	"""
 	if options.panel_url:
 		# User provided panel url (/wp-admin/ for example, repopen this url to check sess)
-		proc.open(options.panel_url)
+		proc.open(options.panel_url, timeout = options.timeout)
 		if parseLoginForm(proc.forms()) != loginInfo:
 			return 1
 		else:
@@ -71,7 +71,7 @@ def submit(options, loginInfo, tryCred, result):
 	
 	try:
 
-		proc.open(options.login_url)
+		proc.open(options.login_url, timeout = options.timeout)
 
 		#	Select login form
 

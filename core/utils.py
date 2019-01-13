@@ -239,8 +239,7 @@ def start_banner(options):
 	|  Passlist: %-58s |
 	|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
 	|                                                                       |
-	|    Attack mode: %-8s   |  Using Proxy: %-6s |   Threads: %-4s   |
-	|                                                                       |
+	|  %s |
 	|-----------------------------------------------------------------------|
 	|    Extra mode: %-52s   |
 	|-----------------------------------------------------------------------|
@@ -254,9 +253,14 @@ def start_banner(options):
 		" " * 23 + "HTTP LOGIN BRUTE FORCER",
 		fixLen(usr, 57),
 		fixLen(options.options["-p"], 57),
-		options.attack_mode.replace("--", ""),
-		options.run_options["--proxy"],
-		options.threads,
+		fixLen( "Attack mode: %-6s |  Proxy: %-5s  |  Threads: %-3s |  Timeout: %-3s" %(
+				options.attack_mode.replace("--", ""),
+				options.run_options["--proxy"],
+				options.threads,
+				options.timeout,
+			),
+			67
+		),
 		"None" if len(options.extras) == 0 else fixLen(str(options.extras), 51),
 		options.verbose,
 		options.report,

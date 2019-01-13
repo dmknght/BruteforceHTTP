@@ -129,6 +129,20 @@ def verify_options(options):
 			"[x] Options: Invalid option \"threads\"",
 			error
 		)
+
+	# CHECK timeout option
+	try:
+		options.timeout = int(options.options["-T"])
+		if options.timeout < 1:
+			die(
+				"[x] Options: Invalid option \"timeout\"",
+				"Thread number must be larger than 1"
+			)
+	except Exception as error:
+		die(
+			"[x] Options: Invalid option \"timeout\"",
+			error
+		)
 	
 	# CHECK username list options
 	if options.options["-U"]:

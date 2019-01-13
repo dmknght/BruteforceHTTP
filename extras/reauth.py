@@ -24,7 +24,7 @@ def submit(url, options, tryCreds, result):
 
 		printf("[+] Checking %s" %(url))
 
-		proc.open(url)
+		proc.open(url, timeout = options.timeout)
 		loginInfo = parseLoginForm(proc.forms())
 
 	except Exception as err:

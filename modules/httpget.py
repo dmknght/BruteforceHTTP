@@ -18,7 +18,7 @@ def submit(options, loginInfo, creds, result):
 	try:
 		proc = startBrowser()
 		proc.add_password(options.url, tryUsername, tryPassword, realm)
-		proc.open(options.url)
+		proc.open(options.url, timeout = options.timeout)
 		result.put([options.url, tryUsername, tryPassword])
 		printf("[*] Match found: %s" %([tryUsername, tryPassword]), "good") 
 

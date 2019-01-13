@@ -43,7 +43,8 @@ class ParseOptions(object):
 		"-p": "default",
 		"-t": 16,
 		"-U": None,
-		"-l": None
+		"-l": None,
+		"-T": 25
 	}
 
 	HELP_OPTIONS = [
@@ -64,6 +65,7 @@ class ParseOptions(object):
 
 		# options
 		self.threads = 16
+		self.timeout = 25
 		self.username = None
 		self.passwd = None
 
