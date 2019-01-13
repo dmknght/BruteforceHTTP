@@ -44,8 +44,8 @@ Attack conditions:
     ☐ Split proxy list and live proxy list, combine with single IP @extras @getproxy
     ☐ Mix with reauth @extras
     ✔ Mix with HTTP GET @attack_module @done(19-01-13 21:52)
-    ☐ Program does not stop when Ctrl + C @bug @critical @core
-    ☐ Exception catches wrong
+    ✔ Program does not stop when Ctrl + C @bug @critical @core @done(19-01-13 23:43)
+    ✔ Exception catches wrong @done(19-01-13 23:47)
   Better form detecting and parsing:
     ☐ Webshell has text control only
     ☐ Form has captcha

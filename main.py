@@ -158,14 +158,19 @@ def attack(options, loginInfo):
 		sending, completed = run_threads(workers, sending, completed, tasks)
 		del workers[:]
 			
-	# except KeyboardInterrupt:
-	# # 	printf("[x] Terminated by user!", "bad")
+	except KeyboardInterrupt:
+		printf("[x] Terminated by user!", "bad")
+		global set_break
+		set_break = True
+		
 	# 	# STEAL FROM SQLMAP
 	# 	# Does not print_table if terminate but found
 	# 	if threading.activeCount() > 1:
 	# 		printf("[x] Terminated by user!", "bad")
 			# import os
 			# os._exit(0)
+	except SystemExit:
+		printf("[x] Terminated by system!", "bad")
 
 	except Exception as error:
 		die("[x] Runtime error", error)
@@ -228,18 +233,18 @@ if __name__ == "__main__":
 				getproxy.main(options)
 			else:
 				results = []
-				try:
-					for url in options.target:
-					# In case list has End Of Line
-						if url:
-							options.url = verify_url(url)
-							# Check proxy here
-							loginInfo = check_login(options)
-							result = attack(options, loginInfo)
-							if result:
-								results.append(result[0])
-				except KeyboardInterrupt:
-					printf("[x] Terminated by user!", "bad")
+				set_break = False
+
+				for url in options.target:
+					if set_break:
+						break
+					if url:
+						options.url = verify_url(url)
+						# Check proxy here
+						loginInfo = check_login(options)
+						result = attack(options, loginInfo)
+						if result:
+							results.append(result[0])
 
 				if "--reauth" in options.extras:
 					from extras import reauth
