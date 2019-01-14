@@ -267,7 +267,8 @@ def start_banner(options):
 		options.report,
 		fixLen("%s target[s]: %-53s" %(
 			len(options.target),
-			options.options["-l"] if options.options["-l"] else options.url.split("/")[2]),
+			options.options["-l"] if options.options["-l"] else (
+				options.url.split("/")[2] or options.url.split("/")[0])),
 			67),
 		" " * 11 + "Github: https://github.com/dmknght/BruteforceHTTP"
 	)

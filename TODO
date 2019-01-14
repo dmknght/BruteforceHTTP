@@ -49,6 +49,7 @@ Attack conditions:
     ✔ Mix with HTTP GET @attack_module @done(19-01-13 21:52)
     ✔ Program does not stop when Ctrl + C @bug @critical @core @done(19-01-13 23:43)
     ✔ Exception catches wrong @done(19-01-13 23:47)
+    ✔ Fix banner if options.url (no list) @bug @user_communication @low @done(19-01-14 07:03)
   Better form detecting and parsing:
     ☐ Webshell has text control only
     ☐ Form has captcha
