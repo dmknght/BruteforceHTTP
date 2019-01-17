@@ -1,6 +1,6 @@
 import mechanize
 from core.tbrowser import parseLoginForm, startBrowser
-from core.utils import printf
+from core.utils import printf, die
 from core.actions import randomFromList
 
 def check_condition(options, proc, loginInfo):
@@ -53,13 +53,6 @@ def submit(options, loginInfo, tryCred, result):
 
 	proc = startBrowser(options.timeout)
 	
-	# for cred in list(result.queue):
-	# 	if "--reauth" not in options.extras:
-	# 		if tryUsername == cred[0]:
-	# 			return True # don't run if find password of username
-	# 	else:
-	# 		if tryUsername == cred[1]:
-	# 			return True # don't run if find password of username
 	for cred in list(result.queue):
 		if tryUsername == cred[1]:
 			return True
@@ -162,7 +155,7 @@ def submit(options, loginInfo, tryCred, result):
 					printf("[x] (%s): %s" %(proc.geturl(), tryCred[::-1]), "bad")
 		except:
 			# THIS BLOCKED BY WAF
-			printf("[x] Loginbrute: %s" %(error), "bad")
+			die("[x] Loginbrute: %s" %(error), "[%s:%s], Proxy: %s" %(tryUsername, tryPassword, proxyAddr or "None"))
 	
 		return False
 

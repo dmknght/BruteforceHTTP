@@ -58,14 +58,14 @@ def fload(pathFileLocation):
 		objFileRead = open(pathFileLocation, 'r')
 		return objFileRead
 	except Exception as error:
-		die("Error while loading file!", error)
+		die("[x] Error while loading file!", error)
 		
 def fread(pathFileLocation):
 	try:
 		retObj = fload(pathFileLocation)
 		return retObj.read()
 	except Exception as error:
-		die("Error while reading data", error)
+		die("[x] Error while reading data", error)
 	finally:
 		try:
 			retObj.close()
@@ -77,16 +77,19 @@ def fwrite(pathFileLocation, writeData):
 		objFileWrite = open(pathFileLocation, "w")
 		objFileWrite.write(writeData)
 	except Exception as error:
-		die("Error while writing data", error)
+		die("[x] Error while writing data", error)
 	finally:
-		objFileWrite.close()
+		try:
+			objFileWrite.close()
+		except:
+			pass
 
 def fwrite_c(pathFileLocation, writeData):
 	try:
 		fileWrite = open(pathFileLocation, "a")
 		fileWrite.write(writeData)
 	except Exception as error:
-		die("Error while continuing write file", error)
+		die("[x] Error while continuing write file", error)
 	finally:
 		fileWrite.close()
 
@@ -164,8 +167,8 @@ def verify_options(options):
 
 	options.report = options.run_options["--report"]
 	options.verbose = options.run_options["--verbose"]
-	if options.run_options["--proxy"]:
-		options.proxy = fread("%s/liveproxy.txt" %(data.__path__[0])).split("\n")
+	# if options.run_options["--proxy"]:
+	# 	options.proxy = fread("%s/liveproxy.txt" %(data.__path__[0])).split("\n")
 
 
 if __name__ == "__main__":

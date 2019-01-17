@@ -2,6 +2,7 @@ import mechanize, re, threading
 from core.tbrowser import startBrowser
 from core.utils import printf, die
 from core.actions import fread, fwrite
+import data
 
 try:
 	from Queue import Queue
@@ -12,9 +13,17 @@ support url:
 https://free-proxy-list.net/
 """
 
+ROOT_FOLDER = data.__path__[0]
+PROXY_PATH = "%s%s" %(ROOT_FOLDER, "/listproxy.txt")
+LIVE_PATH = "%s%s" %(ROOT_FOLDER, "/liveproxy.txt")
 
-def getNewProxy(PROXY_PATH):
-	
+def livelist():
+	return fread(LIVE_PATH).split("\n")
+
+def getlist():
+	return fread(PROXY_PATH).split("\n")
+
+def getnew(options):
 	def parse_proxy(response):
 		try:
 			re_ip = r"\b(?:\d{1,3}\.){3}\d{1,3}\b<\/td><td>\d{1,5}"
@@ -26,7 +35,7 @@ def getNewProxy(PROXY_PATH):
 			
 	def checProxyConnProvider(url = "https://free-proxy-list.net/"):
 		try:
-			printf("[+] Connecting to %s." %(url))
+			printf("[+] Getting proxy list from %s" %(url))
 
 			getproxy = startBrowser(options.timeout)
 
@@ -47,6 +56,7 @@ def getNewProxy(PROXY_PATH):
 	finally:
 		try:
 			listproxy = "\n".join(listproxy)
+			printf("[*] Get %s proxies." %(len(listproxy)), "good")
 			printf("[+] Saving to %s" %(PROXY_PATH))
 			fwrite(PROXY_PATH, listproxy)
 			printf("[*] Data saved!", "good")
@@ -55,7 +65,7 @@ def getNewProxy(PROXY_PATH):
 			die("[x] GetProxy: Error while writting data", error)
 
 
-def check(options, PROXY_PATH):
+def check(options):
 	
 	def do_job(jobs):
 		for job in jobs:
@@ -86,7 +96,6 @@ def check(options, PROXY_PATH):
 			except:
 				pass
 	try:
-		
 		proxylist = fread(PROXY_PATH).split("\n")
 				
 		workers = []
@@ -117,18 +126,10 @@ def check(options, PROXY_PATH):
 
 	finally:
 		try:
+			_data = "\n".join(list(result.queue))
+			printf("[*] Get %s proxies." %(len(_data)), "good")
 			printf("[+] Write working proxies")
-			fwrite(PROXY_PATH, "\n".join(list(result.queue)))
+			fwrite(LIVE_PATH, _data)
 			printf("[*] Write working proxies completed", "good")
 		except Exception as err:
 			die("[x] GetProxy: Error while writing result", err)
-
-def main(options):
-	try:
-		import data
-		save = "%s/liveproxy.txt" %(data.__path__[0])
-		getNewProxy(save)
-		if options.url:
-			check(options, save)
-	except Exception as err:
-		die("[x] GetProxy: Runtime error", err)

@@ -268,11 +268,11 @@ def start_banner(options):
 		fixLen("%s target[s]: %-53s" %(
 			len(options.target),
 			options.options["-l"] if options.options["-l"] else (
-				options.url.split("/")[2] or options.url.split("/")[0])),
+				options.url.split("/")[2] or options.url.split("/")[0])), # FIXME index OutofLen
 			67),
 		" " * 11 + "Github: https://github.com/dmknght/BruteforceHTTP"
 	)
-	
+
 	return banner.replace("\t", "  ")
 	
 if __name__ == "__main__":

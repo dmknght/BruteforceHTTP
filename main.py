@@ -196,8 +196,9 @@ if __name__ == "__main__":
 	import sys, time, threading, ssl
 	from core import options
 	from core.tbrowser import startBrowser, parseLoginForm, checkHTTPGetLogin
-	from core.actions import verify_url, verify_options
+	from core.actions import verify_url, verify_options, fread
 	from core.utils import printf, progress_bar, die, print_table, start_banner
+	from extras import getproxy
 
 	try:
 		# Setting new session
@@ -213,34 +214,52 @@ if __name__ == "__main__":
 			helps.print_help()
 		else:
 			verify_options(options)
+
+			if "--getproxy" in options.extras:
+				getproxy.getnew(options)
+				if not options.url:
+					printf("[*] No URL provided! Get proxy only.", "good")
+					sys.exit(0)
+				else:
+					if not options.run_options["--proxy"]:
+						printf("[-] WARNING!!! Program runs without proxy! Use \"--proxy\"!", "bad")
 			if not options.target:
 				die("[x] URL error", "An URL is required")
 
-			printf(start_banner(options))
-
-			# Fix SSL errors https://stackoverflow.com/a/35960702
-			try:
-				_create_unverified_https_context = ssl._create_unverified_context
-			except AttributeError:
-			# Legacy Python that doesn't verify HTTPS certificates by default
-				pass
 			else:
-			# Handle target environment that doesn't support HTTPS verification
-				ssl._create_default_https_context = _create_unverified_https_context
+				# Fix SSL errors https://stackoverflow.com/a/35960702
+				try:
+					_create_unverified_https_context = ssl._create_unverified_context
+				except AttributeError:
+				# Legacy Python that doesn't verify HTTPS certificates by default
+					pass
+				else:
+				# Handle target environment that doesn't support HTTPS verification
+					ssl._create_default_https_context = _create_unverified_https_context
 
-			if "--getproxy" in options.extras:
-				from extras import getproxy
-				getproxy.main(options)
-			else:
+				printf(start_banner(options))
+
 				results = []
 				set_break = False
-
 				for url in options.target:
 					if set_break:
 						break
 					if url:
 						options.url = verify_url(url)
-						# Check proxy here
+						if "--getproxy" in options.extras:
+							printf("[+] Check connection via proxy to %s! Be patient!" %(options.url))
+							getproxy.check(options)
+						if options.run_options["--proxy"]:
+							if len(options.target) > 1:
+								printf("[+] Auto check proxy for multiple URLs! Target: %s!" %(options.url))
+								getproxy.check(options)
+							try:
+								options.proxy = getproxy.livelist()
+							except:
+								printf("[-] Loading file error! Get new list. Please wait!", "bad")
+								getproxy.check(options)
+								options.proxy = getproxy.livelist()
+
 						loginInfo = check_login(options)
 						result = attack(options, loginInfo)
 						if result:
@@ -255,10 +274,13 @@ if __name__ == "__main__":
 
 	finally:
 		runtime = time.time() - runtime
-		if len(options.target) > 0:
-			if len(results) > 1:
-				printf("[*] Cracked %s target[s]" %(len(results)), "norm")
-				print_table(("URL", "Username", "Password"), *results)
-		else:
-			printf("[x] No target has been cracked", "bad")
+		try:
+			if len(options.target) > 0:
+				if len(results) > 1:
+					printf("[*] Cracked %s target[s]" %(len(results)), "norm")
+					print_table(("URL", "Username", "Password"), *results)
+			else:
+				printf("[x] No target has been cracked", "bad")
+		except:
+			pass
 		printf("[*] Time elapsed: %0.4f [s]\n" %(runtime), "good")
