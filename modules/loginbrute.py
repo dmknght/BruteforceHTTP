@@ -155,7 +155,7 @@ def submit(options, loginInfo, tryCred, result):
 					printf("[x] (%s): %s" %(proc.geturl(), tryCred[::-1]), "bad")
 		except:
 			# THIS BLOCKED BY WAF
-			die("[x] Loginbrute: %s" %(error), "[%s:%s], Proxy: %s" %(tryUsername, tryPassword, proxyAddr or "None"))
+			printf("[x] Loginbrute: %s" %(error), "bad")
 	
 		return False
 
