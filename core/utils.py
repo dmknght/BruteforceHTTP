@@ -230,8 +230,6 @@ def report_banner(url, mode, proxy, thread, creds, daytime, runtime, regular):
 
 def start_banner(options):
 	usr = options.options["-U"] if options.options["-U"] else options.options["-u"]
-	_url = options.url.split("/")
-	_url = _url[2] if options.url.startswith(("http://", "https://")) else _url[0]
 
 	banner = """
 	  =====================================================================
@@ -269,9 +267,12 @@ def start_banner(options):
 		options.report,
 		fixLen("%s target[s]: %-53s" %(
 			len(options.target),
-			options.options["-l"] if options.options["-l"] else _url
+			options.options["-l"] if options.options["-l"] else (
+				options.url.split("/")[2] if options.url.startswith(("http://", "https://")) else options.url.split("/")[0]
+				)
 			),
-		67),
+			67
+		),
 		" " * 11 + "Github: https://github.com/dmknght/BruteforceHTTP"
 	)
 
