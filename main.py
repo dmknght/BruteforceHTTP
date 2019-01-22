@@ -124,8 +124,6 @@ def attack(options, loginInfo):
 
 		## 1 PASSWORD FORM FIELD ONLY ## 
 		if len(loginInfo[1]) == 1:
-			_single_col = True
-
 			# Clear username list. Process now using password list only
 			del options.username[:]
 			options.username = [""]
