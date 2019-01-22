@@ -55,18 +55,12 @@ def check_login(opts):
 		try:
 			if error.code == 401:
 				## GET INFORMATION
-
 				resp_header = str(proc.response().info())
 				if "WWW-Authenticate" in resp_header:
 					loginID = checkHTTPGetLogin(resp_header)
 					loginInfo = (loginID, ["Password", "User Name"])
 					printf("[+] Using HTTP GET Authentication mode", "norm")
 					options.attack_mode = "--httpget"
-					# CAN BE FALSE
-					# if loginID:
-					# 	loginInfo = (loginID, ["Password", "User Name"])
-					# else:
-					# 	loginInfo = False
 				else:
 					loginInfo = False
 			else:
@@ -108,7 +102,6 @@ def attack(options, loginInfo):
 	else:
 		from modules import loginbrute
 		attack_module = loginbrute.submit
-
 
 	if not loginInfo:
 		# Test for 2 steps... login?
@@ -159,13 +152,7 @@ def attack(options, loginInfo):
 		printf("[x] Terminated by user!", "bad")
 		global set_break
 		set_break = True
-		
-	# 	# STEAL FROM SQLMAP
-	# 	# Does not print_table if terminate but found
-	# 	if threading.activeCount() > 1:
-	# 		printf("[x] Terminated by user!", "bad")
-			# import os
-			# os._exit(0)
+
 	except SystemExit:
 		printf("[x] Terminated by system!", "bad")
 

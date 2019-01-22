@@ -17,7 +17,6 @@ def startBrowser(timeout):
 
 def useragent():
 	return randomFromList(data.getAgent().split("\n"))
-	#return agents
 
 def checkHTTPGetLogin(strHeader):
 	reg = r"WWW-Authenticate: Basic realm=\"(.*)\""
@@ -25,7 +24,6 @@ def checkHTTPGetLogin(strHeader):
 		return re.findall(reg, strHeader, re.MULTILINE)[0]
 	except:
 		return False
-
 
 def parseLoginForm(objForm):
 	regTextField = r"TextControl\W(.*)="
@@ -36,7 +34,6 @@ def parseLoginForm(objForm):
 		# Find password control. If has
 		# 	1 password control -> login field
 		# 	2 or more password control -> possibly register field
-		# 	0 -> no login field
 		if len(retPassField) == 1:
 			retTextField = re.findall(regTextField, str(form), re.MULTILINE)
 			if len(retTextField) == 1:
