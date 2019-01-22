@@ -26,68 +26,24 @@ def checkHTTPGetLogin(strHeader):
 	except:
 		return False
 
-def checkPasswdForm(objBrowserForm):
-	##########################################
-	#	Get Password-only form
-	#	Need form ID for select_form(nr = ID)
-	#	Password field's name for submiting
-	#
-	###########################################
 
-	# Using for loop for getting
-	retFormID = 0
-
-	regPassField = r"PasswordControl\W(.*)="
-
-	# Find login form
-	for form in objBrowserForm:
-		try:
-			#retPassField = re.findall(regPassField, str(form).encode('utf-8'), re.MULTILINE)[0]
-			retPassField = re.findall(regPassField, str(form), re.MULTILINE)[0]
-			return (retFormID, [retPassField])
-		except:
-			pass
-		retFormID += 1
-	return None
-
-def checkLoginForm(objBrowserForm):
-	##########################################
-	#	Get Login Form Information
-	#	Need form ID for select_form(nr = ID)
-	#	Username field's name for submiting
-	#	Password field's name for submiting
-	#
-	###########################################
-
-	# Using for loop for getting
-	retFormID = 0
-
+def parseLoginForm(objForm):
 	regTextField = r"TextControl\W(.*)="
 	regPassField = r"PasswordControl\W(.*)="
 
-	# Find login form
-	for form in objBrowserForm:
-		try:
-			#retTextField = re.findall(regTextField, str(form).encode('utf-8'), re.MULTILINE)[0]
-			#retPassField = re.findall(regPassField, str(form).encode('utf-8'), re.MULTILINE)[0]
-			retTextField = re.findall(regTextField, str(form), re.MULTILINE)[0]
-			retPassField = re.findall(regPassField, str(form), re.MULTILINE)[0]
-			return (retFormID, [retPassField, retTextField])
-		except:
-			pass
-		retFormID += 1
+	for retFormID, form in enumerate(objForm):
+		retPassField = re.findall(regPassField, str(form), re.MULTILINE)
+		# Find password control. If has
+		# 	1 password control -> login field
+		# 	2 or more password control -> possibly register field
+		# 	0 -> no login field
+		if len(retPassField) == 1:
+			retTextField = re.findall(regTextField, str(form), re.MULTILINE)
+			if len(retTextField) == 1:
+				# Regular login field. > 1 can be register specific field (maybe captcha)
+				return (retFormID, [retPassField[0], retTextField[0]])
+			elif len(retTextField) == 0:
+				# Possibly password field login only
+				return (retFormID, [retPassField[0]])
+
 	return None
-
-def parseLoginForm(objForm):
-	# https://stackoverflow.com/a/4945175
-	import itertools
-	form1, form2 = itertools.tee(objForm)
-
-	login, passwd = checkLoginForm(form1), checkPasswdForm(form2)
-
-	if login:
-		return login
-	elif passwd:
-		return passwd
-	else:
-		return None

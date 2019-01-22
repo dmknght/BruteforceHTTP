@@ -14,8 +14,8 @@ def check_condition(options, proc, loginInfo):
 	"""
 	if options.panel_url:
 		# User provided panel url (/wp-admin/ for example, repopen this url to check sess)
-		proc.open(options.panel_url)#, timeout = options.timeout)
-		if parseLoginForm(proc.forms()) != loginInfo:
+		proc.open(options.panel_url)
+		if not parseLoginForm(proc.forms()):# != loginInfo:
 			return 1
 		else:
 			return 0
@@ -67,7 +67,6 @@ def submit(options, loginInfo, tryCred, result):
 		proc.open(options.login_url)
 
 		#	Select login form
-
 		proc.select_form(nr = frmLoginID)
 		
 		# FILLS ALL FIELDS https://stackoverflow.com/a/5389578
@@ -75,7 +74,7 @@ def submit(options, loginInfo, tryCred, result):
 		for field, cred in zip(frmFields, tryCred):
 			proc.form[field] = cred
 
-		#page_title = proc.title()
+		# page_title = proc.title()
 		#	Send request
 		proc.submit()
 
@@ -89,7 +88,7 @@ def submit(options, loginInfo, tryCred, result):
 		# proc.reload()
 		#	If no login form -> maybe success. Check conditions
 		
-		if parseLoginForm(proc.forms()) != loginInfo:
+		if not parseLoginForm(proc.forms()):# != loginInfo:
 			test_result = check_condition(options, proc, loginInfo)
 			
 
@@ -104,11 +103,6 @@ def submit(options, loginInfo, tryCred, result):
 					printf("[*] Found: %s" %([tryPassword]), "good")
 				# "End of condition block"
 				
-				# "Check for Extras option reauth", return result w/ right format
-				# if "--reauth" not in options.extras:
-				# 	result.put([tryUsername, tryPassword])
-				# else:
-				# 	result.put([options.url.split("/")[2], tryUsername, tryPassword])
 				result.put([options.url, tryUsername, tryPassword])
 			
 			else:
