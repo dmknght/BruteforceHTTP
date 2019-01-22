@@ -100,7 +100,6 @@ def attack(options, loginInfo):
 			thread.join()
 
 		return sending, completed
-	_single_col = False
 	### SETTING UP FOR NEW ATTACK ###
 	if options.attack_mode == "--httpget":
 		from modules import httpget
@@ -182,8 +181,8 @@ def attack(options, loginInfo):
 
 		else:
 			printf("\n[*] %s valid password[s] found:" %(len(credentials)), "norm")
-			if _single_col:
-				print_table(("", "Password"), **[creds[-1:] for creds in credentials])
+			if not credentials[0][1]:
+				print_table(("URL", "Password"), *[creds[::2] for creds in credentials])
 			else:
 				print_table(("Username", "Password"), *[creds[-2:] for creds in credentials])
 			printf("")
