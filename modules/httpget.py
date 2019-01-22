@@ -1,8 +1,6 @@
 from core.tbrowser import startBrowser
 from core.utils import printf, die
 
-# http://docs.python-requests.org/en/master/user/authentication/
-# USING PROXY WITH REQUESTS https://stackoverflow.com/a/13395324
 # https://stackoverflow.com/a/4089075
 
 def submit(options, loginInfo, creds, result):

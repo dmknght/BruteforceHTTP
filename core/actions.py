@@ -167,8 +167,6 @@ def verify_options(options):
 
 	options.report = options.run_options["--report"]
 	options.verbose = options.run_options["--verbose"]
-	# if options.run_options["--proxy"]:
-	# 	options.proxy = fread("%s/liveproxy.txt" %(data.__path__[0])).split("\n")
 
 
 if __name__ == "__main__":
