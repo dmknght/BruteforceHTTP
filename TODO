@@ -22,6 +22,8 @@ User communication:
   ☐ Result, reporting
   ✔ Better module for getting user options @done(19-01-13 19:45)
   ☐ Save creds to db
+  ☐ Create GUI interface
+  ☐ print table bug when print webshell password (password only)
 
 Attack modules:
   ✔ HTTP Basic authenticate @done(19-01-13 19:45)
