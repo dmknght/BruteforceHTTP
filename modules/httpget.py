@@ -11,14 +11,19 @@ def submit(options, loginInfo, creds, result):
 			return True # don't run if find password of username
 			
 	if options.verbose:
-		printf("Trying: %s:%s" %(tryUsername, tryPassword), 'norm')
+		printf("[+] Trying: %s:%s" %(tryUsername, tryPassword), 'norm')
 	
 	try:
 		proc = startBrowser(options.timeout)
 		proc.add_password(options.url, tryUsername, tryPassword, realm)
 		proc.open(options.url)
-		result.put([options.url, tryUsername, tryPassword])
-		printf("[*] Match found: %s" %([tryUsername, tryPassword]), "good") 
+		try:
+			proc.open(options.url)
+			result.put([options.url, tryUsername, tryPassword])
+			printf("[*] Match found: %s" %([tryUsername, tryPassword]), "good") 
+		except:
+			if options.verbose:
+				printf("[x] Failed!", "bad")
 
 	except Exception as err:
 		try:
