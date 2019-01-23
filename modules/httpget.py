@@ -19,18 +19,18 @@ def submit(options, loginInfo, creds, result):
 		proc.open(options.url)
 		try:
 			proc.open(options.url)
+			printf("[*] Page title: ['%s']" %(proc.title()), "good")
 			result.put([options.url, tryUsername, tryPassword])
 			printf("[*] Match found: %s" %([tryUsername, tryPassword]), "good") 
-		except:
-			if options.verbose:
-				printf("[x] Failed!", "bad")
-
-	except Exception as err:
-		try:
-			if err.code == 401:
-				if options.verbose:
-					printf("[-] Failed %s" %(creds[::-1]), "bad")
-			else:
-				printf("[x] %s: %s" %(err, creds[::-1]), "bad")
-		except:
-			die("[x] HTTP GET:", err)
+		except Exception as err:
+			try:
+				if err.code == 401:
+					if options.verbose:
+						printf("[-] Failed %s" %(creds[::-1]), "bad")
+				else:
+					printf("[x] %s: %s" %(err, creds[::-1]), "bad")
+			except:
+				die("[x] HTTP GET:", err)
+	except:
+		if options.verbose:
+			printf("[x] Failed!", "bad")
