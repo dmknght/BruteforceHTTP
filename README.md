@@ -65,10 +65,45 @@ Problems:
 
 Further improvement (See TODO.md)
 
-## DOES NOT work (by now)
+## Limitation
 - Javascript website (mechanize library problem)
 - Login with captcha
 (Please read WEBNOTE.md for test cases)
+
+## Why this / that (FAQ)
+- Q: What is this tool?
+- A: This tool is a brute-force attack tool, based on mechanize browser project. It means this tool can submit login request simulately.
+- Q: Why not python3?
+- A: Currently, mechanize supports python2 only. And because python3 has some different syntaxes so this project doesn't support python3 by now
+- Q: What can it do?
+- A: This tool is aimed to perform a brute-force attack automatically to all website with easy options.
+- Q: Why not other tools?
+- A: There are other tools can do brute force http. But...
+	+ Almost scripts are static. They can attack 1 or few website only (based on form name)
+	+ Hydra can do http login. But it has complex options, can't do login with CSRF token (and you have to give name of submit fields manually)
+	+ Burp suite: can't do CSRF form by default, doesn't show you the readable report, complex steps and free version is not very fast.
+- Q: This tool is aimed to brute-force all website, why it can't do this site:
+- A: There are known issues:
+	+ Javascript websites: mechanize can't do anything with javascript. Execute javascript brings security problems to client-side as well so, ... it is impossible right now.
+	+ Gmail, Yahoo: this 2 sites use 2 submit times. I am trying to combine this case to project
+	+ There are some login pages has wrong html syntax. I am working with mechanize to fix it
+	+ Captcha: This is not easy one. But I am trying my best.
+- Q: How about bypassing techniques?
+- A: I am trying to combine SQL injection login bypass as well. Be patient!
+- Q: Why does this tool show wrong result (multiple passwords for 1 username)
+- A: There are 2 known cases:
+	+ Web server shows block message with 200 HTTP Response (or error message in some cases). I am unable to analysis it exactly by now.
+	+ I've found "Bypass authentication" issue in some CCTV. I think it is a "race condition" vulnerability.
+- Q: You mentioned CCTV. So can this tool attack HTTP GET Authentication?
+- A: Yes it can. It will choose HTTP GET / HTTP POST FORM attack automatically
+- Q: How about wordlist? Secure password?
+- A: This tool brings some default wordlists. You can use your custom wordlist as well. But becareful with huge file, there is a memory management issue that i can't fix it right now. I am trying with generating password from keywords as well. 
+- Q: Sounds like this tool is trash
+- A: Not really. I did some succesful real-world attacks with this tool and I can say it deserve to try. Ofcourse you can do it with other tools, or your own script. But as I said, my tool is easy to use and it will save your time.
+- Q: Why do you do this so slow?
+- A: I have to do almost everything: test, debug, analysis, research, ... @ZeroX-DG is doing his project, so I have to do it myself. I am not a good developer is an other reason. Actually I am not even a developer.
+- Q: Can I customize your tool?
+- A: Yes, you are welcome. But if you find something good, please hep me by make a pull request. It will help me (and others ;) ) so much.
 
 ## Author
 - [@Ic3W4ll](https://github.com/dmknght)
