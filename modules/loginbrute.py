@@ -48,7 +48,7 @@ def submit(options, loginInfo, tryCred, result):
 
 	#	Get login form field informations
 	
-	frmLoginID, frmFields = loginInfo
+	# frmLoginID, frmFields = loginInfo
 	tryPassword, tryUsername = tryCred
 
 	proc = startBrowser(options.timeout)
@@ -63,8 +63,16 @@ def submit(options, loginInfo, tryCred, result):
 		proc.set_proxies({"http": proxyAddr})
 	
 	try:
-
 		proc.open(options.login_url)
+		_form = parseLoginForm(proc.forms())
+		if not _form:
+			if options.verbose:
+				printf("[x] LoginBrute: No login form found. Possibly get blocked!")
+			return False
+		else:
+			frmLoginID, frmFields = _form
+		if options.verbose and loginInfo != _form:
+			printf("[+] Warning: Form field has been changed!")
 
 		#	Select login form
 		proc.select_form(nr = frmLoginID)
@@ -76,7 +84,6 @@ def submit(options, loginInfo, tryCred, result):
 
 		# page_title = proc.title()
 		#	Send request
-		proc.submit()
 
 		if options.verbose:
 			if options.proxy:
@@ -88,6 +95,7 @@ def submit(options, loginInfo, tryCred, result):
 		# proc.reload()
 		#	If no login form -> maybe success. Check conditions
 		
+		proc.submit()
 		if not parseLoginForm(proc.forms()):# != loginInfo:
 			test_result = check_condition(options, proc, loginInfo)
 			
