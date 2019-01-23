@@ -6,7 +6,7 @@ Mark means worked succesfully
 - [x] Tomcat manager (HTTP get)
 - [x] Github
 - [x] Facebook
-- [ ] Twitter
+- [ ] Twitter (mobile)
 - [x] CCTV DVR (HTTP get)
 - [ ] Gmail (2 submitions login)
 - [ ] Yahoo (2 submitions login)
