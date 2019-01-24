@@ -102,15 +102,12 @@ def submit(options, loginInfo, tryCred, result):
 
 			if test_result:
 				printf("[*] Page title: ['%s']" %(proc.title()), "good")
-				
 				# "If we tried login form with username+password field"
 				if tryUsername:
 					printf("[*] Found: %s" %([tryUsername, tryPassword]), "good")
 				# "Else If we tried login form with password field only"
 				else:
 					printf("[*] Found: %s" %([tryPassword]), "good")
-				# "End of condition block"
-				
 				result.put([options.url, tryUsername, tryPassword])
 			
 			else:
