@@ -1950,10 +1950,12 @@ def http_pass():
 def default_user():
 	return """admin
 	administrator
+	developer
 	root
 	user
 	username
 	test
+	test123
 	demo
 	sysadmin""".replace("\t", "")
 	
