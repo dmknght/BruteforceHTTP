@@ -45,6 +45,7 @@ def check_login(opts):
 			opts.login_url = opts.url
 
 		printf("[*] Connect success!", "good")
+		options.attack_mode = "--loginbrute"
 		if opts.run_options["--verbose"]:
 			printf("[*] %s" %(proc.title()), "norm")
 		printf("[+] Analyzing login form....")
@@ -99,9 +100,11 @@ def attack(options, loginInfo):
 		from modules import httpget
 		attack_module = httpget.submit
 
-	else:
+	elif options.attack_mode == "--loginbrute":
 		from modules import loginbrute
 		attack_module = loginbrute.submit
+	else:
+		die("[x] Runtime error: Invalid attack mode", "%s" %(options.attack_mode))
 
 	if not loginInfo:
 		# Test for 2 steps... login?
