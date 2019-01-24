@@ -250,7 +250,9 @@ if __name__ == "__main__":
 						loginInfo = check_login(options)
 						result = attack(options, loginInfo)
 						if result:
-							results.append(result[0])
+							for _result in result:
+								results.append(_result)
+							#results.append(result)
 
 				if "--reauth" in options.extras:
 					from extras import reauth
