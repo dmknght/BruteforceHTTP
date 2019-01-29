@@ -1,3 +1,12 @@
+# 24/1/2019
+* Add FAQ to readme
+* Code improvement
+* New attack banner
+* Fix syntax webshell result
+* Fix break for multiple IP
+* Fix attack mode HTTP GET only if has multiple target with different attack mode
+* Fix last result missing passwords
+
 # 13/1/2019
 * Code clean
 * Support ip list
