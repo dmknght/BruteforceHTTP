@@ -34,6 +34,7 @@ def webshell_user():
 def webshell_pass():
 	return """r00t
 	123
+	0987654321
 	admin
 	antichat
 	p4kl0nc4t
