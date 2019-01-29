@@ -38,7 +38,7 @@ Attack modules:
   HTTP GET:
     ☐ Use proxy for attacking tasks @extras @getproxy
     ☐ Combine with reauth @extras
-    ☐ Show wrong creds sometimes @bug @high @match_condition 
+    ✘ Show wrong creds sometimes @bug @high @match_condition @cancelled(19-01-25 11:12) authentication bypassed (possibly race condition vuln)
   Login Brute:
     ✔ Improve exception @done(19-01-22 14:28)
 
@@ -54,7 +54,7 @@ Attack conditions:
     ✔ Program does not stop when Ctrl + C @bug @critical @core @done(19-01-13 23:43)
     ✔ Exception catches wrong @done(19-01-13 23:47)
     ✔ Fix banner if options.url (no list) @bug @user_communication @low @done(19-01-14 07:03)
-    ☐ Report for multiple users shows first element of sub-elements only @user_communication @high 
+    ✔ Report for multiple users shows first element of sub-elements only @user_communication @high @done(19-01-24 17:02)
     ☐ No username if use both webshell and user login @critical  @core
     ✔ Wrong attack mode if have both http get and http post form login @critical  @form_parse @core @done(19-01-24 16:31)
   Better form detecting and parsing:
