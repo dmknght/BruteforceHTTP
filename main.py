@@ -250,7 +250,9 @@ if __name__ == "__main__":
 						loginInfo = check_login(options)
 						result = attack(options, loginInfo)
 						if result:
-							results.append(result[0])
+							for _result in result:
+								results.append(_result)
+							#results.append(result)
 
 				if "--reauth" in options.extras:
 					from extras import reauth
@@ -263,7 +265,7 @@ if __name__ == "__main__":
 		runtime = time.time() - runtime
 		try:
 			if len(options.target) > 0:
-				if len(results) > 1:
+				if len(results) > 1 and len(options.target) > 1:
 					printf("[*] Cracked %s target[s]" %(len(results)), "norm")
 					print_table(("URL", "Username", "Password"), *results)
 			else:
