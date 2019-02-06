@@ -27,7 +27,6 @@
 def check_login(opts):
 	try:
 		proc = startBrowser(options.timeout)
-		printf("[+] Checking %s" %(options.url))
 
 		proc.open(opts.url)
 		"""
@@ -111,14 +110,10 @@ def attack(options, loginInfo):
 		die("[x] Target check: URL error", "[x] No login request found")
 	else:
 		printf("[*] Login request has been found!", "good")
-		printf(
-			"   [+] Form ID: %s\n"
-			"   [+] Field: %s\n"
-			%(loginInfo[0], loginInfo[1][::-1]), "norm")
-
-		printf("[+] Starting attack...")
 
 	tasks = len(options.passwd) * len(options.username)
+	printf("[+] [Tasks: %s] [ID: %s] [Controls: %s]" %(
+		tasks, loginInfo[0], loginInfo[1][::-1]), "norm")
 
 	import Queue
 	result = Queue.Queue()
@@ -126,7 +121,6 @@ def attack(options, loginInfo):
 	sending, completed = 0, 0
 	try:
 		#### START ATTACK ####
-		printf("[+] Task counts: %s tasks" %(tasks), "norm")
 		workers = []
 
 		for username in options.username:
@@ -222,7 +216,7 @@ if __name__ == "__main__":
 
 				results = []
 				set_break = False
-				for url in options.target:
+				for idu, url in enumerate(options.target):
 					if set_break:
 						break
 					if url:
@@ -244,6 +238,7 @@ if __name__ == "__main__":
 								getproxy.check(options)
 								options.proxy = getproxy.livelist()
 
+						printf("[%s / %s] [%s]" %(idu, len(options.target), options.url))
 						loginInfo = check_login(options)
 						if loginInfo:
 							check_options(options, loginInfo)
