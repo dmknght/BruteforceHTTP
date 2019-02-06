@@ -42,5 +42,12 @@ def parseLoginForm(objForm):
 			elif len(retTextField) == 0:
 				# Possibly password field login only
 				return (retFormID, [retPassField[0]])
-
 	return None
+
+def sqlerror(response):
+	# Parse html response to define SQL error
+	# Copyright: SQLmap
+	if re.search(r"SQL (warning|error|syntax)", response, re.MULTILINE):
+		return True
+	return False
+	# TODO improve condition
