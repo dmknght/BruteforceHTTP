@@ -183,7 +183,7 @@ if __name__ == "__main__":
 	import sys, time, threading, ssl
 	from core import options
 	from core.tbrowser import startBrowser, parseLoginForm, checkHTTPGetLogin
-	from core.actions import verify_url, verify_options, fread
+	from core.actions import verify_url, check_options, fread, create_tasks
 	from core.utils import printf, progress_bar, die, print_table, start_banner
 	from extras import getproxy
 
@@ -200,7 +200,7 @@ if __name__ == "__main__":
 			from core import helps
 			helps.print_help()
 		else:
-			verify_options(options)
+			create_tasks(options)
 
 			if "--getproxy" in options.extras:
 				getproxy.getnew(options)
@@ -232,6 +232,9 @@ if __name__ == "__main__":
 					if set_break:
 						break
 					if url:
+						# Clean other URL options (Fix URL_panel and URL login bug)
+						options.login_url = None
+						options.panel_url = None
 						options.url = verify_url(url)
 						if "--getproxy" in options.extras:
 							printf("[+] Check connection via proxy to %s! Be patient!" %(options.url))
@@ -248,6 +251,7 @@ if __name__ == "__main__":
 								options.proxy = getproxy.livelist()
 
 						loginInfo = check_login(options)
+						check_options(options, loginInfo)
 						result = attack(options, loginInfo)
 						if result:
 							for _result in result:
@@ -265,11 +269,15 @@ if __name__ == "__main__":
 		runtime = time.time() - runtime
 		try:
 			if len(options.target) > 0:
-				if len(results) > 1 and len(options.target) > 1:
+				if len(results) > 0 and len(options.target) > 1:
 					printf("[*] Cracked %s target[s]" %(len(results)), "norm")
 					print_table(("URL", "Username", "Password"), *results)
 			else:
 				printf("[x] No target has been cracked", "bad")
 		except:
 			pass
-		printf("[*] Time elapsed: %0.4f [s]\n" %(runtime), "good")
+		printf("\n[*] [Elapsed: %0.2f] [%s]" %(
+			runtime,
+			time.strftime("%Y-%m-%d %H:%M"),
+			),
+		"good")
