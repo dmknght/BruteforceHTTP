@@ -240,7 +240,7 @@ if __name__ == "__main__":
 								getproxy.check(options)
 								options.proxy = getproxy.livelist()
 
-						printf("[%s / %s] [%s]" %(idu, len(options.target), options.url))
+						printf("[%s / %s] [%s]" %(idu + 1, len(options.target), options.url))
 						loginInfo = check_login(options)
 						if loginInfo:
 							check_options(options, loginInfo)
