@@ -1,15 +1,17 @@
 Project:
   ☐ Docker
-  ☐ Python 3
+  ✘ Python 3 @cancelled(19-02-05 21:46) Stupid syntax
 
 Core:
   ✔ Improve multithreading @done(19-01-13 19:45)
   ☐ Memory management
   ✔ Improve URL handling @options @user_communication @done(19-01-22 14:28)
+  ☐ Check URL format (protocol://[domain].[field] @options @high 
   ✔ Final result combine with list IP @started(19-01-13 21:13) @done(19-01-13 22:39) @lasted(1h26m7s)
   ☐ Add hotkey to terminate child task only
   ✔ Task freezy if gets blocked (set timeout) @mechanize @attack_module @high @done(19-01-14 01:41)
   ☐ Upgrade user-agent
+  ✔ Session issue if webshell URL after dvwa URL @mechanize  @attack_module @done(19-02-05 22:04)
 
 Mechanize:
   ☐ Javascript Login Form
@@ -55,7 +57,7 @@ Attack conditions:
     ✔ Exception catches wrong @done(19-01-13 23:47)
     ✔ Fix banner if options.url (no list) @bug @user_communication @low @done(19-01-14 07:03)
     ✔ Report for multiple users shows first element of sub-elements only @user_communication @high @done(19-01-24 17:02)
-    ☐ No username if use both webshell and user login @critical  @core
+    ✔ No username if use both webshell and user login @critical  @core @done(19-02-05 21:48)
     ✔ Wrong attack mode if have both http get and http post form login @critical  @form_parse @core @done(19-01-24 16:31)
   Better form detecting and parsing:
     ☐ Webshell has text control only
@@ -67,7 +69,13 @@ Attack conditions:
 
 Extras:
   ☐ Password generating
-  ☐ SQL Injection bypass login
+  SQL Injection bypass login:
+    ☐ Detect SQL error
+    ☐ Test SQL error with page has similar response (before submit)
+    ☐ Improve check options (loop)
+    ☐ Generate payload (boolean-based)
+    ☐ Cases with / without username / double payload (both username and password field)
+
   Shodan:
     ☐ Parse ip list from shodan, replace URL options
     ☐ Add option to add URL after ip list
