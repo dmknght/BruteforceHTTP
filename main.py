@@ -118,12 +118,6 @@ def attack(options, loginInfo):
 
 		printf("[+] Starting attack...")
 
-		## 1 PASSWORD FORM FIELD ONLY ## 
-		if len(loginInfo[1]) == 1:
-			# Clear username list. Process now using password list only
-			del options.username[:]
-			options.username = [""]
-
 	tasks = len(options.passwd) * len(options.username)
 
 	import Queue
