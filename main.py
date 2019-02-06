@@ -59,7 +59,8 @@ def check_login(opts):
 				if "WWW-Authenticate" in resp_header:
 					loginID = checkHTTPGetLogin(resp_header)
 					loginInfo = (loginID, ["Password", "User Name"])
-					printf("[+] Using HTTP GET Authentication mode", "norm")
+					if options.verbose:
+						printf("[+] Using HTTP GET Authentication mode", "norm")
 					options.attack_mode = "--httpget"
 				else:
 					loginInfo = False
@@ -109,7 +110,8 @@ def attack(options, loginInfo):
 		# Test for 2 steps... login?
 		die("[x] Target check: URL error", "[x] No login request found")
 	else:
-		printf("[*] Login request has been found!", "good")
+		if options.verbose:
+			printf("[*] Login request has been found!", "good")
 
 	tasks = len(options.passwd) * len(options.username)
 	printf("[+] [Tasks: %s] [ID: %s] [Controls: %s]" %(
