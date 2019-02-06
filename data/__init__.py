@@ -2017,7 +2017,8 @@ def default_pass():
 	12345a
 	1122334411223344
 	P4ssw0rd
-	sysadmin""".replace("\t", "")
+	sysadmin
+	qwerty123@""".replace("\t", "")
 	
 def getSQL():
 	return """ or true --
