@@ -108,18 +108,14 @@ def verify_url(url):
 		url = None
 	return url
 
-def verify_options(options):
-	# Check url
-	import data
-
-	# Check target option (from file or gives directly)
+def create_tasks(options):
+	# Read URL from list (file_path) or get URL from option
 	try:
 		options.target = fread(options.options["-l"]).split("\n") if options.options["-l"] else [options.url]
 		options.target = filter(None, options.target)
 	except Exception as error:
 		die("[x] Options: URL error", error)
-
-	# CHECK threads option
+		# CHECK threads option
 	try:
 		options.threads = int(options.options["-t"])
 		if options.threads < 1:
@@ -146,9 +142,16 @@ def verify_options(options):
 			"[x] Options: Invalid option \"timeout\"",
 			error
 		)
+
+def check_options(options, loginInfo):
 	
+	_, formField = loginInfo
+	import data
+
 	# CHECK username list options
-	if options.options["-U"]:
+	if len(formField) == 1:
+		options.username = [""]
+	elif options.options["-U"]:
 		options.username = list(set(lread(options.options["-U"])))
 	else:
 		if options.options["-u"] in options.WORDLISTS:
