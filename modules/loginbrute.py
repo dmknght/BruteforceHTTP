@@ -1,5 +1,4 @@
-import mechanize
-from core.tbrowser import parseLoginForm, startBrowser
+from core.tbrowser import parseLoginForm, startBrowser, sqlerror
 from core.utils import printf, die
 from core.actions import randomFromList
 
@@ -16,7 +15,10 @@ def check_condition(options, proc, loginInfo):
 		# User provided panel url (/wp-admin/ for example, repopen this url to check sess)
 		proc.open(options.panel_url)
 		if not parseLoginForm(proc.forms()):# != loginInfo:
-			return 1
+			if sqlerror(proc.response().read()):
+				return 2
+			else:
+				return 1
 		else:
 			return 0
 	else:
@@ -41,7 +43,10 @@ def check_condition(options, proc, loginInfo):
 		# 	return 1
 		# else:
 		# 	return 0
-		return 1
+		if sqlerror(proc.response().read()):
+			return 2
+		else:
+			return 1
 
 
 def submit(options, loginInfo, tryCred, result):
@@ -99,8 +104,7 @@ def submit(options, loginInfo, tryCred, result):
 		if not parseLoginForm(proc.forms()):# != loginInfo:
 			test_result = check_condition(options, proc, loginInfo)
 			
-
-			if test_result:
+			if test_result == 1:
 				printf("[*] Page title: ['%s']" %(proc.title()), "good")
 				# "If we tried login form with username+password field"
 				if tryUsername:
@@ -109,15 +113,21 @@ def submit(options, loginInfo, tryCred, result):
 				else:
 					printf("[*] Found: %s" %([tryPassword]), "good")
 				result.put([options.url, tryUsername, tryPassword])
-			
+			elif test_result == 2 and options.verbose:
+				printf("[+] SQL Injection vulnerable found")
+				printf("   %s" %([tryUsername, tryPassword]), "norm")
 			else:
 				# Possibly Error. But sometime it is true
 				if options.verbose:
 					printf("[x] Get error page: %s" %([tryUsername, tryPassword]), "bad")
-					printf("[x] Page title: ['%s']" %(proc.title()), "bad")
+					printf("   [x] Page title: ['%s']" %(proc.title()), "bad")
 		
 		# "Login form is still there. Oops"
 		else:
+			# TODO test if web has similar text (static)
+			if sqlerror(proc.response().read()) and options.verbose:
+				printf("[+] SQL Injection vulnerable found")
+				printf("   %s" %([tryUsername, tryPassword]), "norm")
 			if options.verbose:
 				if options.proxy:
 					printf(
@@ -155,7 +165,6 @@ def submit(options, loginInfo, tryCred, result):
 		except:
 			# THIS BLOCKED BY WAF
 			printf("[x] Loginbrute: %s" %(error), "bad")
-	
 		return False
 
 	finally:
