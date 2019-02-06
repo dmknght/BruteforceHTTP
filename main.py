@@ -251,11 +251,12 @@ if __name__ == "__main__":
 								options.proxy = getproxy.livelist()
 
 						loginInfo = check_login(options)
-						check_options(options, loginInfo)
-						result = attack(options, loginInfo)
-						if result:
-							for _result in result:
-								results.append(_result)
+						if loginInfo:
+							check_options(options, loginInfo)
+							result = attack(options, loginInfo)
+							if result:
+								for _result in result:
+									results.append(_result)
 							#results.append(result)
 
 				if "--reauth" in options.extras:
