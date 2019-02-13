@@ -46,13 +46,20 @@ def truecon():
 		if conType == "static":
 			return randomFromList(["not false", "true"])
 		elif conType == "compare":
-			genType = randomFromList(["like", "rlike", "gl"])
+			genType = randomFromList(["like", "rlike", "not like", "gl"])
 			if genType == "gl":
 				_stri1, _stri2 = srand(stype = "dig"), srand(stype = "dig")
 				if int(_stri1) > int(_stri2):
 					return "%s > %s" %(_stri1, _stri2)
 				else:
 					return "%s > %s" %(_stri2, _stri1)
+			elif genType == "not like":
+				while True:
+					_stri1, _stri2 = srand(stype = "char"), srand(stype = "char")
+					# MAKE SURE WE ARE HAVING NOT LIKE
+					if _stri1 != _stri2:
+						break
+				return "'%s' %s '%s'" %(_stri1, genType, _stri2)
 			else:
 				_stri = srand(min = 3, max = 5, stype = "char")
 				return "'%s' %s '%s'" %(_stri, genType, _stri)
