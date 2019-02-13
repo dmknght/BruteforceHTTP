@@ -21,9 +21,6 @@
 # 		print(error)
 # 		return False
 
-# TODO use zip loop for SQL injection
-
-
 def check_login(opts):
 	try:
 		proc = startBrowser(options.timeout)
