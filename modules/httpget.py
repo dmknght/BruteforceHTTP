@@ -19,9 +19,10 @@ def submit(options, loginInfo, creds, result):
 		proc.open(options.url)
 		try:
 			proc.open(options.url)
-			printf("[*] Page title: ['%s']" %(proc.title()), "good")
+			# printf("[*] Page title: ['%s']" %(proc.title()), "good")
+			printf("[*] %s [%s]" %([tryUsername, tryPassword], proc.title()), "good")
 			result.put([options.url, tryUsername, tryPassword])
-			printf("[*] Match found: %s" %([tryUsername, tryPassword]), "good") 
+			# printf("[*] Match found: %s" %([tryUsername, tryPassword]), "good") 
 		except Exception as err:
 			try:
 				if err.code == 401:

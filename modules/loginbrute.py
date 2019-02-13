@@ -105,13 +105,13 @@ def submit(options, loginInfo, tryCred, result):
 			test_result = check_condition(options, proc, loginInfo)
 			
 			if test_result == 1:
-				printf("[*] Page title: ['%s']" %(proc.title()), "good")
+				#printf("[*] Page title: ['%s']" %(proc.title()), "good")
 				# "If we tried login form with username+password field"
 				if tryUsername:
-					printf("[*] Found: %s" %([tryUsername, tryPassword]), "good")
+					printf("[*] %s [%s]" %([tryUsername, tryPassword], proc.title()), "good")
 				# "Else If we tried login form with password field only"
 				else:
-					printf("[*] Found: %s" %([tryPassword]), "good")
+					printf("[*] %s []" %([tryPassword], proc.title()), "good")
 				result.put([options.url, tryUsername, tryPassword])
 			elif test_result == 2 and options.verbose:
 				printf("[+] SQL Injection vulnerable found")

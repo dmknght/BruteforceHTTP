@@ -1,4 +1,11 @@
 #https://github.com/rapid7/metasploit-framework/tree/master/data/wordlists
+def sqli_user():
+	from core.actions import sPayload
+	return sPayload()
+
+def sqli_pass():
+	from core.actions import srand
+	return srand(min = 5, max = 12)
 
 def social_urls():
 	# https://accounts.google.com/signin

@@ -35,7 +35,8 @@ class ParseOptions(object):
 		"cctv",
 		"mirai",
 		"http",
-		"webshell"
+		"webshell",
+		"sqli",
 	)
 
 	options = {

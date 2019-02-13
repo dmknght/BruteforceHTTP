@@ -105,6 +105,10 @@ def print_help():
 			"%-14s" %("webshell"),
 			"Webshell wordlist"
 		],
+		[
+			"%-14s" %("sqli"),
+			"Dynamic SQLi payloads"
+		],
 	]
 	print_table(title, *menu)
 	print("")
