@@ -72,10 +72,10 @@ Attack conditions:
 Extras:
   ☐ Password generating
   SQL Injection bypass login:
-    ☐ Detect SQL error
+    ✔ Detect SQL error @done(19-02-13 22:48)
     ☐ Test SQL error with page has similar response (before submit)
     ☐ Improve check options (loop)
-    ☐ Generate payload (boolean-based)
+    ✔ Generate payload (boolean-based) @done(19-02-13 22:48)
     ✔ Cases with / without username / double payload (both username and password field) @done(19-02-13 17:35)
     ✘ Terminate loop when found 1 payload @cancelled(19-02-13 22:48)
     ✔ Improve SQL generator functions @done(19-02-13 22:48)
