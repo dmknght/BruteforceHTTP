@@ -41,12 +41,21 @@ def truecon():
 	def cCon():
 		return randomFromList(["or", "||"])
 	def sCon():
-		conType = randomFromList(["equal", "static"])#, "compare"])
+		conType = randomFromList(["equal", "static", "compare"])
 		# Could be faster than create a dict and call element from dict
 		if conType == "static":
 			return randomFromList(["not false", "true"])
-		# elif conType == "compare":
-		# 	pass
+		elif conType == "compare":
+			genType = randomFromList(["like", "rlike", "gl"])
+			if genType == "gl":
+				_stri1, _stri2 = srand(stype = "dig"), srand(stype = "dig")
+				if int(_stri1) > int(_stri2):
+					return "%s > %s" %(_stri1, _stri2)
+				else:
+					return "%s > %s" %(_stri2, _stri1)
+			else:
+				_stri = srand(min = 3, max = 5, stype = "char")
+				return "'%s' %s '%s'" %(_stri, genType, _stri)
 		elif conType == "equal":
 			genType = randomFromList(["char", "dig"])
 			_stri = srand(min = 3, max = 5, stype = genType)
