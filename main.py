@@ -113,10 +113,8 @@ def attack(options, loginInfo):
 		if options.verbose:
 			printf("[*] Login request has been found!", "good")
 
-	printf("[+] [ID: %s] [Controls: %s]" %(loginInfo[0], loginInfo[1][::-1]), "good")
-
 	tasks = len(options.passwd) * len(options.username)
-	#printf("[+] [Tasks: %s] [%s]" %(tasks, proc.title()), "norm")
+	printf("[+] [Tasks: %s] [ID: %s] [Controls: %s]" %(tasks, loginInfo[0], loginInfo[1][::-1]), "good")
 
 	import Queue
 	result = Queue.Queue()
