@@ -23,20 +23,6 @@ def check_condition(options, proc, loginInfo):
 			return 0
 	else:
 		# User provided direct login URL (/wp-login.php).
-		"""
-		cases: dvwa (login.php), tomcat (panel), joomla (panel)
-		found_no_login
-		if url == login_url:
-			-> true / error page / waf page
-			reopen(url) -> login failed (dvwa, wordpress), wrong
-
-		if url == panel_url (tomcat, joomla):
-			-> true / error page (tomcat) / waf page 
-			reopen(url) -> login_success, true
-
-		//if loged_in -> error_page:
-		//	always true, but wrong
-		"""
 		# DEBUG
 		# proc.open(options.url)
 		# if parseLoginForm(proc.forms()) != loginInfo:
@@ -57,6 +43,10 @@ def submit(options, loginInfo, tryCred, result):
 	tryPassword, tryUsername = tryCred
 
 	proc = startBrowser(options.timeout)
+
+	# BREAK if we had valid payload?
+	# if options.options["-p"] == "sqli" and len(list(result.queue)) > 1:
+	# 	return True
 	
 	for cred in list(result.queue):
 		if tryUsername == cred[1]:
