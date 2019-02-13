@@ -77,9 +77,9 @@ Extras:
     ☐ Improve check options (loop)
     ☐ Generate payload (boolean-based)
     ✔ Cases with / without username / double payload (both username and password field) @done(19-02-13 17:35)
-    ☐ Terminate loop when found 1 payload
-    ☐ Improve SQL generator functions
-    ☐ Add bypass AV text
+    ✘ Terminate loop when found 1 payload @cancelled(19-02-13 22:48)
+    ✔ Improve SQL generator functions @done(19-02-13 22:48)
+    ☐ Add bypass WAF text
 
   Shodan:
     ☐ Parse ip list from shodan, replace URL options
