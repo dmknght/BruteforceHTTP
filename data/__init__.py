@@ -49,7 +49,9 @@ def webshell_pass():
 	icesword
 	Chaos
 	DAws
-	changeme"""
+	changeme
+	m3q
+	victoria"""
 
 def router_user():
 	return """acc
