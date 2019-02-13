@@ -43,11 +43,11 @@ def check_login(opts):
 		else:
 			opts.login_url = opts.url
 
-		printf("[*] Connect success!", "good")
+		# printf("[*] Connect success!", "good")
 		options.attack_mode = "--loginbrute"
 		if opts.run_options["--verbose"]:
 			printf("[*] %s" %(proc.title()), "norm")
-		printf("[+] Analyzing login form....")
+		# printf("[+] Analyzing login form....")
 		loginInfo = parseLoginForm(proc.forms())
 		return loginInfo
 		
@@ -113,9 +113,10 @@ def attack(options, loginInfo):
 		if options.verbose:
 			printf("[*] Login request has been found!", "good")
 
+	printf("[+] [ID: %s] [Controls: %s]" %(loginInfo[0], loginInfo[1][::-1]), "good")
+
 	tasks = len(options.passwd) * len(options.username)
-	printf("[+] [Tasks: %s] [ID: %s] [Controls: %s]" %(
-		tasks, loginInfo[0], loginInfo[1][::-1]), "norm")
+	#printf("[+] [Tasks: %s] [%s]" %(tasks, proc.title()), "norm")
 
 	import Queue
 	result = Queue.Queue()
