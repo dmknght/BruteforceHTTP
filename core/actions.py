@@ -205,18 +205,18 @@ def check_options(options, loginInfo):
 	else:
 		if options.options["-u"] in options.WORDLISTS:
 			if options.options["-u"] == "sqli":
-				options.username = eval("list(data.%s_user())" %(options.options["-u"]))
+				options.username = tuple(eval("data.%s_user()" %(options.options["-u"])))
 			else:
-				options.username = eval("data.%s_user()" %(options.options["-u"])).replace("\t", "").split("\n")
+				options.username = tuple(eval("data.%s_user()" %(options.options["-u"])).replace("\t", "").split("\n"))
 		else:
-			options.username = fread(options.options["-u"]).split("\n")
+			options.username = tuple(fread(options.options["-u"]).split("\n"))
 			options.username = filter(None, options.username)
 	
 	# CHECK passlist option
 	if options.options["-p"] in options.WORDLISTS:
-		options.passwd = eval("data.%s_pass()" %(options.options["-p"])).replace("\t", "").split("\n")
+		options.passwd = tuple(eval("data.%s_pass()" %(options.options["-p"])).replace("\t", "").split("\n"))
 	else:
-		options.passwd = fread(options.options["-p"]).split("\n")
+		options.passwd = tuple(fread(options.options["-p"]).split("\n"))
 		options.passwd = filter(None, options.passwd)
 
 
