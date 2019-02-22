@@ -22,6 +22,7 @@ class ParseOptions(object):
 
 	extra_mode = (
 		"--getproxy",
+		"--upwd",
 		"--reauth",
 		"--social", # Similar reauth, no url
 	)

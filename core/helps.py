@@ -67,6 +67,10 @@ def print_help():
 			"%-14s" %("--getproxy"),
 			"Provide new proxy list"
 		],
+		[
+			"%-14s" %("--upwd"),
+			"Add username to passlist"
+		],
 	]
 	print_table(title, *menu)
 

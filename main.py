@@ -122,6 +122,10 @@ def attack(options, loginInfo):
 		workers = []
 
 		for username in options.username:
+			if "--upwd" in options.extras \
+				and username not in options.passwd \
+				and options.options["-p"] is not "sqli":
+					options.passwd += (username,)
 			for password in options.passwd:
 				if len(workers) == options.threads:
 					sending, completed = run_threads(workers, sending, completed, tasks)
