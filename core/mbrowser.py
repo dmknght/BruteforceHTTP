@@ -2,6 +2,7 @@ import data, re
 from core.actions import randomFromList
 
 def startBrowser(timeout):
+	#	Create browser object. All browser settings should be here
 	import mechanize
 	#https://stackoverflow.com/a/27096416
 	browser = mechanize.Browser()
@@ -16,6 +17,8 @@ def startBrowser(timeout):
 	return browser
 
 def useragent():
+	# Try random agent everytime it is called
+	# TODO better useragent with library (or create my own - takes time)
 	return randomFromList(data.getAgent().split("\n"))
 
 def checkHTTPGetLogin(strHeader):
@@ -25,23 +28,24 @@ def checkHTTPGetLogin(strHeader):
 	except:
 		return False
 
-def parseLoginForm(objForm):
-	regTextField = r"TextControl\W(.*)="
-	regPassField = r"PasswordControl\W(.*)="
+def parseLoginForm(allFormControl):
+	# Try detect login form from all forms in response. Return form information
+	reTextControl = r"TextControl\W(.*)="
+	rePasswdControl = r"PasswordControl\W(.*)="
 
-	for retFormID, form in enumerate(objForm):
-		retPassField = re.findall(regPassField, str(form), re.MULTILINE)
+	for uint_formID, form in enumerate(allFormControl):
+		txtPasswdControl = re.findall(rePasswdControl, str(form), re.MULTILINE)
 		# Find password control. If has
 		# 	1 password control -> login field
 		# 	2 or more password control -> possibly register field
-		if len(retPassField) == 1:
-			retTextField = re.findall(regTextField, str(form), re.MULTILINE)
-			if len(retTextField) == 1:
+		if len(txtPasswdControl) == 1:
+			txtTextControl = re.findall(reTextControl, str(form), re.MULTILINE)
+			if len(txtTextControl) == 1:
 				# Regular login field. > 1 can be register specific field (maybe captcha)
-				return (retFormID, [retPassField[0], retTextField[0]])
-			elif len(retTextField) == 0:
+				return (uint_formID, [txtPasswdControl[0], txtTextControl[0]])
+			elif len(txtTextControl) == 0:
 				# Possibly password field login only
-				return (retFormID, [retPassField[0]])
+				return (uint_formID, [txtPasswdControl[0]])
 	return None
 
 def sqlerror(response):
