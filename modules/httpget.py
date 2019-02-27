@@ -1,4 +1,4 @@
-from core.tbrowser import startBrowser
+from core.mbrowser import startBrowser
 from core.utils import printf, die
 
 # https://stackoverflow.com/a/4089075

@@ -172,7 +172,7 @@ if __name__ == "__main__":
 		# IMPORT GLOBALY
 	import sys, time, threading, ssl
 	from core import options
-	from core.tbrowser import startBrowser, parseLoginForm, checkHTTPGetLogin
+	from core.mbrowser import startBrowser, parseLoginForm, checkHTTPGetLogin
 	from core.actions import verify_url, check_options, fread, create_tasks
 	from core.utils import printf, progress_bar, die, print_table, start_banner
 	from extras import getproxy

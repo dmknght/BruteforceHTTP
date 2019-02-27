@@ -1,5 +1,5 @@
 import mechanize, re, threading
-from core.tbrowser import startBrowser
+from core.mbrowser import startBrowser
 from core.utils import printf, die
 from core.actions import fread, fwrite
 import data

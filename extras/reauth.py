@@ -2,7 +2,7 @@
 from modules import loginbrute
 import data, threading
 from core.utils import printf, die, print_table
-from core.tbrowser import startBrowser, parseLoginForm
+from core.mbrowser import startBrowser, parseLoginForm
 
 
 try:

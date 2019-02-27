@@ -1,4 +1,4 @@
-from core.tbrowser import parseLoginForm, startBrowser, sqlerror
+from core.mbrowser import parseLoginForm, startBrowser, sqlerror
 from core.utils import printf, die
 from core.actions import randomFromList
 
