@@ -41,20 +41,7 @@ def progress_bar(trying, completed, total, bsize = 60):
 	"""
 	finished = (completed * bsize) / total
 	running = (trying * bsize) / total - finished
-	
-	# TESTING MULTIPLE LINES PROGRESS BAR
-	# Draw infomation with numbers
-	# bar = "  Completed: %d%sSent: %d%sTotal: %d"%(
-	# 	completed, " " * 11, trying, " " * 11, total
-	# )
-	# Draw progress bar
-	# bar = "\n\s|%s%s%s|" %(
-	# 	bar,
-	# 	finished * "+",
-	# 	running * "#",
-	# 	(bsize - finished - running) * '-',
-	# )
-	# prints(bar)
+	running = 1 if running < 1 else running
 
 	prints("|%s%s%s| %10s" %(
 		finished * "+",

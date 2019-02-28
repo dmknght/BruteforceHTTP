@@ -160,8 +160,10 @@ def parse_forms(root, base_url, request_class=None, select_default=False):
 				index=i * 10,
 				select_default=select_default)
 
+	# print len(forms)
+	# print global_form
 	for form in forms:
-		form.fixup()
-	global_form.fixup()
+		form.fixup() # Form now has our true form
+	global_form.fixup() # global_form now has our control fields
 
 	return forms, global_form

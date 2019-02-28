@@ -3,10 +3,11 @@ from core.utils import print_table
 
 def print_fast_help():
 	print(
-		'\nUsage: %s [<option> <value>] [mode] [--list <list_name>] <[URL] | [-l <url_list>]>\n' %(
-		sys.argv[0])
+		"""\nUsage: (URL or URL list is required)
+		\r\r\r- Quick: %s [URL]
+		\r\r\r- Advanced: %s [<option> <value>] [mode] [--selenium <webdriver>] [--list <list_name>] [URL || -l <url_list>]\n""" %(
+		sys.argv[0], sys.argv[0])
 	)
-	print("An URL or URL list is required")
 
 def print_help():
 
@@ -70,6 +71,24 @@ def print_help():
 		[
 			"%-14s" %("--upwd"),
 			"Add username to passlist"
+		],
+	]
+	print_table(title, *menu)
+
+	print("\nSelenium: Use selenium browser for attack (default Mechanize)")
+	title = ("webdrivers", "Descriptions")
+	menu = [
+		[
+			"%-14s" %("firefox"),
+			"Must install firefox driver first"
+		],
+		[
+			"%-14s" %("chrome"),
+			"Must install chrome driver first"
+		],
+		[
+			"%-14s" %("opera"),
+			"Must install opera driver first"
 		],
 	]
 	print_table(title, *menu)
