@@ -56,10 +56,11 @@ def progress_bar(trying, completed, total, bsize = 60):
 	# )
 	# prints(bar)
 
-	prints("|%s%s%s|" %(
+	prints("|%s%s%s| %10s" %(
 		finished * "+",
 		running * "#",
 		(bsize - finished - running) * '-',
+		trying
 	))
 
 
