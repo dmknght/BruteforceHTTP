@@ -1,16 +1,16 @@
-def fixLen(text, lim):
+def fixLen(inpText, lim):
 	# https://stackoverflow.com/a/37422973
-	ret, text = " %.*s" %(lim, text[:lim]), text[lim:]
+	finalText, inpText = " %.*s" %(lim, inpText[:lim]), inpText[lim:]
 	lim = 68 # MAX LIM FOR TERMINAL
 	
-	while text:
+	while inpText:
 		
-		if len(text) < lim:
-			ret += " |\n  | %s" %(text) + " " * (lim + 1 - len(text))
+		if len(inpText) < lim:
+			finalText += " |\n  | %s" %(inpText) + " " * (lim + 1 - len(inpText))
 			break
-		ret, text = ret + " |\n  |  %.*s" %(71, text[:lim]), text[lim:]
+		finalText, inpText = finalText + " |\n  |  %.*s" %(71, inpText[:lim]), inpText[lim:]
 
-	return ret
+	return finalText
 
 def report_banner(url, mode, proxy, thread, creds, daytime, runtime, regular):
 	# if option != "--sqli" and "--single":
