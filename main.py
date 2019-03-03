@@ -171,10 +171,12 @@ if __name__ == "__main__":
 	#if check_import():
 		# IMPORT GLOBALY
 	import sys, time, threading, ssl
-	from core import options
-	from core.mbrowser import startBrowser, parseLoginForm, checkHTTPGetLogin
-	from core.actions import verify_url, check_options, fread, create_tasks
-	from core.utils import printf, progress_bar, die, print_table, start_banner
+	from cores.mbrowser import startBrowser, parseLoginForm, checkHTTPGetLogin
+	from cores.actions import verify_url, check_options, fread, create_tasks
+	from cores import options
+	from utils.utils import printf, die, print_table
+	from utils.progressbar import progress_bar
+	from utils.banners import start_banner
 	from extras import getproxy
 
 	try:
@@ -187,7 +189,7 @@ if __name__ == "__main__":
 		options = options.ParseOptions()
 
 		if options.help == True:
-			from core import helps
+			from utils import helps
 			helps.print_help()
 		else:
 			create_tasks(options)

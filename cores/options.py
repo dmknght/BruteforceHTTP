@@ -1,6 +1,6 @@
 import sys
-from core.helps import print_fast_help
-from core.utils import die, printf
+from utils.helps import print_fast_help
+from utils.utils import die, printf
 
 class ParseOptions(object):
 

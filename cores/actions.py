@@ -1,5 +1,5 @@
 import random, sys, string
-from utils import die
+from utils.utils import die
 
 # def getRootDir(pathModuleLocation):
 # 	##################################
@@ -88,15 +88,15 @@ def randomFromFile(pathFile):
 	return randomFromList(fread(pathFile).split("\n"))
 
 
-# def lread(strUsername):
-# 	#################################
-# 	#	split input username to a list
-# 	#	username -> [username]
-# 	#	user1:user2 -> [user1, user2]
-# 	#
-# 	##################################
+def lread(strUsername):
+	#################################
+	#	split input username to a list
+	#	username -> [username]
+	#	user1:user2 -> [user1, user2]
+	#
+	##################################
 
-# 	return strUsername.split(":")
+	return strUsername.split(":")
 
 def fload(pathFile):
 	###################################

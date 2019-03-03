@@ -1,5 +1,5 @@
 import sys
-from core.utils import print_table
+from utils import print_table
 
 def print_fast_help():
 	print(

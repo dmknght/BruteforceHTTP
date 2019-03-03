@@ -1,8 +1,8 @@
 
 from modules import loginbrute
 import data, threading
-from core.utils import printf, die, print_table
-from core.mbrowser import startBrowser, parseLoginForm
+from utils.utils import printf, die, print_table
+from cores.mbrowser import startBrowser, parseLoginForm
 
 
 try:

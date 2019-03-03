@@ -1,6 +1,6 @@
-from core.mbrowser import parseLoginForm, startBrowser, sqlerror
-from core.utils import printf, die
-from core.actions import randomFromList
+from cores.mbrowser import parseLoginForm, startBrowser, sqlerror
+from utils.utils import printf, die
+from cores.actions import randomFromList
 
 def check_condition(options, proc, loginInfo):
 

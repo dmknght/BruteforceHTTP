@@ -1,5 +1,5 @@
 import data, re
-from core.actions import randomFromList
+from cores.actions import randomFromList
 
 def startBrowser(timeout):
 	#	Create browser object. All browser settings should be here
