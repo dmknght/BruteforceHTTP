@@ -75,23 +75,23 @@ def print_help():
 	]
 	print_table(title, *menu)
 
-	print("\nSelenium: Use selenium browser for attack (default Mechanize)")
-	title = ("webdrivers", "Descriptions")
-	menu = [
-		[
-			"%-14s" %("firefox"),
-			"Must install firefox driver first"
-		],
-		[
-			"%-14s" %("chrome"),
-			"Must install chrome driver first"
-		],
-		[
-			"%-14s" %("opera"),
-			"Must install opera driver first"
-		],
-	]
-	print_table(title, *menu)
+	# print("\nSelenium: Use selenium browser for attack (default Mechanize)")
+	# title = ("webdrivers", "Descriptions")
+	# menu = [
+	# 	[
+	# 		"%-14s" %("firefox"),
+	# 		"Must install firefox driver first"
+	# 	],
+	# 	[
+	# 		"%-14s" %("chrome"),
+	# 		"Must install chrome driver first"
+	# 	],
+	# 	[
+	# 		"%-14s" %("opera"),
+	# 		"Must install opera driver first"
+	# 	],
+	# ]
+	# print_table(title, *menu)
 
 	print("\nWordlists: Values will be replaced by [-U/-u/-p] options")
 	title = ("List name", "Descriptions")
