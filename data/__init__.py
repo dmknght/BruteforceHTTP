@@ -1,6 +1,6 @@
 #https://github.com/rapid7/metasploit-framework/tree/master/data/wordlists
 def sqli_user():
-	from cores.actions import sPayload
+	from data.gensqli import sPayload
 	return sPayload()
 
 def sqli_pass():
