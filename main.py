@@ -1,25 +1,5 @@
 #!/usr/bin/python
 
-# def check_import():
-# 	try:
-# 		import sys, threading, os, ssl, time
-# 		import mechanize, re
-
-# 	except ImportError as error:
-# 		print(error)
-# 		print("Please install libraries")
-# 		return False
-
-# 	try:
-# 		from core import actions, utils, tbrowser, options
-# 		from modules import loginbrute, httpget
-# 		from extras import getproxy, reauth
-# 		import data, reports
-	
-# 	except Exception as error:
-# 		print("Can't find project's module")
-# 		print(error)
-# 		return False
 
 def check_login(opts):
 	try:
@@ -172,8 +152,8 @@ if __name__ == "__main__":
 		# IMPORT GLOBALY
 	import sys, time, threading, ssl
 	from cores.mbrowser import startBrowser, parseLoginForm, checkHTTPGetLogin
-	from cores.actions import verify_url, check_options, fread, create_tasks
 	from cores import options
+	from cores.check import check_options, check_tasks, check_url
 	from utils.utils import printf, die, print_table
 	from utils.progressbar import progress_bar
 	from utils.banners import start_banner
@@ -192,7 +172,7 @@ if __name__ == "__main__":
 			from utils import helps
 			helps.print_help()
 		else:
-			create_tasks(options)
+			check_options(options)
 
 			if "--getproxy" in options.extras:
 				getproxy.getnew(options)
@@ -227,7 +207,7 @@ if __name__ == "__main__":
 						# Clean other URL options (Fix URL_panel and URL login bug)
 						options.login_url = None
 						options.panel_url = None
-						options.url = verify_url(url)
+						options.url = check_url(url)
 						if "--getproxy" in options.extras:
 							printf("[+] Check connection via proxy to %s! Be patient!" %(options.url))
 							getproxy.check(options)
@@ -245,7 +225,7 @@ if __name__ == "__main__":
 						printf("[%s / %s] [%s]" %(idu + 1, len(options.target), options.url))
 						loginInfo = check_login(options)
 						if loginInfo:
-							check_options(options, loginInfo)
+							check_tasks(options, loginInfo)
 							result = attack(options, loginInfo)
 							if result:
 								for _result in result:
