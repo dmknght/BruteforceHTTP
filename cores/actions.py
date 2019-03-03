@@ -197,6 +197,8 @@ def create_tasks(options):
 			"[x] Options: Invalid option \"timeout\"",
 			error
 		)
+	if options.attack_mode == "--sqli":
+		options.options["-u"], options.options["-p"] = "sqli", "sqli"
 
 def check_options(options, loginInfo):
 	
