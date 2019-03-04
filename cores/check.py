@@ -25,7 +25,15 @@ from utils.utils import die
 def check_url(url):
 	try:
 		# Shorter startswith https://stackoverflow.com/a/20461857
-		if not url.startswith(("http://", "https://")):
+		"""
+			ftp://something.com
+			https://something.com
+		"""
+		if "://" in url:
+			if not url.startswith(("http://", "https://")):
+				die("[x] URL error", "Invalid protocol")
+		else:
+			"Something.com"
 			url = "http://%s" %(url)
 	except:
 		url = None
