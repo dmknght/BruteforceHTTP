@@ -1,62 +1,6 @@
 #!/usr/bin/python
 
 
-def check_login(opts):
-	try:
-		proc = startBrowser(options.timeout)
-
-		proc.open(opts.url)
-		"""
-			Check URL type. If Website directs to other URL,
-			options.url is website's panel
-			else: it is login url.
-			Example: options.url = site.com/wp-admin/ -> panel
-				site directs user to wp-login -> login URL
-				options.url = site.com/wp-login.php -> login URL
-		"""
-		if proc.geturl() != opts.url:
-			printf("[*] Website moves to: ['%s']" %(proc.geturl()), "norm")
-			opts.panel_url, opts.login_url = opts.url, proc.geturl()
-		else:
-			opts.login_url = opts.url
-
-		# printf("[*] Connect success!", "good")
-		options.attack_mode = "--loginbrute"
-		if opts.run_options["--verbose"]:
-			printf("[*] %s" %(proc.title()), "norm")
-		# printf("[+] Analyzing login form....")
-		loginInfo = parseLoginForm(proc.forms())
-		return loginInfo
-		
-	except Exception as error:
-		try:
-			if error.code == 401:
-				## GET INFORMATION
-				resp_header = str(proc.response().info())
-				if "WWW-Authenticate" in resp_header:
-					loginID = checkHTTPGetLogin(resp_header)
-					loginInfo = (loginID, ["Password", "User Name"])
-					if options.verbose:
-						printf("[+] Using HTTP GET Authentication mode", "norm")
-					options.attack_mode = "--httpget"
-				else:
-					loginInfo = False
-			else:
-				loginInfo = False
-				printf("[x] Target check: %s" %(error), "bad")
-
-		# Error != http code
-		except:
-			loginInfo = False
-			die("[x] Target check:", error)
-	
-	except KeyboardInterrupt:
-		loginInfo = False
-	
-	finally:
-		proc.close()
-		return loginInfo
-
 def attack(options, loginInfo):
 	def run_threads(threads, sending, completed, total):
 		# Run threads
@@ -151,9 +95,8 @@ if __name__ == "__main__":
 	#if check_import():
 		# IMPORT GLOBALY
 	import sys, time, threading, ssl
-	from cores.mbrowser import startBrowser, parseLoginForm, checkHTTPGetLogin
 	from cores import options
-	from cores.check import check_options, check_tasks, check_url
+	from cores.check import check_options, check_tasks, check_url, check_login
 	from utils.utils import printf, die, print_table
 	from utils.progressbar import progress_bar
 	from utils.banners import start_banner

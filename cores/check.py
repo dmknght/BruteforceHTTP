@@ -1,5 +1,5 @@
 from cores.actions import lread, fread
-from utils.utils import die
+from utils.utils import die, printf
 
 # def check_import():
 # 	try:
@@ -21,6 +21,63 @@ from utils.utils import die
 # 		print("Can't find project's module")
 # 		print(error)
 # 		return False
+
+def check_login(options):
+	from cores.mbrowser import startBrowser, parseLoginForm, checkHTTPGetLogin
+	try:
+		proc = startBrowser(options.timeout)
+
+		proc.open(options.url)
+		"""
+			Check URL type. If Website directs to other URL,
+			options.url is website's panel
+			else: it is login url.
+			Example: options.url = site.com/wp-admin/ -> panel
+				site directs user to wp-login -> login URL
+				options.url = site.com/wp-login.php -> login URL
+		"""
+		if proc.geturl() != options.url:
+			printf("[*] Website moves to: ['%s']" %(proc.geturl()), "norm")
+			options.panel_url, options.login_url = options.url, proc.geturl()
+		else:
+			options.login_url = options.url
+
+		# printf("[*] Connect success!", "good")
+		options.attack_mode = "--loginbrute"
+		if options.run_options["--verbose"]:
+			printf("[*] %s" %(proc.title()), "norm")
+		# printf("[+] Analyzing login form....")
+		loginInfo = parseLoginForm(proc.forms())
+		return loginInfo
+		
+	except Exception as error:
+		try:
+			if error.code == 401:
+				## GET INFORMATION
+				resp_header = str(proc.response().info())
+				if "WWW-Authenticate" in resp_header:
+					loginID = checkHTTPGetLogin(resp_header)
+					loginInfo = (loginID, ["Password", "User Name"])
+					if options.verbose:
+						printf("[+] Using HTTP GET Authentication mode", "norm")
+					options.attack_mode = "--httpget"
+				else:
+					loginInfo = False
+			else:
+				loginInfo = False
+				printf("[x] Target check: %s" %(error), "bad")
+
+		# Error != http code
+		except:
+			loginInfo = False
+			die("[x] Target check:", error)
+	
+	except KeyboardInterrupt:
+		loginInfo = False
+	
+	finally:
+		proc.close()
+		return loginInfo
 
 def check_url(url):
 	try:
