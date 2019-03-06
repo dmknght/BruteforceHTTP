@@ -14,6 +14,13 @@ Core:
   ✔ Session issue if webshell URL after dvwa URL @mechanize  @attack_module @done(19-02-05 22:04)
   ☐ Improve exception in check_login
   ✔ Fix loginInfo = False causes iterable error message @done(19-02-06 21:16)
+  Create setup script:
+    ☐ pip install
+    ☐ Setup browser, libs,..
+    ☐ Install and setup webdriver (mix with PATH)
+    ☐ Create folder at $HOME (storage report, log, ..)
+    ☐ Setup postgres user (storage cracked cred)
+  ☐ Create controller module, Add close (exit browser object) function for both mechanize and selenium
   Add Selenium support @high  #Shoud fix java script issue:
     ☐ Add help menu
     ☐ Add options (web driver)
@@ -22,6 +29,11 @@ Core:
     ☐ Switch webdriver in browser object
     ☐ Parse login form
     ☐ Test with websites
+    ☐ Support proxy addr
+    ☐ Support user-agents
+    ☐ Clear all storage and close
+    ☐ Security Issue (from js scripts)
+    ☐ Login identify using localStorage (or any new shit that is useful)
   ✔ Add option to add username to passlist @done(19-02-22 14:37)
   ☐ Add "--check" operation
 
@@ -91,6 +103,7 @@ Extras:
     ✘ Terminate loop when found 1 payload @cancelled(19-02-13 22:48)
     ✔ Improve SQL generator functions @done(19-02-13 22:48)
     ☐ Add bypass WAF text
+    ☐ Add replacing "Space" by other method
 
   Shodan:
     ☐ Parse ip list from shodan, replace URL options
