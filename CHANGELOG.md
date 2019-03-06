@@ -1,3 +1,8 @@
+# 06/03/2019
+* Add SQL Injection payloads
+* Code syntax improvment 
+* Working with selenium - chromium web driver.
+
 # 24/1/2019
 * Add FAQ to readme
 * Code improvement
