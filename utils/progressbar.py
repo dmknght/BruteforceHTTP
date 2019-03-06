@@ -1,6 +1,6 @@
 import sys
 
-def prints(mtext, spaces = 2):
+def prints(mtext):
 	#############################################
 	#	print message and replace it after
 	#	Use for status bar, brute forcing process
