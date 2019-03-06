@@ -66,6 +66,7 @@ def submit(options, loginInfo, tryCred, result):
 			return False
 		else:
 			frmLoginID, frmFields = _form
+			frmLoginID, btnSubmit = frmLoginID
 		if options.verbose and loginInfo != _form:
 			printf("[+] Warning: Form field has been changed!")
 
@@ -84,7 +85,10 @@ def submit(options, loginInfo, tryCred, result):
 			if options.proxy:
 				printf("[+] {%s: %s; %s: %s} through %s" %(frmFields[1], tryUsername, frmFields[0], tryPassword, proxyAddr), 'norm')
 			else:
-				printf("[+] {%s: %s; %s: %s}" %(frmFields[1], tryUsername, frmFields[0], tryPassword), 'norm')
+				if len(frmFields) == 2:
+					printf("[+] {%s: %s; %s: %s}" %(frmFields[1], tryUsername, frmFields[0], tryPassword), 'norm')
+				else:
+					printf("[+] {%s: %s}" %(frmFields[0], tryPassword), 'norm')
 		
 		#	Reload the browser. For javascript redirection and others...
 		# proc.reload()
