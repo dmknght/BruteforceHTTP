@@ -82,9 +82,9 @@ def submit(options, loginInfo, tryCred, result):
 
 		if options.verbose:
 			if options.proxy:
-				printf("[+] Trying: %s through %s" %([tryUsername, tryPassword],proxyAddr), 'norm')
+				printf("[+] {%s: %s; %s: %s} through %s" %(frmFields[1], tryUsername, frmFields[0], tryPassword, proxyAddr), 'norm')
 			else:
-				printf("[+] Trying: %s" %([tryUsername, tryPassword]), 'norm')
+				printf("[+] {%s: %s; %s: %s}" %(frmFields[1], tryUsername, frmFields[0], tryPassword), 'norm')
 		
 		#	Reload the browser. For javascript redirection and others...
 		# proc.reload()

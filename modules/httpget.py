@@ -11,7 +11,7 @@ def submit(options, loginInfo, creds, result):
 			return True # don't run if find password of username
 			
 	if options.verbose:
-		printf("[+] Trying: %s:%s" %(tryUsername, tryPassword), 'norm')
+		printf("[+] {%s: %s; %s: %s}" %(tryUsername, tryUsername, tryPassword, tryPassword), 'norm')
 	
 	try:
 		proc = startBrowser(options.timeout)
