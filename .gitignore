@@ -6,3 +6,4 @@ data/liveproxy.txt
 *.tmp
 report/2018*
 *.swp
+*.log
