@@ -42,6 +42,7 @@ def parseLoginForm(allFormControl):
 		if len(txtPasswdControl) == 1:
 			txtTextControl = re.findall(reTextControl, str(form))
 			txtSubmitControl = re.findall(reSubmitControl, str(form))
+			txtSubmitControl = ["None"] if not txtSubmitControl else txtSubmitControl
 			if len(txtTextControl) == 1:
 				# Regular login field. > 1 can be register specific field (maybe captcha)
 				return ([uint_formID, txtSubmitControl[0]], [txtPasswdControl[0], txtTextControl[0]])
