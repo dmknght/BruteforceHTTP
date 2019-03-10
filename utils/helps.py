@@ -5,7 +5,7 @@ def print_fast_help():
 	print(
 		"""\nUsage: (URL or URL list is required)
 		\r\r\r- Quick: %s [URL]
-		\r\r\r- Advanced: %s [<option> <value>] [mode] [--selenium <webdriver>] [--list <list_name>] [URL || -l <url_list>]\n""" %(
+		\r\r\r- Advanced: %s [<option> <value>] [mode] [--list <list_name>] [URL || -l <url_list>]\n""" %(
 		sys.argv[0], sys.argv[0])
 	)
 
@@ -74,24 +74,6 @@ def print_help():
 		],
 	]
 	print_table(title, *menu)
-
-	# print("\nSelenium: Use selenium browser for attack (default Mechanize)")
-	# title = ("webdrivers", "Descriptions")
-	# menu = [
-	# 	[
-	# 		"%-14s" %("firefox"),
-	# 		"Must install firefox driver first"
-	# 	],
-	# 	[
-	# 		"%-14s" %("chrome"),
-	# 		"Must install chrome driver first"
-	# 	],
-	# 	[
-	# 		"%-14s" %("opera"),
-	# 		"Must install opera driver first"
-	# 	],
-	# ]
-	# print_table(title, *menu)
 
 	print("\nWordlists: Values will be replaced by [-U/-u/-p] options")
 	title = ("List name", "Descriptions")
