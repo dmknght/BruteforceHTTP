@@ -375,8 +375,8 @@ class Browser(UserAgentBase):
 	def _visit_request(self, request, update_history):
 		if self._response is not None:
 			self._response.close()
-		if self.request is not None and update_history:
-			self._history.add(self.request, self._response)
+		# if self.request is not None and update_history:
+		# 	self._history.add(self.request, self._response)
 		self._response = None
 		# we want self.request to be assigned even if UserAgentBase.open
 		# fails
