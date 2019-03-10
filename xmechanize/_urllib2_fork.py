@@ -264,6 +264,7 @@ class Request:
 		hdrs.update(self.headers)
 		return list(iteritems(hdrs))
 
+__metaclass__ = type
 
 class OpenerDirector:
 
