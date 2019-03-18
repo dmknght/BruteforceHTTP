@@ -1,5 +1,9 @@
 from cores.actions import lread, fread
 from utils.utils import die, printf
+import re, sys
+
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 # def check_import():
 # 	try:
@@ -22,12 +26,53 @@ from utils.utils import die, printf
 # 		print(error)
 # 		return False
 
-def check_login(options):
-	from cores.mbrowser import startBrowser, parseLoginForm, checkHTTPGetLogin
-	try:
-		proc = startBrowser(options.timeout)
 
-		proc.open(options.url)
+def checkHTTPGetLogin(strHeader):
+	reg = r"WWW-Authenticate: Basic realm=\"(.*)\""
+	try:
+		return re.findall(reg, strHeader, re.MULTILINE)[0]
+	except:
+		return False
+
+def parseLoginForm(allFormControl):
+	# Try detect login form from all forms in response. Return form information
+	reTextControl = r"TextControl\W(.*)="
+	rePasswdControl = r"PasswordControl\W(.*)="
+	reSubmitControl = r"SubmitControl\W(.*)="
+
+	for uint_formID, form in enumerate(allFormControl):
+		txtPasswdControl = re.findall(rePasswdControl, str(form))
+		# Find password control. If has
+		# 	1 password control -> login field
+		# 	2 or more password control -> possibly register field
+		if len(txtPasswdControl) == 1:
+			txtTextControl = re.findall(reTextControl, str(form))
+			txtSubmitControl = re.findall(reSubmitControl, str(form))
+			txtSubmitControl = ["None"] if not txtSubmitControl else txtSubmitControl
+			if len(txtTextControl) == 1:
+				# Regular login field. > 1 can be register specific field (maybe captcha)
+				return ([uint_formID, txtSubmitControl[0]], [txtPasswdControl[0], txtTextControl[0]])
+			elif len(txtTextControl) == 0:
+				# Possibly password field login only
+				return ([uint_formID, txtSubmitControl[0]], [txtPasswdControl[0]])
+	return None
+
+def check_sqlerror(response):
+	# Parse html response to define SQL error
+	# Copyright: SQLmap
+	if re.search(r"SQL (warning|error|syntax)", response):
+		return True
+	return False
+	# TODO improve condition
+
+def check_login(options):
+	try:
+		from libs.mbrowser import mBrowser
+		from libs.sbrowser import sBrowser
+		
+		proc = mBrowser(options.timeout)
+		
+		resp = proc.open_url(options.url)
 		"""
 			Check URL type. If Website directs to other URL,
 			options.url is website's panel
@@ -45,9 +90,25 @@ def check_login(options):
 		# printf("[*] Connect success!", "good")
 		options.attack_mode = "--loginbrute"
 		if options.run_options["--verbose"]:
-			printf("[*] %s" %(proc.title()), "norm")
+			printf("[*] %s" %(proc.get_title()), "norm")
 		# printf("[+] Analyzing login form....")
 		loginInfo = parseLoginForm(proc.forms())
+		
+		# Check target login page with selenium
+		jscheck = sBrowser()
+		jscheck.open_url(options.url)
+		
+		# Convert data to mechanize to analysis form (easier)
+		r_jscheck = str(jscheck.get_resp())
+		resp.set_data(r_jscheck)
+		proc.set_response(resp)
+
+		# Get new info
+		js_loginInfo = parseLoginForm(proc.forms())
+		if not loginInfo and js_loginInfo:
+			options.engine = "selenium"
+			loginInfo = js_loginInfo
+
 		return loginInfo
 		
 	except Exception as error:
@@ -77,6 +138,7 @@ def check_login(options):
 	
 	finally:
 		proc.close()
+		jscheck.close()
 		return loginInfo
 
 def check_url(url):
