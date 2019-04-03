@@ -1,4 +1,4 @@
-from cores.mbrowser import startBrowser
+from libs.mbrowser import startBrowser
 from utils.utils import printf, die
 
 # https://stackoverflow.com/a/4089075

@@ -1,4 +1,4 @@
-from cores.mbrowser import parseLoginForm, startBrowser, sqlerror
+from libs.mbrowser import parseLoginForm, startBrowser, sqlerror
 from utils.utils import printf, die
 from cores.actions import randomFromList
 
