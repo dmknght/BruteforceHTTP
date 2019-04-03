@@ -1,4 +1,4 @@
-from libs.mbrowser import startBrowser
+from libs.mbrowser import mBrowser
 from utils.utils import printf, die
 
 # https://stackoverflow.com/a/4089075
@@ -14,11 +14,11 @@ def submit(options, loginInfo, creds, result):
 		printf("[+] {%s: %s; %s: %s}" %(tryUsername, tryUsername, tryPassword, tryPassword), 'norm')
 	
 	try:
-		proc = startBrowser(options.timeout)
-		proc.add_password(options.url, tryUsername, tryPassword, realm)
-		proc.open(options.url)
+		proc = mBrowser(options.timeout)
+		proc.httpget_passwd(options.url, tryUsername, tryPassword, realm)
+		proc.open_url(options.url)
 		try:
-			proc.open(options.url)
+			proc.open_url(options.url)
 			# printf("[*] Page title: ['%s']" %(proc.title()), "good")
 			printf("[*] %s [%s]" %([tryUsername, tryPassword], proc.title()), "good")
 			result.put([options.url, tryUsername, tryPassword])

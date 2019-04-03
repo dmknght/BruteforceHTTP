@@ -1,5 +1,5 @@
 import mechanize, re, threading
-from libs.mbrowser import startBrowser
+from libs.mbrowser import mBrowser
 from utils.utils import printf, die
 from cores.actions import fread, fwrite
 import data
@@ -37,7 +37,7 @@ def getnew(options):
 		try:
 			printf("[+] Getting proxy list from %s" %(url))
 
-			getproxy = startBrowser(options.timeout)
+			getproxy = mBrowser(options.timeout)
 
 			getproxy.open(url)
 			printf("[*] Gathering proxies completed.", "good")
@@ -75,7 +75,7 @@ def check(options):
 
 	def checProxyConn(proxyAddr, target, result, verbose):
 		try:
-			proxyTest = startBrowser(options.timeout)
+			proxyTest = mBrowser(options.timeout)
 			proxyTest.set_proxies({"http": proxyAddr})
 
 			if verbose:
