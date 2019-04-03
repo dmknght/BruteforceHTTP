@@ -1,6 +1,7 @@
-from libs.mbrowser import parseLoginForm, startBrowser, sqlerror
 from utils.utils import printf, die
 from cores.actions import randomFromList
+from cores.check import parseLoginForm, check_sqlerror
+from libs.mbrowser import mBrowser as Browser
 
 def check_condition(options, proc, loginInfo):
 
@@ -13,9 +14,9 @@ def check_condition(options, proc, loginInfo):
 	"""
 	if options.panel_url:
 		# User provided panel url (/wp-admin/ for example, repopen this url to check sess)
-		proc.open(options.panel_url)
+		proc.open_url(options.panel_url)
 		if not parseLoginForm(proc.forms()):# != loginInfo:
-			if sqlerror(proc.response().read()):
+			if check_sqlerror(proc.get_resp()):
 				return 2
 			else:
 				return 1
@@ -29,20 +30,27 @@ def check_condition(options, proc, loginInfo):
 		# 	return 1
 		# else:
 		# 	return 0
-		if sqlerror(proc.response().read()):
+		if check_sqlerror(proc.get_resp()):
 			return 2
 		else:
 			return 1
 
 
 def submit(options, loginInfo, tryCred, result):
-
-	#	Get login form field informations
+	# if options.engine == "mechanize":
+	# 	from libs.mbrowser import mBrowser as Browser
+	# 	proc = Browser(options.timeout) # TODO remove here
+	# elif options.engine == "selenium":
+	# 	from libs.sbrowser import sBrowser as Browser
+	# 	proc = Browser() # TODO remove here
+	# else:
+	# 	pass # ERROR
+	# #	Get login form field informations
 	
 	# frmLoginID, frmFields = loginInfo
 	tryPassword, tryUsername = tryCred
 
-	proc = startBrowser(options.timeout)
+	# proc = Browser(options.timeout) # TODO recovery here
 
 	# BREAK if we had valid payload?
 	# if options.options["-p"] == "sqli" and len(list(result.queue)) > 1:
@@ -55,29 +63,22 @@ def submit(options, loginInfo, tryCred, result):
 	if options.proxy:
 		# Set proxy connect
 		proxyAddr = randomFromList(options.proxy)
-		proc.set_proxies({"http": proxyAddr})
+		proc.setproxy({"http": proxyAddr})
 	
 	try:
-		proc.open(options.login_url)
+		proc.open_url(options.login_url)
+		proc.get_opts(options) # TODO remove this fucntion in sbrowser and mbrowser
 		_form = parseLoginForm(proc.forms())
 		if not _form:
 			if options.verbose:
 				printf("[x] LoginBrute: No login form found. Possibly get blocked!")
 			return False
 		else:
-			frmLoginID, frmFields = _form
-			frmLoginID, btnSubmit = frmLoginID
+			frmCtrl, frmFields = _form
+			frmLoginID, btnSubmit = frmCtrl
 		if options.verbose and loginInfo != _form:
-			printf("[+] Warning: Form field has been changed!")
-
+			printf("[+] Warning: Form field has been changed!")	
 		#	Select login form
-		proc.select_form(nr = frmLoginID)
-		
-		# FILLS ALL FIELDS https://stackoverflow.com/a/5389578
-		
-		for field, cred in zip(frmFields, tryCred):
-			proc.form[field] = cred
-
 		# page_title = proc.title()
 		#	Send request
 
@@ -93,19 +94,18 @@ def submit(options, loginInfo, tryCred, result):
 		#	Reload the browser. For javascript redirection and others...
 		# proc.reload()
 		#	If no login form -> maybe success. Check conditions
+		proc.xsubmit(frmCtrl, frmFields, tryCred)
 		
-		proc.submit()
 		if not parseLoginForm(proc.forms()):# != loginInfo:
 			test_result = check_condition(options, proc, loginInfo)
-			
 			if test_result == 1:
 				#printf("[*] Page title: ['%s']" %(proc.title()), "good")
 				# "If we tried login form with username+password field"
 				if tryUsername:
-					printf("[*] %s [%s]" %([tryUsername, tryPassword], proc.title()), "good")
+					printf("[*] %s [%s]" %([tryUsername, tryPassword], proc.get_title()), "good")
 				# "Else If we tried login form with password field only"
 				else:
-					printf("[*] %s []" %([tryPassword], proc.title()), "good")
+					printf("[*] %s []" %([tryPassword], proc.get_title()), "good")
 				result.put([options.url, tryUsername, tryPassword])
 			elif test_result == 2 and options.verbose:
 				printf("[+] SQL Injection vulnerable found")
@@ -114,12 +114,12 @@ def submit(options, loginInfo, tryCred, result):
 				# Possibly Error. But sometime it is true
 				if options.verbose:
 					printf("[x] Get error page: %s" %([tryUsername, tryPassword]), "bad")
-					printf("   [x] Page title: ['%s']" %(proc.title()), "bad")
+					printf("   [x] Page title: ['%s']" %(proc.get_title()), "bad")
 		
 		# "Login form is still there. Oops"
 		else:
 			# TODO test if web has similar text (static)
-			if sqlerror(proc.response().read()) and options.verbose:
+			if check_sqlerror(proc.get_resp()) and options.verbose:
 				printf("[+] SQL Injection vulnerable found")
 				printf("   %s" %([tryUsername, tryPassword]), "norm")
 			if options.verbose:
@@ -158,7 +158,7 @@ def submit(options, loginInfo, tryCred, result):
 					printf("[x] (%s): %s" %(proc.geturl(), tryCred[::-1]), "bad")
 		except:
 			# THIS BLOCKED BY WAF
-			printf("[x] Loginbrute: %s" %(error), "bad")
+		printf("[x] Loginbrute: %s" %(error), "bad")
 		return False
 
 	finally:
