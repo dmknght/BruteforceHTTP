@@ -66,6 +66,7 @@ def submit(options, loginInfo, tryCred, result):
 		proc.setproxy({"http": proxyAddr})
 	
 	try:
+		proc = Browser(options.timeout)
 		proc.open_url(options.login_url)
 		proc.get_opts(options) # TODO remove this fucntion in sbrowser and mbrowser
 		_form = parseLoginForm(proc.forms())
@@ -158,8 +159,8 @@ def submit(options, loginInfo, tryCred, result):
 					printf("[x] (%s): %s" %(proc.geturl(), tryCred[::-1]), "bad")
 		except:
 			# THIS BLOCKED BY WAF
-		printf("[x] Loginbrute: %s" %(error), "bad")
-		return False
+			printf("[x] Loginbrute: %s" %(error), "bad")
+			return False
 
 	finally:
 		proc.close()
