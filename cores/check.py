@@ -68,7 +68,7 @@ def check_sqlerror(response):
 def check_login(options):
 	try:
 		from libs.mbrowser import mBrowser
-		from libs.sbrowser import sBrowser
+		# from libs.sbrowser import sBrowser
 		
 		proc = mBrowser(options.timeout)
 		
