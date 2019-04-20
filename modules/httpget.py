@@ -9,15 +9,21 @@ def submit(options, loginInfo, creds, result):
 	for cred in list(result.queue):
 		if tryUsername == cred[0]:
 			return True # don't run if find password of username
-			
-	if options.verbose:
-		printf("[+] {%s: %s; %s: %s}" %(tryUsername, tryUsername, tryPassword, tryPassword), 'norm')
 	
 	try:
 		proc = mBrowser(options.timeout)
+		if options.proxy:
+			proxyAddr = randomFromList(options.proxy)
+			proc.setproxy({"http": proxyAddr})
 		proc.httpget_passwd(options.url, tryUsername, tryPassword, realm)
+		if options.verbose:
+			if options.proxy:
+				printf("[+] {%s: %s; %s: %s through %s}" %(loginInfo[1][1], tryUsername, loginInfo[1][0], tryPassword, proxyAddr), 'norm')
+			else:
+				printf("[+] {%s: %s; %s: %s}" %(loginInfo[1][1], tryUsername, loginInfo[1][0], tryPassword), 'norm')
 		proc.open_url(options.url)
 		try:
+			# Re open URL. If HTTP.code = 200 == success
 			proc.open_url(options.url)
 			# printf("[*] Page title: ['%s']" %(proc.title()), "good")
 			printf("[*] %s [%s]" %([tryUsername, tryPassword], proc.title()), "good")
