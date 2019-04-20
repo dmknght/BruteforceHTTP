@@ -62,7 +62,7 @@ def submit(options, loginInfo, tryCred, result):
 	
 	try:
 		proc = Browser(options.timeout)
-			if options.proxy:
+		if options.proxy:
 		# Set proxy connect
 			proxyAddr = randomFromList(options.proxy)
 			proc.setproxy({"http": proxyAddr})
@@ -81,7 +81,11 @@ def submit(options, loginInfo, tryCred, result):
 		#	Select login form
 		# page_title = proc.title()
 		#	Send request
-
+		
+		#	Reload the browser. For javascript redirection and others...
+		# proc.reload()
+		#	If no login form -> maybe success. Check conditions
+		proc.xsubmit(frmCtrl, frmFields, tryCred)
 		if options.verbose:
 			if options.proxy:
 				printf("[+] {%s: %s; %s: %s} through %s" %(frmFields[1], tryUsername, frmFields[0], tryPassword, proxyAddr), 'norm')
@@ -90,11 +94,6 @@ def submit(options, loginInfo, tryCred, result):
 					printf("[+] {%s: %s; %s: %s}" %(frmFields[1], tryUsername, frmFields[0], tryPassword), 'norm')
 				else:
 					printf("[+] {%s: %s}" %(frmFields[0], tryPassword), 'norm')
-		
-		#	Reload the browser. For javascript redirection and others...
-		# proc.reload()
-		#	If no login form -> maybe success. Check conditions
-		proc.xsubmit(frmCtrl, frmFields, tryCred)
 		
 		if not parseLoginForm(proc.forms()):# != loginInfo:
 			test_result = check_condition(options, proc, loginInfo)
@@ -124,15 +123,9 @@ def submit(options, loginInfo, tryCred, result):
 				printf("   %s" %([tryUsername, tryPassword]), "norm")
 			if options.verbose:
 				if options.proxy:
-					printf(
-						"[-] Failed: %s through %s" %([tryUsername, tryPassword], proxyAddr),
-						"bad"
-					)
+					printf("[-] Failed: %s through %s" %([tryUsername, tryPassword], proxyAddr), "bad")
 				else:
-					printf(
-						"[-] Failed: %s" %([tryUsername, tryPassword]),
-						"bad"
-					)
+					printf("[-] Failed: %s" %([tryUsername, tryPassword]), "bad")
 		return True
 
 	except Exception as error:
