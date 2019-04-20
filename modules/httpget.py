@@ -7,6 +7,7 @@ from cores.actions import randomFromList
 def submit(options, loginInfo, creds, result):
 	tryPassword, tryUsername = creds
 	realm = loginInfo[0]
+	fPassword, fUsername = loginInfo[1]
 	for cred in list(result.queue):
 		if tryUsername == cred[0]:
 			return True # don't run if find password of username
@@ -17,14 +18,13 @@ def submit(options, loginInfo, creds, result):
 			proxyAddr = randomFromList(options.proxy)
 			proc.setproxy(proxyAddr)
 		proc.httpget_passwd(options.url, tryUsername, tryPassword, realm)
-		
-		if options.verbose:
-			if options.proxy:
-				printf("[+] {%s: %s; %s: %s through %s}" %(loginInfo[1][1], tryUsername, loginInfo[1][0], tryPassword, proxyAddr), 'norm')
-			else:
-				printf("[+] {%s: %s; %s: %s}" %(loginInfo[1][1], tryUsername, loginInfo[1][0], tryPassword), 'norm')
 
 		proc.open_url(options.url)
+		if options.verbose:
+			if options.proxy:
+				printf("[+] {%s: %s; %s: %s through %s}" %(fUsername, tryUsername, fPassword, tryPassword, proxyAddr), 'norm')
+			else:
+				printf("[+] {%s: %s; %s: %s}" %(fUsername, tryUsername, fPassword, tryPassword), 'norm')
 		printf("[*] %s [%s]" %([tryUsername, tryPassword], proc.title()), "good")
 		result.put([options.url, tryUsername, tryPassword])
 
@@ -33,8 +33,10 @@ def submit(options, loginInfo, creds, result):
 			if type(err.code) == int and err.code == 401:
 				if options.verbose:
 					if options.proxy:
+						printf("[+] {%s: %s; %s: %s through %s}" %(fUsername, tryUsername, fPassword, tryPassword, proxyAddr), 'norm')
 						printf("[-] Failed: %s through %s" %([tryUsername, tryPassword], proxyAddr), "bad")
 					else:
+						printf("[+] {%s: %s; %s: %s}" %(fUsername, tryUsername, fPassword, tryPassword), 'norm')
 						printf("[-] Failed: %s" %([tryUsername, tryPassword]), "bad")
 			else:
 				printf("[x] %s: %s" %(err, creds[::-1]), "bad")
