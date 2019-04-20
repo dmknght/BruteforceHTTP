@@ -60,13 +60,12 @@ def submit(options, loginInfo, tryCred, result):
 		if tryUsername == cred[1]:
 			return True
 	
-	if options.proxy:
-		# Set proxy connect
-		proxyAddr = randomFromList(options.proxy)
-		proc.setproxy({"http": proxyAddr})
-	
 	try:
 		proc = Browser(options.timeout)
+			if options.proxy:
+		# Set proxy connect
+			proxyAddr = randomFromList(options.proxy)
+			proc.setproxy({"http": proxyAddr})
 		proc.open_url(options.login_url)
 		proc.get_opts(options) # TODO remove this fucntion in sbrowser and mbrowser
 		_form = parseLoginForm(proc.forms())
