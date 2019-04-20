@@ -119,7 +119,7 @@ if __name__ == "__main__":
 
 			if "--getproxy" in options.extras:
 				getproxy.getnew(options)
-				if not options.url:
+				if not options.target:
 					printf("[*] No URL provided! Get proxy only.", "good")
 					sys.exit(0)
 				else:
