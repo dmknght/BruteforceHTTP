@@ -25,19 +25,20 @@ def submit(options, loginInfo, creds, result):
 		try:
 			# Re open URL. If HTTP.code = 200 == success
 			proc.open_url(options.url)
-			# printf("[*] Page title: ['%s']" %(proc.title()), "good")
 			printf("[*] %s [%s]" %([tryUsername, tryPassword], proc.title()), "good")
 			result.put([options.url, tryUsername, tryPassword])
-			# printf("[*] Match found: %s" %([tryUsername, tryPassword]), "good") 
 		except Exception as err:
 			try:
-				if err.code == 401:
+				if type(err.code) == int and err.code == 401:
 					if options.verbose:
-						printf("[-] Failed %s" %(creds[::-1]), "bad")
+						if options.proxy:
+							printf("[-] Failed: %s through %s" %([tryUsername, tryPassword], proxyAddr), "bad")
+						else:
+							printf("[-] Failed: %s" %([tryUsername, tryPassword]), "bad")
 				else:
 					printf("[x] %s: %s" %(err, creds[::-1]), "bad")
 			except:
 				die("[x] HTTP GET:", err)
-	except:
+	except Exception as error:
 		if options.verbose:
 			printf("[x] Failed!", "bad")
