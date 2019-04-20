@@ -15,7 +15,7 @@ def submit(options, loginInfo, creds, result):
 		proc = mBrowser(options.timeout)
 		if options.proxy:
 			proxyAddr = randomFromList(options.proxy)
-			proc.setproxy({"http": proxyAddr})
+			proc.setproxy(proxyAddr)
 		proc.httpget_passwd(options.url, tryUsername, tryPassword, realm)
 		
 		if options.verbose:

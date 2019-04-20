@@ -65,7 +65,7 @@ def submit(options, loginInfo, tryCred, result):
 		if options.proxy:
 		# Set proxy connect
 			proxyAddr = randomFromList(options.proxy)
-			proc.setproxy({"http": proxyAddr})
+			proc.setproxy(proxyAddr)
 		proc.open_url(options.login_url)
 		proc.get_opts(options) # TODO remove this fucntion in sbrowser and mbrowser
 		_form = parseLoginForm(proc.forms())
@@ -137,7 +137,7 @@ def submit(options, loginInfo, tryCred, result):
 
 		try:
 			# Unauthenticated
-			if error.code == 401:
+			if type(err.code) == int and err.code == 401:
 				if options.verbose:
 					printf("[-] Failed: %s" %([tryUsername, tryPassword]), "bad")
 			# Server misconfiguration? Panel URL is deleted or wrong
