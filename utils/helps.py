@@ -117,3 +117,17 @@ def print_help():
 	]
 	print_table(title, *menu)
 	print("")
+	print("\nPassword generators: Generate password from text or keywords")
+	title = ("Values", "Descriptions")
+	menu = [
+		[
+			"--toggle_case",
+			"Replace letter by its uppercase and lowercase"
+		],
+		[
+			"--replacement",
+			"Replace letter by special characters"
+		],
+	]
+	print_table(title, *menu)
+	print("")
