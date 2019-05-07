@@ -2,6 +2,7 @@ import mechanize, re, threading
 from libs.mbrowser import mBrowser
 from utils.utils import printf, die
 from cores.actions import fread, fwrite
+from utils.progressbar import progress_bar
 import data
 
 try:
@@ -67,11 +68,20 @@ def getnew(options):
 
 def check(options):
 	
-	def do_job(jobs):
-		for job in jobs:
-			job.start()
-		for job in jobs:
-			job.join()
+	def run_threads(threads, sending, completed, total):
+		# Run threads
+		for thread in threads:
+			sending += 1 # Sending
+			progress_bar(sending, completed, total)
+			thread.start()
+
+		# Wait for threads completed
+		for thread in threads:
+			completed += 1
+			progress_bar(sending, completed, total)
+			thread.join()
+		
+		return sending, completed
 
 	def checProxyConn(proxyAddr, target, result, verbose):
 		try:
@@ -98,11 +108,12 @@ def check(options):
 	try:
 		proxylist = fread(PROXY_PATH).split("\n")
 				
-		workers = []
-		result = Queue()
+		workers, result = [], Queue()
+		trying, completed, total = 0, 0, len(proxylist)
+
 		for tryProxy in proxylist:
 			if len(workers) == options.threads:
-				do_job(workers)
+				trying, completed = run_threads(workers, trying, completed, total)
 				del workers[:]
 			
 			worker = threading.Thread(
@@ -113,7 +124,7 @@ def check(options):
 			worker.daemon = True
 			workers.append(worker)
 			
-		do_job(workers)
+		trying, completed = run_threads(workers, trying, completed, total)
 		del workers[:]
 
 	except KeyboardInterrupt as error:
