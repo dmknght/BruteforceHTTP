@@ -23,7 +23,8 @@ def toggle_case(text):
 	for subbed in product(*possibilities):
 		yield "".join(subbed)
 
-def test_toggle_case(text):
+def replacement(text):
+	# TODO call this heavy replacement, light replacement will replace text with number and spec chars only
 	# https://stackoverflow.com/a/29184387
 	# TODO create replacement table
 	text = text.lower()
@@ -53,7 +54,8 @@ def test_toggle_case(text):
 		"w": "W",
 		"x": "X",
 		"y": "Y",
-		"z": "Z"
+		"z": "Z",
+		" ": "_+-",
 	}
 
 	from itertools import product

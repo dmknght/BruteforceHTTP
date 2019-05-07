@@ -229,6 +229,20 @@ def check_tasks(options, loginInfo):
 		options.passwd = tuple(fread(options.options["-p"]).split("\n"))
 		options.passwd = filter(None, options.passwd)
 
+	
+	if "--replacement" in options.extras:
+		from data.passgen import replacement
+		final_passwd = ""
+		for line in options.passwd:
+			final_passwd += "\n".join(list(replacement(line)))
+		options.passwd = final_passwd.split("\n")
+	
+	elif "--toggle_case" in options.extras:
+		from data.passgen import toggle_case
+		final_passwd = ""
+		for line in options.passwd:
+			final_passwd += "\n".join(list(toggle_case(line)))
+		options.passwd = final_passwd.split("\n")
 
 	options.report = options.run_options["--report"]
 	options.verbose = options.run_options["--verbose"]

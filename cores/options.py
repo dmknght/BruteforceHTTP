@@ -39,6 +39,10 @@ class ParseOptions(object):
 		"webshell",
 		"sqli",
 	)
+	PASSWD_GEN = (
+		"--toggle_case", # TODO add mask* attack type, handle arguments
+		"--replacement"
+	)
 
 	options = {
 		"-u": "default",
@@ -92,6 +96,8 @@ class ParseOptions(object):
 					self.extras.append(sys.argv[i])
 				elif sys.argv[i] in self.ATTACK_MODES:
 					self.attack_mode = sys.argv[i]
+				elif sys.argv[i] in self.PASSWD_GEN:
+					self.extras.append(sys.argv[i])
 			
 				elif sys.argv[i] == "--list":
 
