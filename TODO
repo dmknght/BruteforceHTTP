@@ -106,8 +106,8 @@ Extras:
     ☐ Add replacing "Space" by other method
   Get proxy:
     ☐ Add --no-check option to skip check proxy task
-    ☐ Move to mbrowser (custom mechanize)
-    ☐ Add taskbar for get_proxy
+    ✔ Move to mbrowser (custom mechanize) @done(19-05-07 22:04)
+    ✔ Add taskbar for get_proxy @done(19-05-07 22:04)
 
   Shodan:
     ☐ Parse ip list from shodan, replace URL options
