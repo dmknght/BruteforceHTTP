@@ -12,58 +12,58 @@ def fixLen(inpText, lim):
 
 	return finalText
 
-def report_banner(url, mode, proxy, thread, creds, daytime, runtime, regular):
-	# if option != "--sqli" and "--single":
-	def n_body(creds):
-		ret = ""
-		for match in creds:
-			ret += "|  Username: %-58s |\n  |  Password: %-58s |" %(
-				fixLen(match[0], 57), fixLen(match[1], 57)
-			)
-			ret += "\n  |%s|\n  " %("+" * 71)
-		return ret
+# def report_banner(url, mode, proxy, thread, creds, daytime, runtime, regular):
+# 	# if option != "--sqli" and "--single":
+# 	def n_body(creds):
+# 		ret = ""
+# 		for match in creds:
+# 			ret += "|  Username: %-58s |\n  |  Password: %-58s |" %(
+# 				fixLen(match[0], 57), fixLen(match[1], 57)
+# 			)
+# 			ret += "\n  |%s|\n  " %("+" * 71)
+# 		return ret
 	
-	def s_body(creds, mode):
-		ret = ""
-		name = "Payload" if mode == "--sqli" else "Password"
-		for match in creds:
-			payload = match[0] if match[0] else match[1]
-			ret += "|  %-10s: %-56s |" %(
-				name, 
-				fixLen(payload, 48)
-			)
-			ret += "\n  |%s|\n  " %("+" * 71)
-		return ret
+# 	def s_body(creds, mode):
+# 		ret = ""
+# 		name = "Payload" if mode == "--sqli" else "Password"
+# 		for match in creds:
+# 			payload = match[0] if match[0] else match[1]
+# 			ret += "|  %-10s: %-56s |" %(
+# 				name, 
+# 				fixLen(payload, 48)
+# 			)
+# 			ret += "\n  |%s|\n  " %("+" * 71)
+# 		return ret
 	
-	header = """
-	  =====================================================================
-	/       Finish: %-56s\\
-	|       Name: %-57s |
-	|-----------------------------------------------------------------------|
-	|      Attack mode: %-6s |   Using Proxy: %-6s |   Threads: %-4s    |
-	|-----------------------------------------------------------------------|
-	|  Target: %-60s |
-	|  URL: %-63s |
-	|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	""" %(
-		"%s      %s" %(
-			daytime.split("_")[1].replace(".", ":"),
-			daytime.split("_")[0].replace(".", "/")
-		),
-		fixLen(daytime + ".txt", 55),
-		mode.replace("--", ""),
-		proxy,
-		thread,
-		fixLen(url.split("/")[2], 59),
-		fixLen(url, 62),
-	)
+# 	header = """
+# 	  =====================================================================
+# 	/       Finish: %-56s\\
+# 	|       Name: %-57s |
+# 	|-----------------------------------------------------------------------|
+# 	|      Attack mode: %-6s |   Using Proxy: %-6s |   Threads: %-4s    |
+# 	|-----------------------------------------------------------------------|
+# 	|  Target: %-60s |
+# 	|  URL: %-63s |
+# 	|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
+# 	""" %(
+# 		"%s      %s" %(
+# 			daytime.split("_")[1].replace(".", ":"),
+# 			daytime.split("_")[0].replace(".", "/")
+# 		),
+# 		fixLen(daytime + ".txt", 55),
+# 		mode.replace("--", ""),
+# 		proxy,
+# 		thread,
+# 		fixLen(url.split("/")[2], 59),
+# 		fixLen(url, 62),
+# 	)
 	
-	footer = """\\  Runtime: %-60s/
-	  =====================================================================\n""" %(runtime)
+# 	footer = """\\  Runtime: %-60s/
+# 	  =====================================================================\n""" %(runtime)
 	
-	body = n_body(creds) if regular else s_body(creds, mode)
+# 	body = n_body(creds) if regular else s_body(creds, mode)
 
-	return header.replace("\t", "  ") + body + footer.replace("\t", "  ")
+# 	return header.replace("\t", "  ") + body + footer.replace("\t", "  ")
 
 def start_banner(options):
 	usr = options.options["-U"] if options.options["-U"] else options.options["-u"]
