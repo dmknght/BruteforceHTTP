@@ -34,7 +34,7 @@ def getnew(options):
 		except Exception as error:
 			die("[x] GetProxy: Error while parsing proxies.", error)
 			
-	def checProxyConnProvider(url = "https://free-proxy-list.net/"):
+	def checkProxyConnProvider(url = "https://free-proxy-list.net/"):
 		try:
 			printf("[+] Getting proxy list from %s" %(url))
 
@@ -42,7 +42,7 @@ def getnew(options):
 
 			getproxy.open(url)
 			printf("[*] Gathering proxies completed.", "good")
-			return getproxy.response().read()
+			return getproxy.get_resp()
 
 		except Exception as error:
 			die("[x] GetProxy: Error while connecting to proxy server!", error)
@@ -51,8 +51,9 @@ def getnew(options):
 			
 
 	try:
-		listproxy = parse_proxy(checProxyConnProvider())
-	except:
+		listproxy = parse_proxy(checkProxyConnProvider())
+	except Exception as error:
+		printf("[x] Getproxy.getnew: %s" %(error))
 		listproxy = ""
 	finally:
 		try:
