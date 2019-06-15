@@ -87,7 +87,7 @@ def check(options):
 	def checProxyConn(proxyAddr, target, result, verbose):
 		try:
 			proxyTest = mBrowser()
-			proxyTest.set_proxies({"http": proxyAddr})
+			proxyTest.setproxy(proxyAddr)
 
 			if verbose:
 				printf("[+] Trying: %s" %(proxyAddr))
@@ -139,7 +139,7 @@ def check(options):
 	finally:
 		try:
 			_data = "\n".join(list(result.queue))
-			printf("[*] Get %s proxies." %(len(_data)), "good")
+			printf("[*] %s proxies worked." %(len(_data)), "good")
 			printf("[+] Write working proxies")
 			fwrite(LIVE_PATH, _data)
 			printf("[*] Write working proxies completed", "good")
