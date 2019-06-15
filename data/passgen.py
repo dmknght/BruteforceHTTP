@@ -26,7 +26,6 @@ def toggle_case(text):
 def replacement(text):
 	# TODO call this heavy replacement, light replacement will replace text with number and spec chars only
 	# https://stackoverflow.com/a/29184387
-	# TODO create replacement table
 	text = text.lower()
 	SUBSTITUTIONS = {
 		"a": "A4@",

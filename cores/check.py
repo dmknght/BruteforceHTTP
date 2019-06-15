@@ -36,9 +36,9 @@ def checkHTTPGetLogin(strHeader):
 
 def parseLoginForm(allFormControl):
 	# Try detect login form from all forms in response. Return form information
-	reTextControl = r"TextControl\W(.*)="
-	rePasswdControl = r"PasswordControl\W(.*)="
-	reSubmitControl = r"SubmitControl\W(.*)="
+	reTextControl = r"text\((.*)\)"
+	rePasswdControl = r"password\((.*)\)"
+	reSubmitControl = r"submit\((.*)\)"
 
 	for uint_formID, form in enumerate(allFormControl):
 		txtPasswdControl = re.findall(rePasswdControl, str(form))
@@ -70,7 +70,7 @@ def check_login(options):
 		from libs.mbrowser import mBrowser
 		# from libs.sbrowser import sBrowser
 		
-		proc = mBrowser(options.timeout)
+		proc = mBrowser()
 		
 		resp = proc.open_url(options.url)
 		"""

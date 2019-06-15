@@ -38,7 +38,7 @@ def getnew(options):
 		try:
 			printf("[+] Getting proxy list from %s" %(url))
 
-			getproxy = mBrowser(options.timeout)
+			getproxy = mBrowser()
 
 			getproxy.open(url)
 			printf("[*] Gathering proxies completed.", "good")
@@ -85,7 +85,7 @@ def check(options):
 
 	def checProxyConn(proxyAddr, target, result, verbose):
 		try:
-			proxyTest = mBrowser(options.timeout)
+			proxyTest = mBrowser()
 			proxyTest.set_proxies({"http": proxyAddr})
 
 			if verbose:

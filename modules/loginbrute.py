@@ -61,7 +61,7 @@ def submit(options, loginInfo, tryCred, result):
 			return True
 	
 	try:
-		proc = Browser(options.timeout)
+		proc = Browser()
 		if options.proxy:
 		# Set proxy connect
 			proxyAddr = randomFromList(options.proxy)
@@ -94,7 +94,7 @@ def submit(options, loginInfo, tryCred, result):
 					printf("[+] {%s: %s; %s: %s}" %(frmFields[1], tryUsername, frmFields[0], tryPassword), 'norm')
 				else:
 					printf("[+] {%s: %s}" %(frmFields[0], tryPassword), 'norm')
-		
+
 		if not parseLoginForm(proc.forms()):# != loginInfo:
 			test_result = check_condition(options, proc, loginInfo)
 			if test_result == 1:
@@ -114,7 +114,6 @@ def submit(options, loginInfo, tryCred, result):
 				if options.verbose:
 					printf("[x] Get error page: %s" %([tryUsername, tryPassword]), "bad")
 					printf("   [x] Page title: ['%s']" %(proc.get_title()), "bad")
-		
 		# "Login form is still there. Oops"
 		else:
 			# TODO test if web has similar text (static)
