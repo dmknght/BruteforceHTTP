@@ -61,7 +61,7 @@ def submit(options, loginInfo, tryCred, result):
 			return True
 	
 	try:
-		proc = Browser()
+		proc = Browser(options.timeout)
 		if options.proxy:
 		# Set proxy connect
 			proxyAddr = randomFromList(options.proxy)
