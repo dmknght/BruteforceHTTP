@@ -27,7 +27,7 @@ class mBrowser(StatefulBrowser):
 		return randomFromList(data.getAgent().split("\n"))
 	
 	def setproxy(self, proxyaddr):
-		self.set_proxies({"http": proxyaddr})
+		self.session.proxies = ({"http": proxyaddr})
 
 	def open_url(self, url):
 		return self.open(url)
