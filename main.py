@@ -59,8 +59,8 @@ def attack(options, loginInfo):
 					target = attack_module,
 					args = (options, loginInfo, [password, username], result)
 				)
-				workers.append(worker)
 				worker.daemon = True
+				workers.append(worker)
 
 		sending, completed = run_threads(workers, sending, completed, tasks)
 		del workers[:]
