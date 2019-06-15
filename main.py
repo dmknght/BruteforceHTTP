@@ -151,7 +151,7 @@ if __name__ == "__main__":
 						options.login_url = None
 						options.panel_url = None
 						options.url = check_url(url)
-						if "--getproxy" in options.extras and len(options.target) == 1:
+						if "--getproxy" in options.extras and len(options.target) == 1 and options.run_options["--proxy"]:
 							printf("[+] Check connection via proxy to %s! Be patient!" %(options.url))
 							getproxy.check(options)
 						if options.run_options["--proxy"]:
