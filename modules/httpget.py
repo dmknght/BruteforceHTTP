@@ -13,32 +13,31 @@ def submit(options, loginInfo, creds, result):
 			return True # don't run if find password of username
 	
 	try:
-		proc = mBrowser(options.timeout)
+		proc = mBrowser()
 		if options.proxy:
 			proxyAddr = randomFromList(options.proxy)
 			proc.setproxy(proxyAddr)
-		proc.httpget_passwd(options.url, tryUsername, tryPassword, realm)
-
-		proc.open_url(options.url)
+		else:
+			proxyAddr = ""
+		# proc.httpget_passwd(options.url, tryUsername, tryPassword, realm) # BUG
+		resp = proc.get(options.url, auth=(tryUsername, tryPassword))
 		if options.verbose:
 			if options.proxy:
-				printf("[+] {%s: %s; %s: %s through %s}" %(fUsername, tryUsername, fPassword, tryPassword, proxyAddr), 'norm')
-			else:
-				printf("[+] {%s: %s; %s: %s}" %(fUsername, tryUsername, fPassword, tryPassword), 'norm')
-		printf("[*] %s [%s]" %([tryUsername, tryPassword], proc.title()), "good")
-		result.put([options.url, tryUsername, tryPassword])
+				printf("[+] {%s: %s; %s: %s} %s" %(fUsername, tryUsername, fPassword, tryPassword, proxyAddr), 'norm')
+
+		if resp.status_code == 401:
+			if options.verbose:
+				if options.proxy:
+					printf("[-] Failed {%s: %s; %s: %s} %s" %(fUsername, tryUsername, fPassword, tryPassword, proxyAddr), 'bad')
+		elif resp.status_code == 403:
+			printf("[x] Access Denied [%s:%s] %s" %(tryUsername, tryPassword, proxyAddr), "bad")
+		elif resp.status_code == 404:
+			printf("[x] Link not found [%s:%s] %s" %(tryUsername, tryPassword, proxyAddr), "bad")
+		elif resp.status_code >= 500:
+			printf("[x] %s Server error [%s:%s] %s" %(resp.status_code, tryUsername, tryPassowrd, proxyAddr) )
+		else:
+			printf("[*] {%s:%s} [%s] %s" %(tryUsername, tryPassword, proc.get_title(), proxyAddr), "good")
+			result.put([options.url, tryUsername, tryPassword])
 
 	except Exception as err:
-		try:
-			if type(err.code) == int and err.code == 401:
-				if options.verbose:
-					if options.proxy:
-						printf("[+] {%s: %s; %s: %s through %s}" %(fUsername, tryUsername, fPassword, tryPassword, proxyAddr), 'norm')
-						printf("[-] Failed: %s through %s" %([tryUsername, tryPassword], proxyAddr), "bad")
-					else:
-						printf("[+] {%s: %s; %s: %s}" %(fUsername, tryUsername, fPassword, tryPassword), 'norm')
-						printf("[-] Failed: %s" %([tryUsername, tryPassword]), "bad")
-			else:
-				printf("[x] %s: %s" %(err, creds[::-1]), "bad")
-		except:
-			die("[x] HTTP GET:", err)
+		die("[x] HTTP GET:", err)
