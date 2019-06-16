@@ -174,6 +174,8 @@ if __name__ == "__main__":
 								for _result in result:
 									results.append(_result)
 							#results.append(result)
+						else:
+							printf("[x] Error no login request found", "bad")
 
 				if "--reauth" in options.extras:
 					from extras import reauth
