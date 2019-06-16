@@ -28,6 +28,7 @@ def social_urls():
 
 def webshell_user():
 	return """admin
+	AnonGhost
 	antichat
 	Anarchy
 	123
@@ -66,7 +67,11 @@ def webshell_pass():
 	phpshell
 	redstar98
 	tula
-	kikicoco"""
+	umar
+	AnonGhost
+	kikicoco
+	k1r4
+	1945"""
 
 def router_user():
 	return """acc
