@@ -59,7 +59,8 @@ def webshell_pass():
 	DAws
 	changeme
 	m3q
-	victoria"""
+	victoria
+	LOL"""
 
 def router_user():
 	return """acc
