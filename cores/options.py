@@ -71,7 +71,7 @@ class ParseOptions(object):
 
 		# options
 		self.threads = 16
-		self.timeout = 25
+		# self.timeout = 25
 		self.username = None
 		self.passwd = None
 

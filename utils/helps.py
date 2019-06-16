@@ -32,10 +32,10 @@ def print_help():
 			"%-14s" %("-t <threads>"),
 			"-t 32"
 		],
-		[
-			"%-14s" %("-T <timeout>"),
-			"-t 25"
-		],
+		# [
+		# 	"%-14s" %("-T <timeout>"),
+		# 	"-t 25"
+		# ],
 		[
 			"%-14s" %("-l <file_path>"),
 			"-l url_list.txt"

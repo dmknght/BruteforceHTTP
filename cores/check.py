@@ -177,18 +177,13 @@ def check_options(options):
 		)
 
 	# CHECK timeout option
-	try:
-		options.timeout = int(options.options["-T"])
-		if options.timeout < 1:
-			die(
-				"[x] Options: Invalid option \"timeout\"",
-				"Thread number must be larger than 1"
-			)
-	except Exception as error:
-		die(
-			"[x] Options: Invalid option \"timeout\"",
-			error
-		)
+	# try:
+	# 	options.timeout = int(options.options["-T"])
+	# 	if options.timeout < 1:
+	# 		die("[x] Options: Invalid option \"timeout\"", "Thread number must be larger than 1")
+	# except Exception as error:
+	# 	die("[x] Options: Invalid option \"timeout\"", error)
+	
 	if options.attack_mode == "--sqli":
 		options.options["-u"], options.options["-p"] = "sqli", "sqli"
 
