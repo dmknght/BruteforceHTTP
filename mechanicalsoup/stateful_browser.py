@@ -59,6 +59,7 @@ class StatefulBrowser(Browser):
 		self.__debug = False
 		self.__verbose = 0
 		self.__state = _BrowserState()
+		self.status_code = 0
 
 	def set_debug(self, debug):
 		"""Set the debug mode (off by default).
@@ -133,6 +134,7 @@ class StatefulBrowser(Browser):
 		resp = self.get(url, *args, **kwargs)
 		self.__state = _BrowserState(page=resp.soup, url=resp.url,
 									 request=resp.request)
+		self.status_code = resp.status_code
 		return resp
 
 	def open_fake_page(self, page_text, url=None, soup_config=None):
