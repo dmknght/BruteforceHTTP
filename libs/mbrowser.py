@@ -54,9 +54,6 @@ class mBrowser(StatefulBrowser):
 			return self.get_current_page().title.text
 		except:
 			return "No title"
-	
-	def httpget_passwd(self, url, username, password, realm):
-		self.add_password(url, username, password, realm)
 
 	def close(self):
 		try:
