@@ -40,6 +40,8 @@ def parseLoginForm(allFormControl):
 	rePasswdControl = r"password\((.*)\)"
 	reSubmitControl = r"submit\((.*)\)"
 
+	formData = None
+
 	for uint_formID, form in enumerate(allFormControl):
 		txtPasswdControl = re.findall(rePasswdControl, str(form))
 		# Find password control. If has
@@ -51,11 +53,12 @@ def parseLoginForm(allFormControl):
 			txtSubmitControl = ["None"] if not txtSubmitControl else txtSubmitControl
 			if len(txtTextControl) == 1:
 				# Regular login field. > 1 can be register specific field (maybe captcha)
-				return ([uint_formID, txtSubmitControl[0]], [txtPasswdControl[0], txtTextControl[0]])
+				formData = ([uint_formID, txtSubmitControl[0]], [txtPasswdControl[0], txtTextControl[0]])
 			elif len(txtTextControl) == 0:
 				# Possibly password field login only
-				return ([uint_formID, txtSubmitControl[0]], [txtPasswdControl[0]])
-	return None
+				formData = ([uint_formID, txtSubmitControl[0]], [txtPasswdControl[0]])
+
+	return formData
 
 def check_sqlerror(response):
 	# Parse html response to define SQL error
