@@ -63,7 +63,8 @@ def webshell_pass():
 	LOL
 	kerinci
 	phpshell
-	redstar98"""
+	redstar98
+	tula"""
 
 def router_user():
 	return """acc
