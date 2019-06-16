@@ -91,11 +91,17 @@ def start_banner(options):
 		" " * 23 + "HTTP LOGIN BRUTE FORCER",
 		fixLen(usr, 57),
 		fixLen(options.options["-p"], 57),
-		fixLen( "Attack mode: %-6s |  Proxy: %-5s  |  Threads: %-3s |  Timeout: %-3s" %(
+		# fixLen( "Attack mode: %-6s |  Proxy: %-5s  |  Threads: %-3s |  Timeout: %-3s" %(
+		# 		options.attack_mode.replace("--", ""),
+		# 		options.run_options["--proxy"],
+		# 		options.threads,
+		# 		options.timeout,
+		# 	),
+		# 	68
+		fixLen( "   Attack mode: %-8s |   Proxy: %-8s  |   Threads: %-8s " %(
 				options.attack_mode.replace("--", ""),
 				options.run_options["--proxy"],
 				options.threads,
-				options.timeout,
 			),
 			68
 		),
