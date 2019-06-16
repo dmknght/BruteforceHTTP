@@ -88,7 +88,7 @@ def submit(options, loginInfo, tryCred, result):
 		proc.xsubmit(frmCtrl, frmFields, tryCred)
 		if options.verbose:
 			if options.proxy:
-				printf("[+] {%s: %s; %s: %s} through %s" %(frmFields[1], tryUsername, frmFields[0], tryPassword, proxyAddr), 'norm')
+				printf("[+] {%s: %s; %s: %s} via %s" %(frmFields[1], tryUsername, frmFields[0], tryPassword, proxyAddr), 'norm')
 			else:
 				if len(frmFields) == 2:
 					printf("[+] {%s: %s; %s: %s}" %(frmFields[1], tryUsername, frmFields[0], tryPassword), 'norm')
@@ -122,7 +122,7 @@ def submit(options, loginInfo, tryCred, result):
 				printf("   %s" %([tryUsername, tryPassword]), "norm")
 			if options.verbose:
 				if options.proxy:
-					printf("[-] Failed: %s through %s" %([tryUsername, tryPassword], proxyAddr), "bad")
+					printf("[-] Failed: %s via %s" %([tryUsername, tryPassword], proxyAddr), "bad")
 				else:
 					printf("[-] Failed: %s" %([tryUsername, tryPassword]), "bad")
 		return True
