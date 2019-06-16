@@ -189,7 +189,12 @@ class StatefulBrowser(Browser):
 				try:
 					fID = input.attrs['id']
 				except:
-					fID = input.attrs['name']
+					fID = None
+				try:
+					fName = input.attrs['name']
+				except:
+					fName = None
+				fID = fID if fID else fName
 				info += "  %s(%s)=\'%s\'\n" %(fType, fID, fValue)
 
 			yield info
