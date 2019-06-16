@@ -40,6 +40,7 @@ def webshell_user():
 
 def webshell_pass():
 	return """r00t
+	niemdamme
 	123
 	0987654321
 	admin
