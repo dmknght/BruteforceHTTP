@@ -66,6 +66,9 @@ def submit(options, loginInfo, tryCred, result):
 		# Set proxy connect
 			proxyAddr = randomFromList(options.proxy)
 			proc.setproxy(proxyAddr)
+		else:
+			proxyAddr = ""
+		
 		proc.open_url(options.login_url)
 		proc.get_opts(options) # TODO remove this fucntion in sbrowser and mbrowser
 		_form = parseLoginForm(proc.forms())
@@ -87,13 +90,10 @@ def submit(options, loginInfo, tryCred, result):
 		#	If no login form -> maybe success. Check conditions
 		proc.xsubmit(frmCtrl, frmFields, tryCred)
 		if options.verbose:
-			if options.proxy:
-				printf("[+] {%s: %s; %s: %s} via %s" %(frmFields[1], tryUsername, frmFields[0], tryPassword, proxyAddr), 'norm')
+			if len(frmFields) == 2:
+				printf("[+] {%s: %s; %s: %s} %s" %(frmFields[1], tryUsername, frmFields[0], tryPassword, proxyAddr), 'norm')
 			else:
-				if len(frmFields) == 2:
-					printf("[+] {%s: %s; %s: %s}" %(frmFields[1], tryUsername, frmFields[0], tryPassword), 'norm')
-				else:
-					printf("[+] {%s: %s}" %(frmFields[0], tryPassword), 'norm')
+				printf("[+] {%s: %s} %s" %(frmFields[0], tryPassword, proxyAddr), 'norm')
 
 		if not parseLoginForm(proc.forms()):# != loginInfo:
 			test_result = check_condition(options, proc, loginInfo)
@@ -121,10 +121,8 @@ def submit(options, loginInfo, tryCred, result):
 				printf("[+] SQL Injection vulnerable found")
 				printf("   %s" %([tryUsername, tryPassword]), "norm")
 			if options.verbose:
-				if options.proxy:
-					printf("[-] Failed: %s via %s" %([tryUsername, tryPassword], proxyAddr), "bad")
-				else:
-					printf("[-] Failed: %s" %([tryUsername, tryPassword]), "bad")
+				printf("[-] Failed: [%s:%s] %s" %(tryUsername, tryPassword, proxyAddr), "bad")
+				
 		return True
 
 	except Exception as error:
