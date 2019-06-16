@@ -50,7 +50,10 @@ class mBrowser(StatefulBrowser):
 		self.submit_selected()
 
 	def get_title(self):
-		return self.get_current_page().title.text
+		try:
+			return self.get_current_page().title.text
+		except:
+			return "No title"
 	
 	def httpget_passwd(self, url, username, password, realm):
 		self.add_password(url, username, password, realm)
