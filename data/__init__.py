@@ -60,7 +60,10 @@ def webshell_pass():
 	changeme
 	m3q
 	victoria
-	LOL"""
+	LOL
+	kerinci
+	phpshell
+	redstar98"""
 
 def router_user():
 	return """acc
