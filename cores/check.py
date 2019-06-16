@@ -57,8 +57,7 @@ def parseLoginForm(allFormControl):
 			elif len(txtTextControl) == 0:
 				# Possibly password field login only
 				formData = ([uint_formID, txtSubmitControl[0]], [txtPasswdControl[0]])
-
-	return formData
+		return formData
 
 def check_sqlerror(response):
 	# Parse html response to define SQL error
