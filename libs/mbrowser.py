@@ -40,6 +40,12 @@ class mBrowser(StatefulBrowser):
 
 	def get_resp(self):
 		return str(self.get_current_page())
+	
+	def get_title(self):
+		try:
+			return self.get_current_page().title.text
+		except:
+			return "No title"
 
 	def xsubmit(self, controls, fields, creds):
 		formID, button = controls
@@ -48,12 +54,6 @@ class mBrowser(StatefulBrowser):
 		for field, cred in zip(fields, creds):
 			loginForm.set(field, cred)
 		self.submit_selected()
-
-	def get_title(self):
-		try:
-			return self.get_current_page().title.text
-		except:
-			return "No title"
 
 	def close(self):
 		try:
