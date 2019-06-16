@@ -92,7 +92,17 @@ def check_login(options):
 		if options.run_options["--verbose"]:
 			printf("[*] %s" %(proc.get_title()), "norm")
 		# printf("[+] Analyzing login form....")
-		loginInfo = parseLoginForm(proc.forms())
+		if resp.status_code == 401:
+			if "WWW-Authenticate" in resp.headers:
+				loginID = checkHTTPGetLogin(resp.headers)
+				loginInfo = (loginID, ["Password", "User Name"])
+				if options.verbose:
+					printf("[+] Using HTTP GET Authentication mode", "norm")
+				options.attack_mode = "--httpget"
+			else:
+				loginInfo = False
+		else:
+			loginInfo = parseLoginForm(proc.forms())
 		
 		# Check target login page with selenium
 		# jscheck = sBrowser()
@@ -112,26 +122,8 @@ def check_login(options):
 		return loginInfo
 		
 	except Exception as error:
-		try:
-			if error.code == 401:
-				## GET INFORMATION
-				resp_header = str(proc.response().info())
-				if "WWW-Authenticate" in resp_header:
-					loginID = checkHTTPGetLogin(resp_header)
-					loginInfo = (loginID, ["Password", "User Name"])
-					if options.verbose:
-						printf("[+] Using HTTP GET Authentication mode", "norm")
-					options.attack_mode = "--httpget"
-				else:
-					loginInfo = False
-			else:
-				loginInfo = False
-				printf("[x] Target check: %s" %(error), "bad")
-
-		# Error != http code
-		except:
-			loginInfo = False
-			die("[x] Target check:", error)
+		loginInfo = False
+		die("[x] Target check:", error)
 	
 	except KeyboardInterrupt:
 		loginInfo = False
