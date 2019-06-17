@@ -180,21 +180,12 @@ class StatefulBrowser(Browser):
 		"""
 		for form in self.get_current_page().find_all('form'):
 			info = "<%s[%s]>\n" %(form.get('method'), form.get('action'))
-			for input in form.find_all(("input", "textarea", "select", "button")):
-				fType = input.attrs['type']
-				try:
-					fValue = input.attrs['value']
-				except:
-					fValue = None
-				try:
-					fID = input.attrs['id']
-				except:
-					fID = None
-				try:
-					fName = input.attrs['name']
-				except:
-					fName = None
-				# fID = fID if fID else fName
+			for fields in form.find_all(("input", "textarea", "select", "button")):
+				fType = fields.get('type') or None
+				fID = fields.get('id') or None
+				fValue = fields.get('value') or None
+				fName = fields.get('name') or None
+
 				fID = fName if fName else fID
 				info += "  %s(%s)=\'%s\'\n" %(fType, fID, fValue)
 
