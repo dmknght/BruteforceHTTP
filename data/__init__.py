@@ -49,6 +49,7 @@ def webshell_pass():
 	antichat
 	p4kl0nc4t
 	IndoXploit
+	indoxploit
 	angel
 	dn
 	b374k
@@ -71,7 +72,8 @@ def webshell_pass():
 	AnonGhost
 	kikicoco
 	k1r4
-	1945"""
+	1945
+	redstar98"""
 
 def router_user():
 	return """acc
