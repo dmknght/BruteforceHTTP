@@ -91,9 +91,9 @@ def submit(options, loginInfo, tryCred, result):
 		resp = proc.xsubmit(frmCtrl, frmFields, tryCred)
 		if options.verbose:
 			if len(frmFields) == 2:
-				printf("[+] [%s=(%s); %s=(%s)] ==> %s" %(frmFields[1], tryUsername, frmFields[0], tryPassword, proxyAddr), 'norm')
+				printf("[+] [%s=(%s); %s=(%s)] <--> %s" %(frmFields[1], tryUsername, frmFields[0], tryPassword, proxyAddr), 'norm')
 			else:
-				printf("[+] [%s=(%s)] ==> %s" %(frmFields[0], tryPassword, proxyAddr), 'norm')
+				printf("[+] [%s=(%s)] <--> %s" %(frmFields[0], tryPassword, proxyAddr), 'norm')
 
 		if not parseLoginForm(proc.forms()):# != loginInfo:
 			test_result = check_condition(options, proc, loginInfo)
@@ -103,24 +103,24 @@ def submit(options, loginInfo, tryCred, result):
 				
 				if tryUsername:
 					if resp.status_code == 403:
-						printf("[x] Access Denied [%s:%s] %s" %(tryUsername, tryPassword, proxyAddr), "bad")
+						printf("[x] 403 forbidden: [%s:%s] <--> %s" %(tryUsername, tryPassword, proxyAddr), "bad")
 					elif resp.status_code == 404:
-						printf("[x] Link not found [%s:%s] %s" %(tryUsername, tryPassword, proxyAddr), "bad")
+						printf("[x] 404 not found: [%s:%s] <--> %s" %(tryUsername, tryPassword, proxyAddr), "bad")
 					elif resp.status_code >= 500:
-						printf("[x] %s Server error [%s:%s] %s" %(resp.status_code, tryUsername, tryPassword, proxyAddr), "bad")
+						printf("[x] %s Server error [%s:%s] <--> %s" %(resp.status_code, tryUsername, tryPassword, proxyAddr), "bad")
 					else:
-						printf("[*] Found [%s:%s] [%s]" %(tryUsername, tryPassword, proc.get_title()), "good")
+						printf("[*] Found: [%s:%s] [%s]" %(tryUsername, tryPassword, proc.get_title()), "good")
 						result.put([options.url, tryUsername, tryPassword])
 				# "Else If we tried login form with password field only"
 				else:
 					if resp.status_code == 403:
-						printf("[x] Access Denied [%s:%s] %s" %(tryUsername, tryPassword, proxyAddr), "bad")
+						printf("[x] 403 forbidden: [%s:%s] %s" %(tryUsername, tryPassword, proxyAddr), "bad")
 					elif resp.status_code == 404:
-						printf("[x] Link not found [%s:%s] %s" %(tryUsername, tryPassword, proxyAddr), "bad")
+						printf("[x] 404 not found: [%s:%s] %s" %(tryUsername, tryPassword, proxyAddr), "bad")
 					elif resp.status_code >= 500:
-						printf("[x] %s Server error [%s:%s] %s" %(resp.status_code, tryUsername, tryPassword, proxyAddr), "bad")
+						printf("[x] %s Server error: [%s:%s] %s" %(resp.status_code, tryUsername, tryPassword, proxyAddr), "bad")
 					else:
-						printf("[*] Found [%s] [%s]" %(tryPassword, proc.get_title()), "good")
+						printf("[*] Found: [%s] [%s]" %(tryPassword, proc.get_title()), "good")
 						result.put([options.url, tryUsername, tryPassword])
 			elif test_result == 2 and options.verbose:
 				printf("[+] SQL Injection vulnerable found")
@@ -138,9 +138,9 @@ def submit(options, loginInfo, tryCred, result):
 				printf("   %s" %([tryUsername, tryPassword]), "norm")
 			if options.verbose:
 				if tryUsername:
-					printf("[-] Failed: [%s:%s] %s" %(tryUsername, tryPassword, proxyAddr), "bad")
+					printf("[-] Failed: [%s:%s] <--> %s ==> %s" %(tryUsername, tryPassword, proxyAddr, proc.get_title()), "bad")
 				else:
-					printf("[-] Failed: [%s] %s" %(tryPassword, proxyAddr), "bad")
+					printf("[-] Failed: [%s] <--> %s ==> %s" %(tryPassword, proxyAddr, proc.get_title()), "bad")
 
 				
 		return True

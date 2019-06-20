@@ -140,7 +140,6 @@ if __name__ == "__main__":
 					ssl._create_default_https_context = _create_unverified_https_context
 
 				printf(start_banner(options))
-
 				results = []
 				set_break = False
 				for idu, url in enumerate(options.target):
