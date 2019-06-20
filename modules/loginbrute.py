@@ -110,6 +110,7 @@ def submit(options, loginInfo, tryCred, result):
 						printf("[x] %s Server error [%s:%s] %s" %(resp.status_code, tryUsername, tryPassword, proxyAddr), "bad")
 					else:
 						printf("[*] Found [%s:%s] [%s]" %(tryUsername, tryPassword, proc.get_title()), "good")
+						result.put([options.url, tryUsername, tryPassword])
 				# "Else If we tried login form with password field only"
 				else:
 					if resp.status_code == 403:
@@ -120,7 +121,7 @@ def submit(options, loginInfo, tryCred, result):
 						printf("[x] %s Server error [%s:%s] %s" %(resp.status_code, tryUsername, tryPassword, proxyAddr), "bad")
 					else:
 						printf("[*] Found [%s] [%s]" %(tryPassword, proc.get_title()), "good")
-				result.put([options.url, tryUsername, tryPassword])
+						result.put([options.url, tryUsername, tryPassword])
 			elif test_result == 2 and options.verbose:
 				printf("[+] SQL Injection vulnerable found")
 				printf("   %s" %([tryUsername, tryPassword]), "norm")
