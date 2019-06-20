@@ -28,7 +28,7 @@ def submit(options, loginInfo, tryCred, result):
 	# frmLoginID, frmFields = loginInfo
 	tryPassword, tryUsername = tryCred
 
-	proc = startBrowser(options.timeout)
+	proc = startBrowser()
 	
 	for cred in list(result.queue):
 		if tryUsername == cred[1]:

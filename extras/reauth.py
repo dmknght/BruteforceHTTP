@@ -20,7 +20,7 @@ def do_job(jobs):
 def submit(url, options, tryCreds, result):
 
 	try:
-		proc = startBrowser(options.timeout)
+		proc = startBrowser()
 
 		printf("[+] Checking %s" %(url))
 
