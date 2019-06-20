@@ -100,8 +100,16 @@ def submit(options, loginInfo, tryCred, result):
 			if test_result == 1:
 				#printf("[*] Page title: ['%s']" %(proc.title()), "good")
 				# "If we tried login form with username+password field"
+				# resp = proc.open_url(options.login_url)
 				if tryUsername:
-					printf("[*] Found [%s:%s] [%s]" %(tryUsername, tryPassword, proc.get_title()), "good")
+					if resp.status_code == 403:
+						printf("[x] Access Denied [%s:%s] %s" %(tryUsername, tryPassword, proxyAddr), "bad")
+					elif resp.status_code == 404:
+						printf("[x] Link not found [%s:%s] %s" %(tryUsername, tryPassword, proxyAddr), "bad")
+					elif resp.status_code >= 500:
+						printf("[x] %s Server error [%s:%s] %s" %(resp.status_code, tryUsername, tryPassowrd, proxyAddr))
+					else:
+						printf("[*] Found [%s:%s] [%s]" %(tryUsername, tryPassword, proc.get_title()), "good")
 				# "Else If we tried login form with password field only"
 				else:
 					if resp.status_code == 403:
