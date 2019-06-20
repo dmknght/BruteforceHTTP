@@ -53,7 +53,7 @@ class mBrowser(StatefulBrowser):
 		# FILLS ALL FIELDS https://stackoverflow.com/a/5389578
 		for field, cred in zip(fields, creds):
 			loginForm.set(field, cred)
-		self.submit_selected()
+		return self.submit_selected()
 
 	def close(self):
 		try:
