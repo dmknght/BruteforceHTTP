@@ -34,7 +34,7 @@ def submit(options, loginInfo, creds, result):
 		elif resp.status_code == 404:
 			printf("[x] Link not found [%s:%s] %s" %(tryUsername, tryPassword, proxyAddr), "bad")
 		elif resp.status_code >= 500:
-			printf("[x] %s Server error [%s:%s] %s" %(resp.status_code, tryUsername, tryPassowrd, proxyAddr) )
+			printf("[x] %s Server error [%s:%s] %s" %(resp.status_code, tryUsername, tryPassowrd, proxyAddr))
 		else:
 			printf("[*] Found [%s:%s] [%s]" %(tryUsername, tryPassword, proc.get_title()), "good")
 			result.put([options.url, tryUsername, tryPassword])
