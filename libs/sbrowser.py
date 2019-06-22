@@ -17,17 +17,17 @@ import bs4
 
 class sBrowser(Chrome):
 	def __init__(self, driver_path="/usr/local/bin/chromedriver", port=0, chrome_options=None, service_args=None, desired_capabilities=None, service_log_path=None):
-		chrome_options = ChromeOptions()
-		chrome_options.add_argument("--incognito")
-		chrome_options.headless = True
+		self.chrome_options = ChromeOptions()
+		self.chrome_options.add_argument("--incognito")
+		self.chrome_options.headless = True
 		super(sBrowser, self).__init__(driver_path, port, chrome_options, service_args, desired_capabilities, service_log_path)
 		self.options = None
 
-	def useragent(self):
-		pass
+	def useragent(self, agent):
+		self.chrome_options.add_argument('--user-agent=%s' %(agent))
 
 	def setproxy(self, addr):
-		pass
+		self.chrome_options.add_argument('--proxy-server=%s' %(addr))
 
 	def open_url(self, url):
 		self.get(url)
@@ -66,10 +66,6 @@ class sBrowser(Chrome):
 		for field, cred in zip(fields, creds):
 			self.find_element_by_name(field).send_keys(cred)
 		
-		# usrField, passField = fields
-		# usrname, passwd = creds
-		# self.find_element_by_name(usrField).send_keys(usrname)
-		# self.find_element_by_name(passField).send_keys(passwd)
 		return self.find_element_by_name(button).click()
 		# if button[0]:
 		# 	self.find_element_by_name(button[0]).click()
@@ -78,7 +74,6 @@ class sBrowser(Chrome):
 			# pass # https://stackoverflow.com/a/35532972
 
 	def close(self):
-		# TODO add clear storage data here
 		try:
 			self.quit()
 		except:
