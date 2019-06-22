@@ -1,7 +1,6 @@
 from utils.utils import printf, die
 from cores.actions import randomFromList
 from cores.check import parseLoginForm, check_sqlerror
-from libs.mbrowser import mBrowser as Browser
 
 def check_condition(options, proc, loginInfo):
 
@@ -37,15 +36,10 @@ def check_condition(options, proc, loginInfo):
 
 
 def submit(options, loginInfo, tryCred, result):
-	# if options.engine == "mechanize":
-	# 	from libs.mbrowser import mBrowser as Browser
-	# 	proc = Browser(options.timeout) # TODO remove here
-	# elif options.engine == "selenium":
-	# 	from libs.sbrowser import sBrowser as Browser
-	# 	proc = Browser() # TODO remove here
-	# else:
-	# 	pass # ERROR
-	# #	Get login form field informations
+	if options.tech == "mechanize":
+		from libs.mbrowser import mBrowser as Browser
+	elif options.tech == "selenium":
+		from libs.sbrowser import sBrowser as Browser 
 	
 	# frmLoginID, frmFields = loginInfo
 	tryPassword, tryUsername = tryCred

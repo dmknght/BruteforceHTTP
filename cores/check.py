@@ -70,7 +70,6 @@ def check_sqlerror(response):
 def check_login(options):
 	try:
 		from libs.mbrowser import mBrowser
-		# from libs.sbrowser import sBrowser
 		
 		proc = mBrowser()
 		
@@ -105,21 +104,13 @@ def check_login(options):
 				loginInfo = False
 		else:
 			loginInfo = parseLoginForm(proc.forms())
-		
-		# Check target login page with selenium
-		# jscheck = sBrowser()
-		# jscheck.open_url(options.url)
-		
-		# # Convert data to mechanize to analysis form (easier)
-		# r_jscheck = str(jscheck.get_resp())
-		# resp.set_data(r_jscheck)
-		# proc.set_response(resp)
-
-		# # Get new info
-		# js_loginInfo = parseLoginForm(proc.forms())
-		# if not loginInfo and js_loginInfo:
-		# 	options.engine = "selenium"
-		# 	loginInfo = js_loginInfo
+			if not loginInfo:
+				from libs.sbrowser import sBrowser
+				jscheck = sBrowser()
+				jscheck.open_url(options.url)
+				loginInfo = parseLoginForm(jscheck.forms())
+				if loginInfo:
+					options.tech = "selenium"
 
 		return loginInfo
 		
@@ -131,8 +122,14 @@ def check_login(options):
 		loginInfo = False
 	
 	finally:
-		proc.close()
-		# jscheck.close()
+		try:
+			proc.close()
+		except:
+			pass
+		try:
+			jscheck.close()
+		except:
+			pass
 		return loginInfo
 
 def check_url(url):
