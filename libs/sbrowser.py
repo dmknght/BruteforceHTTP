@@ -18,6 +18,7 @@ import bs4
 class sBrowser(Chrome):
 	def __init__(self, driver_path="/usr/local/bin/chromedriver", port=0, chrome_options=None, service_args=None, desired_capabilities=None, service_log_path=None):
 		chrome_options = ChromeOptions()
+		chrome_options.add_argument("--incognito")
 		chrome_options.headless = True
 		super(sBrowser, self).__init__(driver_path, port, chrome_options, service_args, desired_capabilities, service_log_path)
 		self.options = None
@@ -59,17 +60,6 @@ class sBrowser(Chrome):
 				info += "  %s(%s)=\'%s\'\n" %(fType, fID, fValue)
 
 			yield info
-	
-	# def forms(self):
-	# 	forms = self.find_elements_by_css_selector("form")
-	# 	# Get source code of form element self.get_attribute('innerHTML') https://stackoverflow.com/a/8575709
-	# 	# Find by type https://stackoverflow.com/a/48365300
-	# 	return forms
-	# def forms(self):
-	# 	response = self.get_resp()
-	# 	response = self.options.bresp.set_data(str(response)) # BUG
-	# 	self.options.bbrowser.set_response(response)
-	# 	return self.options.bbrowser.forms()
 
 	def xsubmit(self, controls, fields, creds):
 		_, button = controls
