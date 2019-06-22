@@ -14,6 +14,7 @@ Core:
   ✔ Session issue if webshell URL after dvwa URL @mechanize  @attack_module @done(19-02-05 22:04)
   ☐ Improve exception in check_login
   ✔ Fix loginInfo = False causes iterable error message @done(19-02-06 21:16)
+  ☐ New way to check response status code, combine with selenium and fucking selenium
   Create setup script:
     ☐ pip install
     ☐ Setup browser, libs,..
@@ -23,11 +24,11 @@ Core:
   ☐ Create controller module, Add close (exit browser object) function for both mechanize and selenium
   Add Selenium support @high  #Shoud fix java script issue:
     ☐ Add help menu
-    ☐ Add options (web driver)
-    ☐ Switch mechanize and selenium in main
-    ☐ Add core browser object
-    ☐ Switch webdriver in browser object
-    ☐ Parse login form
+    ✔ Add options (web driver) @done(19-06-22 18:27)
+    ✔ Switch mechanize and selenium in main @done(19-06-22 18:26)
+    ✔ Add core browser object @done(19-06-22 18:26)
+    ✔ Switch webdriver in browser object @done(19-06-22 18:26)
+    ✔ Parse login form @done(19-06-22 18:26)
     ☐ Test with websites
     ☐ Support proxy addr
     ☐ Support user-agents
