@@ -70,7 +70,6 @@ def submit(options, loginInfo, tryCred, result):
 			proxyAddr = ""
 		
 		proc.open_url(options.login_url)
-		proc.get_opts(options) # TODO remove this fucntion in sbrowser and mbrowser
 		_form = parseLoginForm(proc.forms())
 		if not _form:
 			if options.verbose:
@@ -161,11 +160,11 @@ def submit(options, loginInfo, tryCred, result):
 			elif error.code == 404:
 				printf("[x] %s: %s" %(error, tryCred[::-1]), "bad")
 				if options.verbose:
-					printf("   %s" %(proc.geturl()), "bad")
+					printf("   %s" %(proc.url()), "bad")
 			# Other error code
 			else:
 				if options.verbose:
-					printf("[x] (%s): %s" %(proc.geturl(), tryCred[::-1]), "bad")
+					printf("[x] (%s): %s" %(proc.url(), tryCred[::-1]), "bad")
 		except:
 			# THIS BLOCKED BY WAF
 			printf("[x] Loginbrute: %s" %(error), "bad")

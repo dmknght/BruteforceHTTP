@@ -32,10 +32,10 @@ class mBrowser(StatefulBrowser):
 	def open_url(self, url):
 		return self.open(url)
 
-	def get_opts(self, options):
-		pass
+	# def get_opts(self, options):
+	# 	pass
 
-	def geturl(self):
+	def url(self):
 		return self.get_url()
 
 	def get_resp(self):

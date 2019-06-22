@@ -83,9 +83,9 @@ def check_login(options):
 				site directs user to wp-login -> login URL
 				options.url = site.com/wp-login.php -> login URL
 		"""
-		if proc.geturl() != options.url:
-			printf("[*] Website moves to: ['%s']" %(proc.geturl()), "norm")
-			options.panel_url, options.login_url = options.url, proc.geturl()
+		if proc.url() != options.url:
+			printf("[*] Website moves to: ['%s']" %(proc.url()), "norm")
+			options.panel_url, options.login_url = options.url, proc.url()
 		else:
 			options.login_url = options.url
 
