@@ -120,3 +120,5 @@ Special thank to all authors of these projects:
 - [Fuzzdb-project: user-agent list](https://github.com/fuzzdb-project/fuzzdb/blob/master/discovery/UserAgent/UserAgentListCommon.txt)
 - [routersploit project: print_table function](https://github.com/threat9/routersploit/blob/master/routersploit/core/exploit/printer.py)
 - [Metasploit-framework project: Wordlists](https://github.com/rapid7/metasploit-framework/tree/master/data/wordlists)
+- [MechanicalSoup Project](https://github.com/MechanicalSoup/MechanicalSoup)
+- [BeautifulSoup Project](https://github.com/waylan/beautifulsoup)

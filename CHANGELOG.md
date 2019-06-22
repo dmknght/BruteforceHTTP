@@ -1,3 +1,6 @@
+# 16/06/2019
+* Say goodbye to old mechanize and say hi to mechanicalsoup with some patches
+
 # 06/03/2019
 * Add SQL Injection payloads
 * Code syntax improvment 
