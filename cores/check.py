@@ -104,13 +104,13 @@ def check_login(options):
 				loginInfo = False
 		else:
 			loginInfo = parseLoginForm(proc.forms())
-			if not loginInfo:
-				from libs.sbrowser import sBrowser
-				jscheck = sBrowser()
-				jscheck.open_url(options.url)
-				loginInfo = parseLoginForm(jscheck.forms())
-				if loginInfo:
-					options.tech = "selenium"
+			# if not loginInfo:
+			# 	from libs.sbrowser import sBrowser
+			# 	jscheck = sBrowser()
+			# 	jscheck.open_url(options.url)
+			# 	loginInfo = parseLoginForm(jscheck.forms())
+			# 	if loginInfo:
+			# 		options.tech = "selenium"
 
 		return loginInfo
 		
