@@ -17,17 +17,19 @@ import bs4
 
 class sBrowser(Chrome):
 	def __init__(self, driver_path="/usr/local/bin/chromedriver", port=0, chrome_options=None, service_args=None, desired_capabilities=None, service_log_path=None):
-		self.chrome_options = ChromeOptions()
-		self.chrome_options.add_argument("--incognito")
-		self.chrome_options.headless = True
+		chrome_options = ChromeOptions()
+		chrome_options.headless = True
+		chrome_options.add_argument("--incognito")
 		super(sBrowser, self).__init__(driver_path, port, chrome_options, service_args, desired_capabilities, service_log_path)
 		self.options = None
 
 	def useragent(self, agent):
-		self.chrome_options.add_argument('--user-agent=%s' %(agent))
+		# self.chrome_options.add_argument('--user-agent=%s' %(agent))
+		pass
 
 	def setproxy(self, addr):
-		self.chrome_options.add_argument('--proxy-server=%s' %(addr))
+		pass
+		# chrome_options.add_argument('--proxy-server=%s' %(addr))
 
 	def open_url(self, url):
 		self.get(url)
@@ -64,9 +66,9 @@ class sBrowser(Chrome):
 	def xsubmit(self, controls, fields, creds):
 		_, button = controls
 		for field, cred in zip(fields, creds):
-			self.find_element_by_name(field).send_keys(cred)
+			self.find_element_by_id(field).send_keys(cred)
 		
-		return self.find_element_by_name(button).click()
+		return self.find_element_by_id(button).click()
 		# if button[0]:
 		# 	self.find_element_by_name(button[0]).click()
 		# else:
