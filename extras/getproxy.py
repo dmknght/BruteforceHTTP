@@ -1,4 +1,4 @@
-import mechanize, re, threading
+import re, threading
 from libs.mbrowser import mBrowser
 from utils.utils import printf, die
 from cores.actions import fread, fwrite
