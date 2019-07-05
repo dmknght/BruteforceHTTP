@@ -39,11 +39,11 @@ class Browser(StatefulBrowser):
 		return self.get_url()
 
 	def get_resp(self):
-		return self.get_current_page().encode('utf-8')
+		return str(self.get_current_page().encode('utf-8'))
 	
 	def get_title(self):
 		try:
-			return self.get_current_page().title.text.encode('utf-8')
+			return str(self.get_current_page().title.text.encode('utf-8'))
 		except:
 			return "No title"
 
