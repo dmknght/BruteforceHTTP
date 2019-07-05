@@ -1,5 +1,5 @@
 #!/usr/bin/python
-
+# -*- coding: utf-8 -*-
 
 def attack(options, loginInfo):
 	def run_threads(threads, sending, completed, total):
