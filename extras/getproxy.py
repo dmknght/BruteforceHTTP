@@ -30,7 +30,7 @@ def getnew(options):
 	def parse_proxy(response):
 		try:
 			re_ip = r"\b(?:\d{1,3}\.){3}\d{1,3}\b<\/td><td>\d{1,5}"
-			result = re.findall(re_ip, response.decode('utf-8'), re.UNICODE) # FIX PYTHON3 string pattern on a bytes-like object
+			result = re.findall(re_ip, response)
 			result = [element.replace("</td><td>", ":") for element in result]
 			return result
 		except Exception as error:
