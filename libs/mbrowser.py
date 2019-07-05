@@ -39,12 +39,17 @@ class Browser(StatefulBrowser):
 		return self.get_url()
 
 	def get_resp(self):
-		return str(self.get_current_page().encode('utf-8'))
+		try:
+			return str(self.get_current_page())
+		except UnicodeEncodeError:
+			return str(self.get_current_page().encode('utf-8'))
 	
 	def get_title(self):
 		try:
+			return str(self.get_current_page().title.text)
+		except UnicodeEncodeError:
 			return str(self.get_current_page().title.text.encode('utf-8'))
-		except:
+		except Exception as error:
 			return "No title"
 
 	def xsubmit(self, controls, fields, creds):
