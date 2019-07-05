@@ -6,8 +6,8 @@ from cores.actions import randomFromList
 
 def submit(options, loginInfo, creds, result):
 	tryPassword, tryUsername = creds
-	realm = loginInfo[0]
-	fPassword, fUsername = loginInfo[1]
+
+	realm, [fPassword, fUsername] = loginInfo
 	if tryUsername in [x[1] for x in list(result.queue)]:
 		return True
 	
