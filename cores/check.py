@@ -1,9 +1,10 @@
 from cores.actions import lread, fread
-from utils.utils import die, printf
-import re, sys
+import utils
+import re
 
-reload(sys)
-sys.setdefaultencoding('utf8')
+# import sys
+# reload(sys)
+# sys.setdefaultencoding('utf8')
 
 # def check_import():
 # 	try:
@@ -43,13 +44,13 @@ def parseLoginForm(allFormControl):
 	formData = None
 
 	for uint_formID, form in enumerate(allFormControl):
-		txtPasswdControl = re.findall(rePasswdControl, str(form))
+		txtPasswdControl = re.findall(rePasswdControl, form)
 		# Find password control. If has
 		# 	1 password control -> login field
 		# 	2 or more password control -> possibly register field
 		if len(txtPasswdControl) == 1:
-			txtTextControl = re.findall(reTextControl, str(form))
-			txtSubmitControl = re.findall(reSubmitControl, str(form))
+			txtTextControl = re.findall(reTextControl, form)
+			txtSubmitControl = re.findall(reSubmitControl, form)
 			txtSubmitControl = ["None"] if not txtSubmitControl else txtSubmitControl
 			if len(txtTextControl) == 1:
 				# Regular login field. > 1 can be register specific field (maybe captcha)
@@ -83,22 +84,22 @@ def check_login(options):
 				options.url = site.com/wp-login.php -> login URL
 		"""
 		if proc.url() != options.url:
-			printf("[*] Website moves to: ['%s']" %(proc.url()), "norm")
+			utils.printf("[*] Website moves to: ['%s']" %(proc.url()), "norm")
 			options.panel_url, options.login_url = options.url, proc.url()
 		else:
 			options.login_url = options.url
 
-		# printf("[*] Connect success!", "good")
+		# utils.printf("[*] Connect success!", "good")
 		options.attack_mode = "--loginbrute"
 		if options.run_options["--verbose"]:
-			printf("[*] %s" %(proc.get_title()), "norm")
-		# printf("[+] Analyzing login form....")
+			utils.printf("[*] %s" %(proc.get_title()), "norm")
+		# utils.printf("[+] Analyzing login form....")
 		if resp.status_code == 401:
 			if "WWW-Authenticate" in resp.headers:
 				loginID = checkHTTPGetLogin(resp.headers)
 				loginInfo = (loginID, ["Password", "User Name"])
 				if options.verbose:
-					printf("[+] Using HTTP GET Authentication mode", "norm")
+					utils.printf("[+] Using HTTP GET Authentication mode", "norm")
 				options.attack_mode = "--httpget"
 			else:
 				loginInfo = False
@@ -116,7 +117,7 @@ def check_login(options):
 		
 	except Exception as error:
 		loginInfo = False
-		die("[x] Target check:", error)
+		utils.die("[x] Target check:", error)
 	
 	except KeyboardInterrupt:
 		loginInfo = False
@@ -141,7 +142,7 @@ def check_url(url):
 		"""
 		if "://" in url:
 			if not url.startswith(("http://", "https://")):
-				die("[x] URL error", "Invalid protocol")
+				utils.die("[x] URL error", "Invalid protocol")
 		else:
 			"Something.com"
 			url = "http://%s" %(url)
@@ -156,19 +157,19 @@ def check_options(options):
 	# Read URL from list (file_path) or get URL from option
 	try:
 		options.target = fread(options.options["-l"]).split("\n") if options.options["-l"] else [options.url]
-		options.target = filter(None, options.target)
+		options.target = list(filter(None, options.target))
 	except Exception as error:
-		die("[x] Options: URL error", error)
+		utils.die("[x] Options: URL error", error)
 		# CHECK threads option
 	try:
 		options.threads = int(options.options["-t"])
 		if options.threads < 1:
-			die(
+			utils.die(
 				"[x] Options: Invalid option \"threads\"",
 				"Thread number must be larger than 1"
 			)
 	except Exception as error:
-		die(
+		utils.die(
 			"[x] Options: Invalid option \"threads\"",
 			error
 		)
@@ -177,9 +178,9 @@ def check_options(options):
 	# try:
 	# 	options.timeout = int(options.options["-T"])
 	# 	if options.timeout < 1:
-	# 		die("[x] Options: Invalid option \"timeout\"", "Thread number must be larger than 1")
+	# 		utils.die("[x] Options: Invalid option \"timeout\"", "Thread number must be larger than 1")
 	# except Exception as error:
-	# 	die("[x] Options: Invalid option \"timeout\"", error)
+	# 	utils.die("[x] Options: Invalid option \"timeout\"", error)
 	
 	if options.attack_mode == "--sqli":
 		options.options["-u"], options.options["-p"] = "sqli", "sqli"

@@ -25,20 +25,26 @@ def attack(options, loginInfo):
 		from modules import loginbrute
 		attack_module = loginbrute.submit
 	else:
-		die("[x] Runtime error: Invalid attack mode", "%s" %(options.attack_mode))
+		utils.die("[x] Runtime error: Invalid attack mode", "%s" %(options.attack_mode))
 
 	if not loginInfo:
 		# Test for 2 steps... login?
-		die("[x] Target check: URL error", "[x] No login request found")
+		utils.die("[x] Target check: URL error", "[x] No login request found")
 	else:
 		if options.verbose:
-			printf("[*] Login request has been found!", "good")
+			utils.printf("[*] Login request has been found!", "good")
 
 	tasks = len(options.passwd) * len(options.username)
-	printf("[+] [Tasks: %s] [ID: %s] [Controls: %s]" %(tasks, loginInfo[0], loginInfo[1][::-1]), "good")
+	utils.printf("[+] [Tasks: %s] [ID: %s] [Controls: %s]" %(tasks, loginInfo[0], loginInfo[1][::-1]), "good")
 
-	import Queue
-	result = Queue.Queue()
+	import threading
+
+	if sys.version_info[0] == 2:
+		import Queue
+		result = Queue.Queue()
+	else:
+		import queue
+		result = queue.Queue()
 	
 	sending, completed = 0, 0
 	try:
@@ -66,47 +72,47 @@ def attack(options, loginInfo):
 		del workers[:]
 			
 	except KeyboardInterrupt:
-		printf("[x] Terminated by user!", "bad")
+		utils.printf("[x] Terminated by user!", "bad")
 		global set_break
 		set_break = True
 
 	except SystemExit:
-		printf("[x] Terminated by system!", "bad")
+		utils.printf("[x] Terminated by system!", "bad")
 
 	except Exception as error:
-		die("[x] Runtime error", error)
+		utils.die("[x] Runtime error", error)
 
 	finally:
 		credentials = list(result.queue)
 		if len(credentials) == 0:
-			printf("[-] No match found!", "bad")
+			utils.printf("[-] No match found!", "bad")
 
 		else:
-			printf("\n[*] %s valid password[s] found:" %(len(credentials)), "norm")
+			utils.printf("\n[*] %s valid password[s] found:" %(len(credentials)), "norm")
 			if not credentials[0][1]:
-				print_table(("URL", "Password"), *[creds[::2] for creds in credentials])
+				utils.print_table(("URL", "Password"), *[creds[::2] for creds in credentials])
 			else:
-				print_table(("Username", "Password"), *[creds[-2:] for creds in credentials])
-			printf("")
+				utils.print_table(("Username", "Password"), *[creds[-2:] for creds in credentials])
+			utils.printf("")
 		return credentials
 
 
 if __name__ == "__main__":
 	#if check_import():
 		# IMPORT GLOBALY
-	import sys, time, threading, ssl
+	import sys, time, ssl
 	from cores import options
 	from cores.check import check_options, check_tasks, check_url, check_login
-	from utils.utils import printf, die, print_table
+	import utils
 	from utils.progressbar import progress_bar
 	from utils.banners import start_banner
-	from extras import getproxy
+	from extras import getproxy # TODO move this line
 
 	try:
 		# Setting new session
 		runtime = time.time()
-		reload(sys)
-		sys.setdefaultencoding('utf8')
+		# reload(sys)
+		# sys.setdefaultencoding('utf8')
 
 		# Get options
 		options = options.ParseOptions()
@@ -120,13 +126,13 @@ if __name__ == "__main__":
 			if "--getproxy" in options.extras:
 				getproxy.getnew(options)
 				if not options.target:
-					printf("[*] No URL provided! Get proxy only.", "good")
+					utils.printf("[*] No URL provided! Get proxy only.", "good")
 					sys.exit(0)
 				else:
 					if not options.run_options["--proxy"]:
-						printf("[-] WARNING!!! Program runs without proxy! Use \"--proxy\"!", "bad")
+						utils.printf("[-] WARNING!!! Program runs without proxy! Use \"--proxy\"!", "bad")
 			if not options.target:
-				die("[x] URL error", "An URL is required")
+				utils.die("[x] URL error", "An URL is required")
 
 			else:
 				# Fix SSL errors https://stackoverflow.com/a/35960702
@@ -139,7 +145,7 @@ if __name__ == "__main__":
 				# Handle target environment that doesn't support HTTPS verification
 					ssl._create_default_https_context = _create_unverified_https_context
 
-				printf(start_banner(options))
+				utils.printf(start_banner(options))
 				results = []
 				set_break = False
 				for idu, url in enumerate(options.target):
@@ -151,20 +157,20 @@ if __name__ == "__main__":
 						options.panel_url = None
 						options.url = check_url(url)
 						if "--getproxy" in options.extras and len(options.target) == 1 and options.run_options["--proxy"]:
-							printf("[+] Check connection via proxy to %s! Be patient!" %(options.url))
+							utils.printf("[+] Check connection via proxy to %s! Be patient!" %(options.url))
 							getproxy.check(options)
 						if options.run_options["--proxy"]:
 							if len(options.target) > 1:
-								printf("[+] Auto check proxy for multiple URLs! Target: %s!" %(options.url))
+								utils.printf("[+] Auto check proxy for multiple URLs! Target: %s!" %(options.url))
 								getproxy.check(options)
 							try:
 								options.proxy = getproxy.livelist()
 							except:
-								printf("[-] Loading file error! Get new list. Please wait!", "bad")
+								utils.printf("[-] Loading file error! Get new list. Please wait!", "bad")
 								getproxy.check(options)
 								options.proxy = getproxy.livelist()
 
-						printf("[%s / %s] [%s]" %(idu + 1, len(options.target), options.url))
+						utils.printf("[%s / %s] [%s]" %(idu + 1, len(options.target), options.url))
 						loginInfo = check_login(options)
 						if loginInfo:
 							check_tasks(options, loginInfo)
@@ -174,27 +180,27 @@ if __name__ == "__main__":
 									results.append(_result)
 							#results.append(result)
 						else:
-							printf("[x] Error no login request found", "bad")
+							utils.printf("[x] Error no login request found", "bad")
 
 				if "--reauth" in options.extras:
 					from extras import reauth
 					reauth.run(options, result)
 
 	except Exception as error:
-		die("[x] Program stopped", error)
+		utils.die("[x] Program stopped", error)
 
 	finally:
 		runtime = time.time() - runtime
 		try:
 			if len(options.target) > 0:
 				if len(results) > 0 and len(options.target) > 1:
-					printf("[*] Cracked %s target[s]" %(len(results)), "norm")
-					print_table(("URL", "Username", "Password"), *results)
+					utils.printf("[*] Cracked %s target[s]" %(len(results)), "norm")
+					utils.print_table(("URL", "Username", "Password"), *results)
 			else:
-				printf("[x] No target has been cracked", "bad")
+				utils.printf("[x] No target has been cracked", "bad")
 		except:
 			pass
-		printf("\n[*] [Elapsed: %0.2f] [%s]" %(
+		utils.printf("\n[*] [Elapsed: %0.2f] [%s]" %(
 			runtime,
 			time.strftime("%Y-%m-%d %H:%M"),
 			),

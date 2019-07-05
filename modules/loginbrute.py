@@ -1,4 +1,4 @@
-from utils.utils import printf, die
+import utils
 from cores.actions import randomFromList
 from cores.check import parseLoginForm, check_sqlerror
 
@@ -36,10 +36,10 @@ def check_condition(options, proc, loginInfo):
 
 
 def submit(options, loginInfo, tryCred, result):
-	if options.tech == "mechanize":
-		from libs.mbrowser import mBrowser as Browser
-	elif options.tech == "selenium":
-		from libs.sbrowser import sBrowser as Browser 
+	# if options.tech == "mechanize":
+	# 	from libs.mbrowser import mBrowser as Browser
+	# elif options.tech == "selenium":
+	# 	from libs.sbrowser import sBrowser as Browser 
 	
 	# frmLoginID, frmFields = loginInfo
 	tryPassword, tryUsername = tryCred
@@ -50,9 +50,9 @@ def submit(options, loginInfo, tryCred, result):
 	# if options.options["-p"] == "sqli" and len(list(result.queue)) > 1:
 	# 	return True
 	
-	for cred in list(result.queue):
-		if tryUsername == cred[1]:
-			return True
+	# for cred in list(result.queue):
+	# 	if tryUsername == cred[1]:
+	# 		return True
 	
 	try:
 		proc = Browser()
@@ -67,13 +67,13 @@ def submit(options, loginInfo, tryCred, result):
 		_form = parseLoginForm(proc.forms())
 		if not _form:
 			if options.verbose:
-				printf("[x] LoginBrute: No login form found. Possibly get blocked!")
+				utils.printf("[x] LoginBrute: No login form found. Possibly get blocked!")
 			return False
 		else:
 			frmCtrl, frmFields = _form
 			frmLoginID, btnSubmit = frmCtrl
 		if options.verbose and loginInfo != _form:
-			printf("[+] Warning: Form field has been changed!")	
+			utils.printf("[+] Warning: Form field has been changed!")	
 		#	Select login form
 		# page_title = proc.title()
 		#	Send request
@@ -84,57 +84,56 @@ def submit(options, loginInfo, tryCred, result):
 		resp = proc.xsubmit(frmCtrl, frmFields, tryCred)
 		if options.verbose:
 			if len(frmFields) == 2:
-				printf("[+] [%s=(%s); %s=(%s)] <--> %s" %(frmFields[1], tryUsername, frmFields[0], tryPassword, proxyAddr), 'norm')
+				utils.printf("[+] [%s=(%s); %s=(%s)] <--> %s" %(frmFields[1], tryUsername, frmFields[0], tryPassword, proxyAddr), 'norm')
 			else:
-				printf("[+] [%s=(%s)] <--> %s" %(frmFields[0], tryPassword, proxyAddr), 'norm')
+				utils.printf("[+] [%s=(%s)] <--> %s" %(frmFields[0], tryPassword, proxyAddr), 'norm')
 
 		if not parseLoginForm(proc.forms()):# != loginInfo:
 			test_result = check_condition(options, proc, loginInfo)
 			if test_result == 1:
-				#printf("[*] Page title: ['%s']" %(proc.title()), "good")
+				#utils.printf("[*] Page title: ['%s']" %(proc.title()), "good")
 				# "If we tried login form with username+password field"
 				
 				if tryUsername:
 					if resp.status_code == 403:
-						printf("[x] 403 forbidden: [%s:%s] <--> %s" %(tryUsername, tryPassword, proxyAddr), "bad")
+						utils.printf("[x] 403 forbidden: [%s:%s] <--> %s" %(tryUsername, tryPassword, proxyAddr), "bad")
 					elif resp.status_code == 404:
-						printf("[x] 404 not found: [%s:%s] <--> %s" %(tryUsername, tryPassword, proxyAddr), "bad")
+						utils.printf("[x] 404 not found: [%s:%s] <--> %s" %(tryUsername, tryPassword, proxyAddr), "bad")
 					elif resp.status_code >= 500:
-						printf("[x] %s Server error [%s:%s] <--> %s" %(resp.status_code, tryUsername, tryPassword, proxyAddr), "bad")
+						utils.printf("[x] %s Server error [%s:%s] <--> %s" %(resp.status_code, tryUsername, tryPassword, proxyAddr), "bad")
 					else:
-						printf("[*] Found: [%s:%s] [%s]" %(tryUsername, tryPassword, proc.get_title()), "good")
+						utils.printf("[*] Found: [%s:%s] [%s]" %(tryUsername, tryPassword, proc.get_title()), "good")
 						result.put([options.url, tryUsername, tryPassword])
 				# "Else If we tried login form with password field only"
 				else:
 					if resp.status_code == 403:
-						printf("[x] 403 forbidden: [%s:%s] %s" %(tryUsername, tryPassword, proxyAddr), "bad")
+						utils.printf("[x] 403 forbidden: [%s:%s] %s" %(tryUsername, tryPassword, proxyAddr), "bad")
 					elif resp.status_code == 404:
-						printf("[x] 404 not found: [%s:%s] %s" %(tryUsername, tryPassword, proxyAddr), "bad")
+						utils.printf("[x] 404 not found: [%s:%s] %s" %(tryUsername, tryPassword, proxyAddr), "bad")
 					elif resp.status_code >= 500:
-						printf("[x] %s Server error: [%s:%s] %s" %(resp.status_code, tryUsername, tryPassword, proxyAddr), "bad")
+						utils.printf("[x] %s Server error: [%s:%s] %s" %(resp.status_code, tryUsername, tryPassword, proxyAddr), "bad")
 					else:
-						printf("[*] Found: [%s] [%s]" %(tryPassword, proc.get_title()), "good")
+						utils.printf("[*] Found: [%s] [%s]" %(tryPassword, proc.get_title()), "good")
 						result.put([options.url, tryUsername, tryPassword])
 			elif test_result == 2 and options.verbose:
-				printf("[+] SQL Injection vulnerable found")
-				printf("   %s" %([tryUsername, tryPassword]), "norm")
+				utils.printf("[+] SQL Injection vulnerable found")
+				utils.printf("   %s" %([tryUsername, tryPassword]), "norm")
 			else:
 				# Possibly Error. But sometime it is true
 				if options.verbose:
-					printf("[x] Get error page: %s" %([tryUsername, tryPassword]), "bad")
-					printf("   [x] Page title: ['%s']" %(proc.get_title()), "bad")
+					utils.printf("[x] Get error page: %s" %([tryUsername, tryPassword]), "bad")
+					utils.printf("   [x] Page title: ['%s']" %(proc.get_title()), "bad")
 		# "Login form is still there. Oops"
 		else:
 			# TODO test if web has similar text (static)
 			if check_sqlerror(proc.get_resp()) and options.verbose:
-				printf("[+] SQL Injection vulnerable found")
-				printf("   %s" %([tryUsername, tryPassword]), "norm")
+				utils.printf("[+] SQL Injection vulnerable found")
+				utils.printf("   %s" %([tryUsername, tryPassword]), "norm")
 			if options.verbose:
 				if tryUsername:
-					printf("[-] Failed: [%s:%s] <--> %s ==> %s" %(tryUsername, tryPassword, proxyAddr, proc.get_title()), "bad")
+					utils.printf("[-] Failed: [%s:%s] <--> %s ==> %s" %(tryUsername, tryPassword, proxyAddr, proc.get_title()), "bad")
 				else:
-					printf("[-] Failed: [%s] <--> %s ==> %s" %(tryPassword, proxyAddr, proc.get_title()), "bad")
-
+					utils.printf("[-] Failed: [%s] <--> %s ==> %s" %(tryPassword, proxyAddr, proc.get_title()), "bad")
 				
 		return True
 
@@ -149,19 +148,19 @@ def submit(options, loginInfo, tryCred, result):
 			# Unauthenticated
 			if type(err.code) == int and err.code == 401:
 				if options.verbose:
-					printf("[-] Failed: %s" %([tryUsername, tryPassword]), "bad")
+					utils.printf("[-] Failed: %s" %([tryUsername, tryPassword]), "bad")
 			# Server misconfiguration? Panel URL is deleted or wrong
 			elif error.code == 404:
-				printf("[x] %s: %s" %(error, tryCred[::-1]), "bad")
+				utils.printf("[x] %s: %s" %(error, tryCred[::-1]), "bad")
 				if options.verbose:
-					printf("   %s" %(proc.url()), "bad")
+					utils.printf("   %s" %(proc.url()), "bad")
 			# Other error code
 			else:
 				if options.verbose:
-					printf("[x] (%s): %s" %(proc.url(), tryCred[::-1]), "bad")
+					utils.printf("[x] (%s): %s" %(proc.url(), tryCred[::-1]), "bad")
 		except:
 			# THIS BLOCKED BY WAF
-			printf("[x] Loginbrute: %s" %(error), "bad")
+			utils.printf("[x] Loginbrute: %s" %(error), "bad")
 			return False
 
 	finally:

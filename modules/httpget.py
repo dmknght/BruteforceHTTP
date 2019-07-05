@@ -1,5 +1,5 @@
 from libs.mbrowser import mBrowser
-from utils.utils import printf, die
+import utils
 from cores.actions import randomFromList
 
 # https://stackoverflow.com/a/4089075
@@ -23,21 +23,21 @@ def submit(options, loginInfo, creds, result):
 		resp = proc.get(options.url, auth=(tryUsername, tryPassword))
 		if options.verbose:
 			if options.proxy:
-				printf("[+] [%s=(%s); %s=(%s)] <--> %s" %(fUsername, tryUsername, fPassword, tryPassword, proxyAddr), 'norm')
+				utils.printf("[+] [%s=(%s); %s=(%s)] <--> %s" %(fUsername, tryUsername, fPassword, tryPassword, proxyAddr), 'norm')
 
 		if resp.status_code == 401:
 			if options.verbose:
 				if options.proxy:
-					printf("[-] Failed [%s=(%s); %s=(%s)] <--> %s" %(fUsername, tryUsername, fPassword, tryPassword, proxyAddr), 'bad')
+					utils.printf("[-] Failed [%s=(%s); %s=(%s)] <--> %s" %(fUsername, tryUsername, fPassword, tryPassword, proxyAddr), 'bad')
 		elif resp.status_code == 403:
-			printf("[x] 403 forbidden: [%s:%s] %s" %(tryUsername, tryPassword, proxyAddr), "bad")
+			utils.printf("[x] 403 forbidden: [%s:%s] %s" %(tryUsername, tryPassword, proxyAddr), "bad")
 		elif resp.status_code == 404:
-			printf("[x] 404 not found: [%s:%s] %s" %(tryUsername, tryPassword, proxyAddr), "bad")
+			utils.printf("[x] 404 not found: [%s:%s] %s" %(tryUsername, tryPassword, proxyAddr), "bad")
 		elif resp.status_code >= 500:
-			printf("[x] %s Server error: [%s:%s] <--> %s" %(resp.status_code, tryUsername, tryPassowrd, proxyAddr))
+			utils.printf("[x] %s Server error: [%s:%s] <--> %s" %(resp.status_code, tryUsername, tryPassowrd, proxyAddr))
 		else:
-			printf("[*] Found: [%s:%s] [%s] --> %s" %(tryUsername, tryPassword, proc.get_title(), proxyAddr), "good")
+			utils.printf("[*] Found: [%s:%s] [%s] --> %s" %(tryUsername, tryPassword, proc.get_title(), proxyAddr), "good")
 			result.put([options.url, tryUsername, tryPassword])
 
 	except Exception as err:
-		die("[x] HTTP GET:", err)
+		utils.die("[x] HTTP GET:", err)
