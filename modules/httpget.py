@@ -8,9 +8,8 @@ def submit(options, loginInfo, creds, result):
 	tryPassword, tryUsername = creds
 	realm = loginInfo[0]
 	fPassword, fUsername = loginInfo[1]
-	for cred in list(result.queue):
-		if tryUsername == cred[0]:
-			return True # don't run if find password of username
+	if tryUsername in [x[1] for x in list(result.queue)]:
+		return True
 	
 	try:
 		proc = mBrowser()

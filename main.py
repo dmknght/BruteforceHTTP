@@ -5,8 +5,6 @@ def attack(options, loginInfo):
 	def run_threads(threads, sending, completed, total):
 		# Run threads
 		for thread in threads:
-			sending += 1 # Sending
-			progress_bar(sending, completed, total)
 			thread.start()
 
 		# Wait for threads completed
@@ -61,6 +59,8 @@ def attack(options, loginInfo):
 					sending, completed = run_threads(workers, sending, completed, tasks)
 					del workers[:]
 
+				if username in [x[1] for x in list(result.queue)]:
+					break
 				worker = threading.Thread(
 					target = attack_module,
 					args = (options, loginInfo, [password, username], result)

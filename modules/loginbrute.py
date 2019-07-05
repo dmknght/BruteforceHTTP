@@ -50,10 +50,11 @@ def submit(options, loginInfo, tryCred, result):
 	# if options.options["-p"] == "sqli" and len(list(result.queue)) > 1:
 	# 	return True
 	
-	# for cred in list(result.queue):
-	# 	if tryUsername == cred[1]:
-	# 		return True
+	if tryUsername in [x[1] for x in list(result.queue)]:
+		return True
 	
+
+	from libs.mbrowser import mBrowser as Browser
 	try:
 		proc = Browser()
 		if options.proxy:
@@ -134,6 +135,7 @@ def submit(options, loginInfo, tryCred, result):
 					utils.printf("[-] Failed: [%s:%s] <--> %s ==> %s" %(tryUsername, tryPassword, proxyAddr, proc.get_title()), "bad")
 				else:
 					utils.printf("[-] Failed: [%s] <--> %s ==> %s" %(tryPassword, proxyAddr, proc.get_title()), "bad")
+
 				
 		return True
 
