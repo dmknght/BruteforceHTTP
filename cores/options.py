@@ -1,5 +1,4 @@
 import sys
-from utils import helps
 import utils
 
 class ParseOptions(object):
@@ -84,6 +83,7 @@ class ParseOptions(object):
 		self.get_options()
 
 	def parse_options(self, szOptions):
+		# TODO edit help logic here
 		i = 1
 		while i < szOptions:
 			if sys.argv[i] in self.HELP_OPTIONS:
