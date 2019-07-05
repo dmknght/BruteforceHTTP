@@ -1,4 +1,4 @@
-from libs.mbrowser import mBrowser
+from libs.mbrowser import Browser
 import utils
 from cores.actions import randomFromList
 
@@ -12,7 +12,7 @@ def submit(options, loginInfo, creds, result):
 		return True
 	
 	try:
-		proc = mBrowser()
+		proc = Browser()
 		if options.proxy:
 			proxyAddr = randomFromList(options.proxy)
 			proc.setproxy(proxyAddr)

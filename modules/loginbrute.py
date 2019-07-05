@@ -1,6 +1,6 @@
 import utils
-from cores.actions import randomFromList
-from cores.check import parseLoginForm, check_sqlerror
+from cores import actions
+from cores import check
 
 def check_condition(options, proc, loginInfo):
 
@@ -14,8 +14,8 @@ def check_condition(options, proc, loginInfo):
 	if options.panel_url:
 		# User provided panel url (/wp-admin/ for example, repopen this url to check sess)
 		proc.open_url(options.panel_url)
-		if not parseLoginForm(proc.forms()):# != loginInfo:
-			if check_sqlerror(proc.get_resp()):
+		if not check.parseLoginForm(proc.forms()):# != loginInfo:
+			if check.check_sqlerror(proc.get_resp()):
 				return 2
 			else:
 				return 1
@@ -25,11 +25,11 @@ def check_condition(options, proc, loginInfo):
 		# User provided direct login URL (/wp-login.php).
 		# DEBUG
 		# proc.open(options.url)
-		# if parseLoginForm(proc.forms()) != loginInfo:
+		# if check.parseLoginForm(proc.forms()) != loginInfo:
 		# 	return 1
 		# else:
 		# 	return 0
-		if check_sqlerror(proc.get_resp()):
+		if check.check_sqlerror(proc.get_resp()):
 			return 2
 		else:
 			return 1
@@ -53,19 +53,19 @@ def submit(options, loginInfo, tryCred, result):
 	if tryUsername in [x[1] for x in list(result.queue)]:
 		return True
 	
-
-	from libs.mbrowser import mBrowser as Browser
+	from libs import mbrowser as browser
 	try:
-		proc = Browser()
+		proc = browser.Browser()
 		if options.proxy:
 		# Set proxy connect
-			proxyAddr = randomFromList(options.proxy)
+			proxyAddr = actions.randomFromList(options.proxy)
 			proc.setproxy(proxyAddr)
 		else:
 			proxyAddr = ""
-		
+
 		proc.open_url(options.login_url)
-		_form = parseLoginForm(proc.forms())
+		_form = check.parseLoginForm(proc.forms())
+
 		if not _form:
 			if options.verbose:
 				utils.printf("[x] LoginBrute: No login form found. Possibly get blocked!")
@@ -89,7 +89,7 @@ def submit(options, loginInfo, tryCred, result):
 			else:
 				utils.printf("[+] [%s=(%s)] <--> %s" %(frmFields[0], tryPassword, proxyAddr), 'norm')
 
-		if not parseLoginForm(proc.forms()):# != loginInfo:
+		if not check.parseLoginForm(proc.forms()):# != loginInfo:
 			test_result = check_condition(options, proc, loginInfo)
 			if test_result == 1:
 				#utils.printf("[*] Page title: ['%s']" %(proc.title()), "good")
@@ -127,7 +127,7 @@ def submit(options, loginInfo, tryCred, result):
 		# "Login form is still there. Oops"
 		else:
 			# TODO test if web has similar text (static)
-			if check_sqlerror(proc.get_resp()) and options.verbose:
+			if check.check_sqlerror(proc.get_resp()) and options.verbose:
 				utils.printf("[+] SQL Injection vulnerable found")
 				utils.printf("   %s" %([tryUsername, tryPassword]), "norm")
 			if options.verbose:

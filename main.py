@@ -10,7 +10,7 @@ def attack(options, loginInfo):
 		# Wait for threads completed
 		for thread in threads:
 			completed += 1
-			progress_bar(sending, completed, total)
+			progressbar.progress_bar(sending, completed, total)
 			thread.join()
 
 		return sending, completed
@@ -102,10 +102,9 @@ if __name__ == "__main__":
 		# IMPORT GLOBALY
 	import sys, time, ssl
 	from cores import options
-	from cores.check import check_options, check_tasks, check_url, check_login
+	from cores import check
 	import utils
-	from utils.progressbar import progress_bar
-	from utils.banners import start_banner
+	from utils import progressbar, banners 
 	from extras import getproxy # TODO move this line
 
 	try:
@@ -121,7 +120,7 @@ if __name__ == "__main__":
 			from utils import helps
 			helps.print_help()
 		else:
-			check_options(options)
+			check.check_options(options)
 
 			if "--getproxy" in options.extras:
 				getproxy.getnew(options)
@@ -145,7 +144,7 @@ if __name__ == "__main__":
 				# Handle target environment that doesn't support HTTPS verification
 					ssl._create_default_https_context = _create_unverified_https_context
 
-				utils.printf(start_banner(options))
+				utils.printf(banners.start_banner(options))
 				results = []
 				set_break = False
 				for idu, url in enumerate(options.target):
@@ -155,7 +154,7 @@ if __name__ == "__main__":
 						# Clean other URL options (Fix URL_panel and URL login bug)
 						options.login_url = None
 						options.panel_url = None
-						options.url = check_url(url)
+						options.url = check.check_url(url)
 						if "--getproxy" in options.extras and len(options.target) == 1 and options.run_options["--proxy"]:
 							utils.printf("[+] Check connection via proxy to %s! Be patient!" %(options.url))
 							getproxy.check(options)
@@ -171,9 +170,9 @@ if __name__ == "__main__":
 								options.proxy = getproxy.livelist()
 
 						utils.printf("[%s / %s] [%s]" %(idu + 1, len(options.target), options.url))
-						loginInfo = check_login(options)
+						loginInfo = check.check_login(options)
 						if loginInfo:
-							check_tasks(options, loginInfo)
+							check.check_tasks(options, loginInfo)
 							result = attack(options, loginInfo)
 							if result:
 								for _result in result:

@@ -70,9 +70,9 @@ def check_sqlerror(response):
 
 def check_login(options):
 	try:
-		from libs.mbrowser import mBrowser
+		from libs.mbrowser import Browser
 		
-		proc = mBrowser()
+		proc = Browser()
 		
 		resp = proc.open_url(options.url)
 		"""
@@ -207,14 +207,14 @@ def check_tasks(options, loginInfo):
 				options.username = tuple(eval("data.%s_user()" %(options.options["-u"])).replace("\t", "").split("\n"))
 		else:
 			options.username = tuple(fread(options.options["-u"]).split("\n"))
-			options.username = filter(None, options.username)
+			options.username = tuple(filter(None, options.username))
 	
 	# CHECK passlist option
 	if options.options["-p"] in options.WORDLISTS:
 		options.passwd = tuple(eval("data.%s_pass()" %(options.options["-p"])).replace("\t", "").split("\n"))
 	else:
 		options.passwd = tuple(fread(options.options["-p"]).split("\n"))
-		options.passwd = filter(None, options.passwd)
+		options.passwd = tuple(filter(None, options.passwd))
 
 	
 	if "--replacement" in options.extras:

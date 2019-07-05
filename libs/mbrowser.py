@@ -7,9 +7,9 @@ from mechanicalsoup.stateful_browser import StatefulBrowser
 	Goal: Attack modules call same method name, so switch to selenium can be much more easier
 """
 
-class mBrowser(StatefulBrowser):
+class Browser(StatefulBrowser):
 	def __init__(self):
-		super(mBrowser, self).__init__()
+		super(Browser, self).__init__()
 		#	Create browser object. All browser settings should be here
 		#https://stackoverflow.com/a/27096416
 		# self.set_handle_robots(False)
