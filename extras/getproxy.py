@@ -1,8 +1,8 @@
 import re, threading, sys
-from libs import mbrowser
+from libs.mbrowser import Browser
 import utils
-from cores import actions
 from utils import progressbar
+from cores.actions import fread, fwrite
 import data
 
 if sys.version_info[0] == 2:
@@ -21,10 +21,10 @@ PROXY_PATH = "%s%s" %(ROOT_FOLDER, "/listproxy.txt")
 LIVE_PATH = "%s%s" %(ROOT_FOLDER, "/liveproxy.txt")
 
 def livelist():
-	return actions.fread(LIVE_PATH).split("\n")
+	return fread(LIVE_PATH).split("\n")
 
 def getlist():
-	return actions.fread(PROXY_PATH).split("\n")
+	return fread(PROXY_PATH).split("\n")
 
 def getnew(options):
 	def parse_proxy(response):
@@ -40,7 +40,7 @@ def getnew(options):
 		try:
 			utils.printf("[+] Getting proxy list from %s" %(url))
 
-			getproxy = mbrowser.Browser()
+			getproxy = Browser()
 
 			getproxy.open_url(url)
 			utils.printf("[*] Gathering proxies completed.", "good")
@@ -62,7 +62,7 @@ def getnew(options):
 			listproxy = "\n".join(listproxy)
 			utils.printf("[*] Get %s proxies." %(len(listproxy)), "good")
 			utils.printf("[+] Saving to %s" %(PROXY_PATH))
-			actions.fwrite(PROXY_PATH, listproxy)
+			fwrite(PROXY_PATH, listproxy)
 			utils.printf("[*] Data saved!", "good")
 
 		except Exception as error:
@@ -88,7 +88,7 @@ def check(options):
 
 	def checProxyConn(proxyAddr, target, result, verbose):
 		try:
-			proxyTest = mbrowser.Browser()
+			proxyTest = Browser()
 			proxyTest.setproxy(proxyAddr)
 
 			if verbose:
@@ -109,7 +109,7 @@ def check(options):
 			except:
 				pass
 	try:
-		proxylist = actions.fread(PROXY_PATH).split("\n")
+		proxylist = fread(PROXY_PATH).split("\n")
 				
 		workers= []
 		trying, completed, total = 0, 0, len(proxylist)
@@ -143,7 +143,7 @@ def check(options):
 			_data = "\n".join(list(result.queue))
 			utils.printf("[*] %s proxies worked." %(len(_data)), "good")
 			utils.printf("[+] Write working proxies")
-			actions.fwrite(LIVE_PATH, _data)
+			fwrite(LIVE_PATH, _data)
 			utils.printf("[*] Write working proxies completed", "good")
 		except Exception as err:
 			utils.die("[x] GetProxy: Error while writing result", err)
