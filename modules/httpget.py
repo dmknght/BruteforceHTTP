@@ -19,7 +19,7 @@ def submit(options, loginInfo, creds, result):
 		else:
 			proxyAddr = ""
 		# proc.httpget_passwd(options.url, tryUsername, tryPassword, realm) # BUG
-		resp = proc.get(options.url, auth=(tryUsername, tryPassword))
+		resp = proc.open_url(options.url, auth=(tryUsername, tryPassword))
 		if options.verbose:
 			if options.proxy:
 				utils.printf("[+] [%s=(%s); %s=(%s)] <--> %s" %(fUsername, tryUsername, fPassword, tryPassword, proxyAddr), 'norm')
