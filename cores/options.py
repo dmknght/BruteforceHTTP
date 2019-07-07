@@ -83,7 +83,6 @@ class ParseOptions(object):
 		self.get_options()
 
 	def parse_options(self, szOptions):
-		# TODO edit help logic here
 		i = 1
 		while i < szOptions:
 			if sys.argv[i] in self.HELP_OPTIONS:
@@ -113,8 +112,8 @@ class ParseOptions(object):
 							"Invalid wordlist %s" %(sys.argv[i + 1])
 						)
 				
-				elif sys.argv[i] in self.HELP_OPTIONS:
-					self.help = True
+				# elif sys.argv[i] in self.HELP_OPTIONS:
+				# 	self.help = True
 				
 				else:
 					utils.die(
