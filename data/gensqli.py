@@ -56,7 +56,7 @@ def truecon():
 
 def sPayload():
 	def sEnd():
-		return randomFromList(["-- --", "#"])
+		return randomFromList(["-- --", "#", "--"])
 	# Generate random SQL injection payload
 	# Payload template: [X / X' / X')] [True condition] [-- / #]
 
