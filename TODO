@@ -64,7 +64,7 @@ Attack modules:
     ☐ Combine with project
     ☐ Auto detect instead of choose option manually @user_communication
   HTTP GET:
-    ☐ Use proxy for attacking tasks @extras @getproxy
+    ✔ Use proxy for attacking tasks @extras @getproxy @done(19-07-07 12:36)
     ☐ Combine with reauth @extras
     ✘ Show wrong creds sometimes @bug @high @match_condition @cancelled(19-01-25 11:12) authentication bypassed (possibly race condition vuln)
   Login Brute:

@@ -10,9 +10,10 @@ Requirements
 
 | name        |
 |-------------|
-| python2     |
-| python2-pip |
+| python     |
+| python-bs4 |
 | python-regex |
+| python-lxml |
 
 1.
 ```
@@ -40,24 +41,29 @@ Options:
 
 Use default userlist and passlit:
 ```
-python main.py <Target URL>
+python main.py <TARGET URL>
 ```
 
 Use default passlist for user `admin` (for multiple usernames, use `user1:user2:user3`):
 ```
-python main.py -U admin <Target URL>
+python main.py -U admin <TARGET URL>
 ```
 
 Use custom userlist and custom passlist:
 ```
-python main.py -u <path to userlist> -p <path to passlist> <Target URL>
+python main.py -u <path to userlist> -p <path to passlist> <TARGET URL>
 ```
 
+Brute force with random proxy address:
+```
+python main.py <TARGET URL> --getproxy --proxy
+```
 
 ## How this tool work
 This tool will detect form field automatically, collect information and submit data therefor it can handle csrf token.
 
 * Update 1/1/2019: Auto choose HTTP Get authentication and HTTP POST form mode
+* Update 7/7/2019: Work with both python 2 and 3
 
 Problems:
  - Detect form field error for some special cases. We will try to improve our function.
@@ -73,8 +79,6 @@ Further improvement (See TODO.md)
 ## Why this / that (FAQ)
 - Q: What is this tool?
 - A: This tool is a brute-force attack tool, based on mechanize browser project. It means this tool can submit login request simulately.
-- Q: Why not python3?
-- A: Currently, mechanize supports python2 only. And because python3 has some different syntaxes so this project doesn't support python3 by now
 - Q: What can it do?
 - A: This tool is aimed to perform a brute-force attack automatically to all website with easy options.
 - Q: Why not other tools?

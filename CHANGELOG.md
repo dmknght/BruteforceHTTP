@@ -1,3 +1,7 @@
+# 07/07/2019
+* Work with python2 and python3 (solved unicode problems)
+* Improved things
+
 # 16/06/2019
 * Say goodbye to old mechanize and say hi to mechanicalsoup with some patches
 
