@@ -83,6 +83,11 @@ def attack(options, loginInfo):
 		utils.die("[x] Runtime error", error)
 
 	finally:
+		try: # clear resource
+			del options.username[:]
+			del options.passwd[:]
+		except:
+			pass
 		credentials = list(result.queue)
 		if len(credentials) == 0:
 			utils.printf("[-] No match found!", "bad")
