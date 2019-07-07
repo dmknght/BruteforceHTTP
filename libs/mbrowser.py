@@ -8,7 +8,7 @@ from mechanicalsoup.stateful_browser import StatefulBrowser
 """
 
 class Browser(StatefulBrowser):
-	def __init__(self):
+	def __init__(self, *args, **kwargs):
 		super(Browser, self).__init__()
 		#	Create browser object. All browser settings should be here
 		#https://stackoverflow.com/a/27096416
@@ -19,7 +19,7 @@ class Browser(StatefulBrowser):
 		# self.set_handle_refresh(True)
 		# self.timeout = timeout
 		# self._factory.is_html = True #https://stackoverflow.com/a/4201003
-		self.set_user_agent = [('User-Agent', self.useragent())]
+		self.addheaders = [('User-agent', self.useragent())]
 
 	def useragent(self):
 		# Try random agent everytime it is called
