@@ -7,9 +7,9 @@ from mechanicalsoup.stateful_browser import StatefulBrowser
 	Goal: Attack modules call same method name, so switch to selenium can be much more easier
 """
 
-class mBrowser(StatefulBrowser):
-	def __init__(self):
-		super(mBrowser, self).__init__()
+class Browser(StatefulBrowser):
+	def __init__(self, *args, **kwargs):
+		super(Browser, self).__init__()
 		#	Create browser object. All browser settings should be here
 		#https://stackoverflow.com/a/27096416
 		# self.set_handle_robots(False)
@@ -19,7 +19,7 @@ class mBrowser(StatefulBrowser):
 		# self.set_handle_refresh(True)
 		# self.timeout = timeout
 		# self._factory.is_html = True #https://stackoverflow.com/a/4201003
-		self.addheaders = [('User-Agent', self.useragent())]
+		self.addheaders = [('User-agent', self.useragent())]
 
 	def useragent(self):
 		# Try random agent everytime it is called
@@ -29,8 +29,8 @@ class mBrowser(StatefulBrowser):
 	def setproxy(self, proxyaddr):
 		self.session.proxies = ({"http": proxyaddr})
 
-	def open_url(self, url):
-		return self.open(url)
+	def open_url(self, url, *args, **kwargs):
+		return self.open(url, *args, **kwargs)
 
 	# def get_opts(self, options):
 	# 	pass
@@ -39,11 +39,16 @@ class mBrowser(StatefulBrowser):
 		return self.get_url()
 
 	def get_resp(self):
-		return str(self.get_current_page())
+		try:
+			return str(self.get_current_page())
+		except UnicodeEncodeError:
+			return str(self.get_current_page().encode('utf-8'))
 	
 	def get_title(self):
 		try:
-			return self.get_current_page().title.text
+			return str(self.get_current_page().title.text)
+		except UnicodeEncodeError:
+			return str(self.get_current_page().title.text.encode('utf-8'))
 		except:
 			return "No title"
 

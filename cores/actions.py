@@ -1,5 +1,5 @@
 import random, sys, string
-from utils.utils import die
+import utils
 
 # def getRootDir(pathModuleLocation):
 # 	##################################
@@ -43,14 +43,14 @@ def fload(pathFile):
 		pFile = open(pathFile, 'r')
 		return pFile
 	except Exception as error:
-		die("[x] Error while loading file!", error)
+		utils.die("[x] Error while loading file!", error)
 		
 def fread(pathFile):
 	try:
 		pFile = fload(pathFile)
 		return pFile.read()
 	except Exception as error:
-		die("[x] Error while reading data", error)
+		utils.die("[x] Error while reading data", error)
 	finally:
 		try:
 			pFile.close()
@@ -62,7 +62,7 @@ def fwrite(pathFileLocation, writeData):
 		objFileWrite = open(pathFileLocation, "w")
 		objFileWrite.write(writeData)
 	except Exception as error:
-		die("[x] Error while writing data", error)
+		utils.die("[x] Error while writing data", error)
 	finally:
 		try:
 			objFileWrite.close()
@@ -74,7 +74,7 @@ def fwrite_c(pathFileLocation, writeData):
 		fileWrite = open(pathFileLocation, "a")
 		fileWrite.write(writeData)
 	except Exception as error:
-		die("[x] Error while continuing write file", error)
+		utils.die("[x] Error while continuing write file", error)
 	finally:
 		fileWrite.close()
 
@@ -90,5 +90,5 @@ def srand(min = 2, max = 5, stype = "char"):
 
 
 if __name__ == "__main__":
-	die("Oops! Wrong place", "Find other place")
+	utils.die("Oops! Wrong place", "Find other place")
 	

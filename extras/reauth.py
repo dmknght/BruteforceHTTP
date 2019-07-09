@@ -1,7 +1,7 @@
 
 from modules import loginbrute
 import data, threading
-from utils.utils import printf, die, print_table
+import utils
 from libs.mbrowser import startBrowser, parseLoginForm
 
 
@@ -22,19 +22,19 @@ def submit(url, options, tryCreds, result):
 	try:
 		proc = startBrowser()
 
-		printf("[+] Checking %s" %(url))
+		utils.printf("[+] Checking %s" %(url))
 
 		proc.open(url)
 		loginInfo = parseLoginForm(proc.forms())
 
 	except Exception as err:
 		if options.verbose:
-			printf("[x] ReAuth: %s at %s" %(err, url), "bad")
+			utils.printf("[x] ReAuth: %s at %s" %(err, url), "bad")
 		
 
 	if not loginInfo:
 		if options.verbose:
-			printf("[x] ReAuth: Can't find login form at %s" %(url), "bad")
+			utils.printf("[x] ReAuth: Can't find login form at %s" %(url), "bad")
 	else:
 		try:
 			options.url = url
@@ -45,7 +45,7 @@ def submit(url, options, tryCreds, result):
 			)
 		except Exception as err:
 			if options.verbose:
-				printf("[x] ReAuth: Submitting error for %s" %(err), "bad")
+				utils.printf("[x] ReAuth: Submitting error for %s" %(err), "bad")
 
 def run(options, creds):
 	social_urls = data.social_urls().replace("\t", "").split("\n")
@@ -80,20 +80,20 @@ def run(options, creds):
 		
 	
 	except KeyboardInterrupt:
-		printf("[x] Terminated by user!", "bad")
+		utils.printf("[x] Terminated by user!", "bad")
 		import os
 		os._exit(0)
 
 	except SystemExit:
-		die("[x] Terminated by system!", "SystemExit")
+		utils.die("[x] Terminated by system!", "SystemExit")
 	
 	except Exception as err:
-		die("[x] ReAuth: Runtime error", err)
+		utils.die("[x] ReAuth: Runtime error", err)
 				
 	finally:
 		result = list(result.queue)
 
 		if len(result) == 0:
-			printf("[-] No extra valid password found", "bad")
+			utils.printf("[-] No extra valid password found", "bad")
 		else:
-			print_table(("Target", "Username", "Password"), *result)
+			utils.print_table(("Target", "Username", "Password"), *result)
