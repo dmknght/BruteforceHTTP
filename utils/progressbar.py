@@ -29,8 +29,8 @@ def progress_bar(trying, completed, total, bsize = 60):
 			# is submited tasks. Tasks have no responses
 			- is waiting tasks
 	"""
-	finished = (completed * bsize) / total
-	running = (trying * bsize) / total - finished
+	finished = int((completed * bsize) / total)
+	running = int((trying * bsize) / total - finished)
 	running = 1 if running < 1 else running
 
 	prints("|%s%s%s| %10s" %(

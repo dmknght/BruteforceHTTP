@@ -1,5 +1,5 @@
 import sys
-from utils import print_table
+import utils
 
 def print_fast_help():
 	print(
@@ -41,7 +41,7 @@ def print_help():
 			"-l url_list.txt"
 		],
 	]
-	print_table(title, *menu)
+	utils.print_table(title, *menu)
 	
 	print("\nRunning mode:")
 	title = ("Modes", "Descriptions")
@@ -55,7 +55,7 @@ def print_help():
 			"Display running information"
 		],
 	]
-	print_table(title, *menu)
+	utils.print_table(title, *menu)
 	
 	print("\nExtra modes: Combines with attack mode")
 	title = ("Modes", "Descriptions")
@@ -73,7 +73,7 @@ def print_help():
 			"Add username to passlist"
 		],
 	]
-	print_table(title, *menu)
+	utils.print_table(title, *menu)
 
 	print("\nWordlists: Values will be replaced by [-U/-u/-p] options")
 	title = ("List name", "Descriptions")
@@ -115,7 +115,7 @@ def print_help():
 			"Dynamic SQLi payloads"
 		],
 	]
-	print_table(title, *menu)
+	utils.print_table(title, *menu)
 	print("")
 	print("\nPassword generators: Generate password from text or keywords")
 	title = ("Values", "Descriptions")
@@ -129,5 +129,5 @@ def print_help():
 			"Replace letter by special characters"
 		],
 	]
-	print_table(title, *menu)
+	utils.print_table(title, *menu)
 	print("")

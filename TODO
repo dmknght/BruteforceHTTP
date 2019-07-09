@@ -64,7 +64,7 @@ Attack modules:
     ☐ Combine with project
     ☐ Auto detect instead of choose option manually @user_communication
   HTTP GET:
-    ☐ Use proxy for attacking tasks @extras @getproxy
+    ✔ Use proxy for attacking tasks @extras @getproxy @done(19-07-07 12:36)
     ☐ Combine with reauth @extras
     ✘ Show wrong creds sometimes @bug @high @match_condition @cancelled(19-01-25 11:12) authentication bypassed (possibly race condition vuln)
   Login Brute:
@@ -125,3 +125,4 @@ BUG:
   ✔ Fix path file if pwd != project folder @extras @getproxy @user_communication @done(19-01-17 16:55)
   ✔ " No URL provided! Get proxy only." when use -l (list of IPs) option @done(19-04-21 02:17)
   ✔ Check proxy connection to first address 2 time @done(19-04-21 02:34)
+  ☐ User-agent isn't replaced @bug @critical 
