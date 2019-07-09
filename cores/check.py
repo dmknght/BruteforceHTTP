@@ -145,6 +145,8 @@ def check_url(url):
 		else:
 			"Something.com"
 			url = "http://%s" %(url)
+		if len(url.split("/")) <= 3:
+			url = "%s/" %(url) if url[-1] != "/" else url
 	except:
 		url = None
 	return url
