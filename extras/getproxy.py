@@ -74,7 +74,7 @@ def check(options):
 	def run_threads(threads, sending, completed, total):
 		# Run threads
 		for thread in threads:
-			sending += 1 # Sending
+			# sending += 1 # Sending
 			progressbar.progress_bar(sending, completed, total)
 			thread.start()
 
@@ -84,7 +84,7 @@ def check(options):
 			progressbar.progress_bar(sending, completed, total)
 			thread.join()
 		
-		return sending, completed
+		return completed
 
 	def checProxyConn(proxyAddr, target, result, verbose):
 		try:
@@ -112,11 +112,11 @@ def check(options):
 		proxylist = fread(PROXY_PATH).split("\n")
 				
 		workers= []
-		trying, completed, total = 0, 0, len(proxylist)
+		completed, total = 0, len(proxylist)
 
-		for tryProxy in proxylist:
+		for trying, tryProxy in enumerate(proxylist):
 			if len(workers) == options.threads:
-				trying, completed = run_threads(workers, trying, completed, total)
+				completed = run_threads(workers, trying, completed, total)
 				del workers[:]
 			
 			worker = threading.Thread(
@@ -127,7 +127,7 @@ def check(options):
 			worker.daemon = True
 			workers.append(worker)
 			
-		trying, completed = run_threads(workers, trying, completed, total)
+		completed = run_threads(workers, trying, completed, total)
 		del workers[:]
 
 	except KeyboardInterrupt as error:
