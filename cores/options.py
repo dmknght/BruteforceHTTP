@@ -142,7 +142,8 @@ class ParseOptions(object):
 		
 		if szOptions == 1:
 			# NO ARGUMENT
-			utils.print_fast_help()
+			from utils import helps
+			helps.print_fast_help()
 
 			utils.printf(
 				"Use: %s for more infomation\n" %(self.HELP_OPTIONS)
