@@ -157,6 +157,8 @@ def check_options(options):
 		This function checks main options before create tasks, ...
 	"""
 	# Read URL from list (file_path) or get URL from option
+	options.report = options.run_options["--report"]
+	options.verbose = options.run_options["--verbose"]
 	try:
 		options.target = fread(options.options["-l"]).split("\n") if options.options["-l"] else [options.url]
 		options.target = list(filter(None, options.target))
@@ -232,6 +234,3 @@ def check_tasks(options, loginInfo):
 		for line in options.passwd:
 			final_passwd += "\n".join(list(toggle_case(line)))
 		options.passwd = final_passwd.split("\n")
-
-	options.report = options.run_options["--report"]
-	options.verbose = options.run_options["--verbose"]
