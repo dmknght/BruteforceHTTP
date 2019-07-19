@@ -19,7 +19,8 @@ class Browser(StatefulBrowser):
 		# self.set_handle_refresh(True)
 		# self.timeout = timeout
 		# self._factory.is_html = True #https://stackoverflow.com/a/4201003
-		self.addheaders = [('User-agent', self.useragent())]
+		# self.addheaders = [('User-agent', self.useragent())]
+		self.set_user_agent(self.useragent())
 
 	def useragent(self):
 		# Try random agent everytime it is called
