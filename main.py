@@ -109,7 +109,8 @@ if __name__ == "__main__":
 	from cores import options
 	from cores import check
 	import utils
-	from utils import progressbar, banners 
+	from utils import progressbar, banners
+	from extras import getproxy
 
 	try:
 		# Setting new session
@@ -127,7 +128,6 @@ if __name__ == "__main__":
 			check.check_options(options)
 
 			if "--getproxy" in options.extras:
-				from extras import getproxy
 				getproxy.getnew(options)
 				if not options.target:
 					utils.printf("[*] No URL provided! Get proxy only.", "good")
