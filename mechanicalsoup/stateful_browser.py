@@ -174,22 +174,22 @@ class StatefulBrowser(Browser):
 									 request=resp.request)
 		return resp
 
-	def forms(self):
-		"""Get a summary of the form with classic mechanize style
+	# def forms(self):
+	# 	"""Get a summary of the form with classic mechanize style
 
-		"""
-		for form in self.get_current_page().find_all('form'):
-			info = "<%s[%s]>\n" %(form.get('method'), form.get('action'))
-			for fields in form.find_all(("input", "textarea", "select", "button")):
-				fType = fields.get('type') or None
-				fID = fields.get('id') or None
-				fValue = fields.get('value') or None
-				fName = fields.get('name') or None
+	# 	"""
+	# 	for form in self.get_current_page().find_all('form'):
+	# 		info = "<%s[%s]>\n" %(form.get('method'), form.get('action'))
+	# 		for fields in form.find_all(("input", "textarea", "select", "button")):
+	# 			fType = fields.get('type') or None
+	# 			fID = fields.get('id') or None
+	# 			fValue = fields.get('value') or None
+	# 			fName = fields.get('name') or None
 
-				fID = fName if fName else fID
-				info += "  %s(%s)=\'%s\'\n" %(fType, fID, fValue)
+	# 			fID = fName if fName else fID
+	# 			info += "  %s(%s)=\'%s\'\n" %(fType, fID, fValue)
 
-			yield info
+	# 		yield info
 
 	def select_form(self, selector="form", nr=0):
 		"""Select a form in the current page.
