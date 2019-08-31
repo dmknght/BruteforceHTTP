@@ -116,7 +116,6 @@ def submit(options, loginInfo, tryCred, result):
 					events.error("['%s': '%s'] [%s]" % (tryUsername, tryPassword, proc.get_title()), "BRUTE")
 		# "Login form is still there. Oops"
 		else:
-			# TODO test if web has similar text (static)
 			if check_sqlerror(proc.get_resp()) and options.verbose:
 				events.success("SQL Injection in login form", "BRUTE")
 				events.info("['%s': '%s']" % (tryUsername, tryPassword))
