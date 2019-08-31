@@ -1,32 +1,31 @@
 import sys
 import utils
 
-class ParseOptions(object):
 
+class ParseOptions(object):
 	# Deny user choosing --httpget option
 	# Program now automatic choose attack mode
 	# --httpget is still useable in attack module
 	
 	ATTACK_MODES = (
 		"--brute",
-		#"--httpget",
+		# "--httpget",
 		"--sqli",
 	)
-		
+	
 	run_options = {
 		"--proxy": False,
 		"--report": False,
 		"--verbose": False,
 	}
-
+	
 	extra_mode = (
 		"--getproxy",
 		"--upwd",
 		"--reauth",
-		"--social", # Similar reauth, no url
+		"--social",  # Similar reauth, no url
 	)
-
-
+	
 	WORDLISTS = (
 		"default",
 		"router",
@@ -39,10 +38,10 @@ class ParseOptions(object):
 		"sqli",
 	)
 	PASSWD_GEN = (
-		"--toggle_case", # TODO add mask* attack type, handle arguments
+		"--toggle_case",  # TODO add mask* attack type, handle arguments
 		"--replacement"
 	)
-
+	
 	options = {
 		"-u": "default",
 		"-p": "default",
@@ -51,14 +50,14 @@ class ParseOptions(object):
 		"-l": None,
 		"-T": 25
 	}
-
+	
 	HELP_OPTIONS = [
 		"-h",
 		"--help",
 		"-help",
 		"help"
 	]
-
+	
 	def __init__(self):
 		self.url = None
 		self.target = None
@@ -68,26 +67,26 @@ class ParseOptions(object):
 		self.extras = []
 		self.help = False
 		self.tech = "mechanize"
-
+		
 		# options
 		self.threads = 16
 		# self.timeout = 25
 		self.username = None
 		self.passwd = None
-
+		
 		# run_modes
 		self.verbose = False
 		self.proxy = None
 		self.report = False
-
+		
 		self.get_options()
-
+	
 	def parse_options(self, szOptions):
 		i = 1
 		while i < szOptions:
 			if sys.argv[i] in self.HELP_OPTIONS:
 				self.help = True
-
+			
 			elif sys.argv[i].startswith("--"):
 				
 				if sys.argv[i] in self.run_options.keys():
@@ -98,9 +97,9 @@ class ParseOptions(object):
 					self.attack_mode = sys.argv[i]
 				elif sys.argv[i] in self.PASSWD_GEN:
 					self.extras.append(sys.argv[i])
-			
+				
 				elif sys.argv[i] == "--list":
-
+					
 					if sys.argv[i + 1] in self.WORDLISTS:
 						self.options["-u"] = sys.argv[i + 1]
 						self.options["-p"] = sys.argv[i + 1]
@@ -109,7 +108,7 @@ class ParseOptions(object):
 					else:
 						utils.die(
 							"[x] Options: Arguments error",
-							"Invalid wordlist %s" %(sys.argv[i + 1])
+							"Invalid wordlist %s" % (sys.argv[i + 1])
 						)
 				
 				# elif sys.argv[i] in self.HELP_OPTIONS:
@@ -118,7 +117,7 @@ class ParseOptions(object):
 				else:
 					utils.die(
 						"[x] Options: Arguments error",
-						"Unknow option %s" %(sys.argv[i])
+						"Unknow option %s" % (sys.argv[i])
 					)
 			
 			elif sys.argv[i].startswith("-"):
@@ -129,14 +128,14 @@ class ParseOptions(object):
 				else:
 					utils.die(
 						"[x] Options: Arguments error",
-						"Unknow option %s" %(sys.argv[i])
+						"Unknow option %s" % (sys.argv[i])
 					)
 			
 			else:
 				self.url = sys.argv[i]
 			
 			i += 1
-
+	
 	def get_options(self):
 		szOptions = len(sys.argv)
 		
@@ -144,12 +143,12 @@ class ParseOptions(object):
 			# NO ARGUMENT
 			from utils import helps
 			helps.print_fast_help()
-
+			
 			utils.printf(
-				"Use: %s for more infomation\n" %(self.HELP_OPTIONS)
+				"Use: %s for more infomation\n" % (self.HELP_OPTIONS)
 			)
 			sys.exit(0)
-
+		
 		else:
 			try:
 				self.parse_options(szOptions)

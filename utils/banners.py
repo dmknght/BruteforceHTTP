@@ -1,16 +1,17 @@
 def fixLen(inpText, lim):
 	# https://stackoverflow.com/a/37422973
-	finalText, inpText = " %.*s" %(lim, inpText[:lim]), inpText[lim:]
-	lim = 68 # MAX LIM FOR TERMINAL
+	finalText, inpText = " %.*s" % (lim, inpText[:lim]), inpText[lim:]
+	lim = 68  # MAX LIM FOR TERMINAL
 	
 	while inpText:
 		
 		if len(inpText) < lim:
-			finalText += " |\n  | %s" %(inpText) + " " * (lim + 1 - len(inpText))
+			finalText += " |\n  | %s" % (inpText) + " " * (lim + 1 - len(inpText))
 			break
-		finalText, inpText = finalText + " |\n  |  %.*s" %(71, inpText[:lim]), inpText[lim:]
-
+		finalText, inpText = finalText + " |\n  |  %.*s" % (71, inpText[:lim]), inpText[lim:]
+	
 	return finalText
+
 
 # def report_banner(url, mode, proxy, thread, creds, daytime, runtime, regular):
 # 	# if option != "--sqli" and "--single":
@@ -22,7 +23,7 @@ def fixLen(inpText, lim):
 # 			)
 # 			ret += "\n  |%s|\n  " %("+" * 71)
 # 		return ret
-	
+
 # 	def s_body(creds, mode):
 # 		ret = ""
 # 		name = "Payload" if mode == "--sqli" else "Password"
@@ -34,7 +35,7 @@ def fixLen(inpText, lim):
 # 			)
 # 			ret += "\n  |%s|\n  " %("+" * 71)
 # 		return ret
-	
+
 # 	header = """
 # 	  =====================================================================
 # 	/       Finish: %-56s\\
@@ -57,17 +58,17 @@ def fixLen(inpText, lim):
 # 		fixLen(url.split("/")[2], 59),
 # 		fixLen(url, 62),
 # 	)
-	
+
 # 	footer = """\\  Runtime: %-60s/
 # 	  =====================================================================\n""" %(runtime)
-	
+
 # 	body = n_body(creds) if regular else s_body(creds, mode)
 
 # 	return header.replace("\t", "  ") + body + footer.replace("\t", "  ")
 
 def start_banner(options):
 	usr = options.options["-U"] if options.options["-U"] else options.options["-u"]
-
+	
 	banner = """
 	  =====================================================================
 	/%-71s\\
@@ -87,7 +88,7 @@ def start_banner(options):
 	+-----------------------------------------------------------------------+
 	\\ %-69s /
 	  =====================================================================
-	""" %(
+	""" % (
 		" " * 23 + "HTTP LOGIN BRUTE FORCER",
 		fixLen(usr, 57),
 		fixLen(options.options["-p"], 57),
@@ -98,25 +99,25 @@ def start_banner(options):
 		# 		options.timeout,
 		# 	),
 		# 	68
-		fixLen( "   Attack mode: %-8s |   Proxy: %-8s  |   Threads: %-8s " %(
-				options.attack_mode.replace("--", ""),
-				options.run_options["--proxy"],
-				options.threads,
-			),
-			68
+		fixLen("   Attack mode: %-8s |   Proxy: %-8s  |   Threads: %-8s " % (
+			options.attack_mode.replace("--", ""),
+			options.run_options["--proxy"],
+			options.threads,
 		),
+		       68
+		       ),
 		"None" if len(options.extras) == 0 else fixLen(str(options.extras), 51),
 		options.verbose,
 		options.report,
-		fixLen("%s target[s]: %-53s" %(
+		fixLen("%s target[s]: %-53s" % (
 			len(options.target),
 			options.options["-l"] if options.options["-l"] else (
 				options.url.split("/")[2] if options.url.startswith(("http://", "https://")) else options.url.split("/")[0]
-				)
-			),
-			67
+			)
 		),
+		       67
+		       ),
 		" " * 11 + "Github: https://github.com/dmknght/BruteforceHTTP"
 	)
-
+	
 	return banner.replace("\t", "  ")

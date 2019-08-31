@@ -2,6 +2,7 @@ from cores.actions import lread, fread
 import utils
 import re
 
+
 # import sys
 # reload(sys)
 # sys.setdefaultencoding('utf8')
@@ -21,7 +22,7 @@ import re
 # 		from modules import loginbrute, httpget
 # 		from extras import getproxy, reauth
 # 		import data, reports
-	
+
 # 	except Exception as error:
 # 		print("Can't find project's module")
 # 		print(error)
@@ -35,14 +36,15 @@ def checkHTTPGetLogin(strHeader):
 	except:
 		return False
 
+
 def parseLoginForm(allFormControl):
 	# Try detect login form from all forms in response. Return form information
 	reTextControl = r"text\((.*)\)"
 	rePasswdControl = r"password\((.*)\)"
 	reSubmitControl = r"submit\((.*)\)"
-
+	
 	formData = None
-
+	
 	for uint_formID, form in enumerate(allFormControl):
 		txtPasswdControl = re.findall(rePasswdControl, form)
 		# Find password control. If has
@@ -60,13 +62,16 @@ def parseLoginForm(allFormControl):
 				formData = ([uint_formID, txtSubmitControl[0]], [txtPasswdControl[0]])
 		return formData
 
+
 def check_sqlerror(response):
 	# Parse html response to define SQL error
 	# Copyright: SQLmap
 	if re.search(r"SQL (warning|error|syntax)", response):
 		return True
 	return False
-	# TODO improve condition
+
+
+# TODO improve condition
 
 def check_login(options):
 	try:
@@ -84,15 +89,15 @@ def check_login(options):
 				options.url = site.com/wp-login.php -> login URL
 		"""
 		if proc.url() != options.url:
-			utils.printf("[*] Website moves to: ['%s']" %(proc.url()), "norm")
+			utils.printf("[*] Website moves to: ['%s']" % (proc.url()), "norm")
 			options.panel_url, options.login_url = options.url, proc.url()
 		else:
 			options.login_url = options.url
-
+		
 		# utils.printf("[*] Connect success!", "good")
 		options.attack_mode = "--loginbrute"
 		if options.run_options["--verbose"]:
-			utils.printf("[*] %s" %(proc.get_title()), "norm")
+			utils.printf("[*] %s" % (proc.get_title()), "norm")
 		# utils.printf("[+] Analyzing login form....")
 		if resp.status_code == 401:
 			if "WWW-Authenticate" in resp.headers:
@@ -105,16 +110,16 @@ def check_login(options):
 				loginInfo = False
 		else:
 			loginInfo = parseLoginForm(proc.forms())
-			# if not loginInfo:
-			# 	from libs.sbrowser import sBrowser
-			# 	jscheck = sBrowser()
-			# 	jscheck.open_url(options.url)
-			# 	loginInfo = parseLoginForm(jscheck.forms())
-			# 	if loginInfo:
-			# 		options.tech = "selenium"
-
-		return loginInfo
+		# if not loginInfo:
+		# 	from libs.sbrowser import sBrowser
+		# 	jscheck = sBrowser()
+		# 	jscheck.open_url(options.url)
+		# 	loginInfo = parseLoginForm(jscheck.forms())
+		# 	if loginInfo:
+		# 		options.tech = "selenium"
 		
+		return loginInfo
+	
 	except Exception as error:
 		loginInfo = False
 		utils.die("[x] Target check:", error)
@@ -133,6 +138,7 @@ def check_login(options):
 			pass
 		return loginInfo
 
+
 def check_url(url):
 	try:
 		# Shorter startswith https://stackoverflow.com/a/20461857
@@ -145,12 +151,13 @@ def check_url(url):
 				utils.die("[x] URL error", "Invalid protocol")
 		else:
 			"Something.com"
-			url = "http://%s" %(url)
+			url = "http://%s" % (url)
 		if len(url.split("/")) <= 3:
-			url = "%s/" %(url) if url[-1] != "/" else url
+			url = "%s/" % (url) if url[-1] != "/" else url
 	except:
 		url = None
 	return url
+
 
 def check_options(options):
 	"""
@@ -164,7 +171,7 @@ def check_options(options):
 		options.target = list(filter(None, options.target))
 	except Exception as error:
 		utils.die("[x] Options: URL error", error)
-		# CHECK threads option
+	# CHECK threads option
 	try:
 		options.threads = int(options.options["-t"])
 		if options.threads < 1:
@@ -177,7 +184,7 @@ def check_options(options):
 			"[x] Options: Invalid option \"threads\"",
 			error
 		)
-
+	
 	# CHECK timeout option
 	# try:
 	# 	options.timeout = int(options.options["-T"])
@@ -189,15 +196,15 @@ def check_options(options):
 	if options.attack_mode == "--sqli":
 		options.options["-u"], options.options["-p"] = "sqli", "sqli"
 
-def check_tasks(options, loginInfo):
 
+def check_tasks(options, loginInfo):
 	"""
 		This fucntion check options for each brute force task
 	"""
 	
 	_, formField = loginInfo
 	import data
-
+	
 	# CHECK username list options
 	if len(formField) == 1:
 		options.username = [""]
@@ -206,20 +213,19 @@ def check_tasks(options, loginInfo):
 	else:
 		if options.options["-u"] in options.WORDLISTS:
 			if options.options["-u"] == "sqli":
-				options.username = tuple(eval("data.%s_user()" %(options.options["-u"])))
+				options.username = tuple(eval("data.%s_user()" % (options.options["-u"])))
 			else:
-				options.username = tuple(eval("data.%s_user()" %(options.options["-u"])).replace("\t", "").split("\n"))
+				options.username = tuple(eval("data.%s_user()" % (options.options["-u"])).replace("\t", "").split("\n"))
 		else:
 			options.username = tuple(fread(options.options["-u"]).split("\n"))
 			options.username = tuple(filter(None, options.username))
 	
 	# CHECK passlist option
 	if options.options["-p"] in options.WORDLISTS:
-		options.passwd = tuple(eval("data.%s_pass()" %(options.options["-p"])).replace("\t", "").split("\n"))
+		options.passwd = tuple(eval("data.%s_pass()" % (options.options["-p"])).replace("\t", "").split("\n"))
 	else:
 		options.passwd = tuple(fread(options.options["-p"]).split("\n"))
 		options.passwd = tuple(filter(None, options.passwd))
-
 	
 	if "--replacement" in options.extras:
 		from data.passgen import replacement

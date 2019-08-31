@@ -1,5 +1,6 @@
 import string
 
+
 def maskgen(min = 1, max = 4, charset = None):
 	charset = string.letters if not charset else charset
 	from itertools import product
@@ -7,11 +8,13 @@ def maskgen(min = 1, max = 4, charset = None):
 		for passwd in product(charset, repeat = i):
 			yield "".join(passwd)
 
+
 def maskprocessor(text):
 	"""
 		passw?drd -> passw0rd, passw1rd, ..
 	"""
-	pass # TODO create mask processor
+	pass  # TODO create mask processor
+
 
 def toggle_case(text):
 	# https://stackoverflow.com/a/29184387
@@ -22,6 +25,7 @@ def toggle_case(text):
 	possibilities = [c + SUBSTITUTIONS.get(c, "") for c in text]
 	for subbed in product(*possibilities):
 		yield "".join(subbed)
+
 
 def replacement(text):
 	# TODO call this heavy replacement, light replacement will replace text with number and spec chars only
@@ -56,9 +60,9 @@ def replacement(text):
 		"z": "Z",
 		" ": "_+-",
 	}
-
+	
 	from itertools import product
-
+	
 	possibilities = [c + SUBSTITUTIONS.get(c, "") for c in text]
 	for subbed in product(*possibilities):
 		yield "".join(subbed)

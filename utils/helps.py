@@ -1,35 +1,36 @@
 import sys
 import utils
 
+
 def print_fast_help():
 	print(
 		"""\nUsage: (URL or URL list is required)
 		\r\r\r- Quick: %s [URL]
-		\r\r\r- Advanced: %s [<option> <value>] [mode] [--list <list_name>] [URL || -l <url_list>]\n""" %(
-		sys.argv[0], sys.argv[0])
+		\r\r\r- Advanced: %s [<option> <value>] [mode] [--list <list_name>] [URL || -l <url_list>]\n""" % (
+			sys.argv[0], sys.argv[0])
 	)
 
-def print_help():
 
+def print_help():
 	#	Print project's help table
 	print_fast_help()
 	print("Options: ")
 	title = ("Formats", "Examples")
 	menu = [
 		[
-			"%-14s" %("-u <file_path>"),
+			"%-14s" % ("-u <file_path>"),
 			"-u /opt/wordlists/nmap.lst"
 		],
 		[
-			"%-14s" %("-p <file_path>"),
+			"%-14s" % ("-p <file_path>"),
 			"-p /opt/wordlists/passwd.txt"
 		],
 		[
-			"%-14s" %("-U <username>"),
+			"%-14s" % ("-U <username>"),
 			"-U admin | -U admin:user1"
 		],
 		[
-			"%-14s" %("-t <threads>"),
+			"%-14s" % ("-t <threads>"),
 			"-t 32"
 		],
 		# [
@@ -37,7 +38,7 @@ def print_help():
 		# 	"-t 25"
 		# ],
 		[
-			"%-14s" %("-l <file_path>"),
+			"%-14s" % ("-l <file_path>"),
 			"-l url_list.txt"
 		],
 	]
@@ -47,11 +48,11 @@ def print_help():
 	title = ("Modes", "Descriptions")
 	menu = [
 		[
-			"%-14s" %("--proxy"),
+			"%-14s" % ("--proxy"),
 			"Attack using proxies"
 		],
 		[
-			"%-14s" %("--verbose"),
+			"%-14s" % ("--verbose"),
 			"Display running information"
 		],
 	]
@@ -61,57 +62,57 @@ def print_help():
 	title = ("Modes", "Descriptions")
 	menu = [
 		[
-			"%-14s" %("--reauth"),
+			"%-14s" % ("--reauth"),
 			"Check credentials on social networks"
 		],
 		[
-			"%-14s" %("--getproxy"),
+			"%-14s" % ("--getproxy"),
 			"Provide new proxy list"
 		],
 		[
-			"%-14s" %("--upwd"),
+			"%-14s" % ("--upwd"),
 			"Add username to passlist"
 		],
 	]
 	utils.print_table(title, *menu)
-
+	
 	print("\nWordlists: Values will be replaced by [-U/-u/-p] options")
 	title = ("List name", "Descriptions")
 	menu = [
 		[
-			"%-14s" %("default"),
+			"%-14s" % ("default"),
 			"Top common users+passwords"
 		],
 		[
-			"%-14s" %("router"),
+			"%-14s" % ("router"),
 			"Router wordlist"
 		],
 		[
-			"%-14s" %("tomcat"),
+			"%-14s" % ("tomcat"),
 			"Tomcat manager wordlist"
 		],
 		[
-			"%-14s" %("cctv"),
+			"%-14s" % ("cctv"),
 			"CCTV wordlist"
 		],
 		[
-			"%-14s" %("unix"),
+			"%-14s" % ("unix"),
 			"Top Unix wordlist"
 		],
 		[
-			"%-14s" %("http"),
+			"%-14s" % ("http"),
 			"Top HTTP wordlist"
 		],
 		[
-			"%-14s" %("mirai"),
+			"%-14s" % ("mirai"),
 			"Mirai botnet wordlist"
 		],
 		[
-			"%-14s" %("webshell"),
+			"%-14s" % ("webshell"),
 			"Webshell wordlist"
 		],
 		[
-			"%-14s" %("sqli"),
+			"%-14s" % ("sqli"),
 			"Dynamic SQLi payloads"
 		],
 	]

@@ -1,6 +1,7 @@
 import random, sys, string
 import utils
 
+
 # def getRootDir(pathModuleLocation):
 # 	##################################
 # 	#	Get root folder of module file
@@ -14,12 +15,13 @@ import utils
 def randomFromList(listData):
 	return random.choice(listData)
 
+
 def randomFromFile(pathFile):
 	##########################################
 	#	Return random User Agents from file
 	#
 	##########################################
-
+	
 	return randomFromList(fread(pathFile).split("\n"))
 
 
@@ -30,8 +32,9 @@ def lread(strUsername):
 	#	user1:user2 -> [user1, user2]
 	#
 	##################################
-
+	
 	return strUsername.split(":")
+
 
 def fload(pathFile):
 	###################################
@@ -44,7 +47,8 @@ def fload(pathFile):
 		return pFile
 	except Exception as error:
 		utils.die("[x] Error while loading file!", error)
-		
+
+
 def fread(pathFile):
 	try:
 		pFile = fload(pathFile)
@@ -56,6 +60,7 @@ def fread(pathFile):
 			pFile.close()
 		except:
 			pass
+
 
 def fwrite(pathFileLocation, writeData):
 	try:
@@ -69,6 +74,7 @@ def fwrite(pathFileLocation, writeData):
 		except:
 			pass
 
+
 def fwrite_c(pathFileLocation, writeData):
 	try:
 		fileWrite = open(pathFileLocation, "a")
@@ -78,17 +84,17 @@ def fwrite_c(pathFileLocation, writeData):
 	finally:
 		fileWrite.close()
 
+
 def srand(min = 2, max = 5, stype = "char"):
 	# https://stackoverflow.com/a/2257449
 	if stype == "char":
 		charset = string.letters
 	elif stype == "dig":
 		charset = string.digits
-
+	
 	min, max = 0, random.randint(min, max)
 	return ''.join(random.choice(charset) for _ in xrange(min, max))
 
 
 if __name__ == "__main__":
 	utils.die("Oops! Wrong place", "Find other place")
-	
