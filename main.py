@@ -96,7 +96,7 @@ def attack(options, loginInfo):
 			events.error("No match found", "RESULT")
 		
 		else:
-			events.success("%s valid password[s] found" % (len(credentials)))
+			events.success("%s valid password[s] found" % (len(credentials)), "RESULT")
 			if not credentials[0][1]:
 				utils.print_table(("URL", "Password"), *[creds[::2] for creds in credentials])
 			else:
