@@ -1,4 +1,5 @@
 import random, sys, string
+from utils import events
 import utils
 
 
@@ -46,7 +47,8 @@ def fload(pathFile):
 		pFile = open(pathFile, 'r')
 		return pFile
 	except Exception as error:
-		utils.die("[x] Error while loading file!", error)
+		events.error("%s" % (error))
+		sys.exit(1)
 
 
 def fread(pathFile):
@@ -54,7 +56,8 @@ def fread(pathFile):
 		pFile = fload(pathFile)
 		return pFile.read()
 	except Exception as error:
-		utils.die("[x] Error while reading data", error)
+		events.error("%s" % (error))
+		sys.exit(1)
 	finally:
 		try:
 			pFile.close()
@@ -67,7 +70,8 @@ def fwrite(pathFileLocation, writeData):
 		objFileWrite = open(pathFileLocation, "w")
 		objFileWrite.write(writeData)
 	except Exception as error:
-		utils.die("[x] Error while writing data", error)
+		events.error("%s" % (error))
+		sys.exit(1)
 	finally:
 		try:
 			objFileWrite.close()
@@ -80,7 +84,8 @@ def fwrite_c(pathFileLocation, writeData):
 		fileWrite = open(pathFileLocation, "a")
 		fileWrite.write(writeData)
 	except Exception as error:
-		utils.die("[x] Error while continuing write file", error)
+		events.error("%s" % (error))
+		sys.exit(1)
 	finally:
 		fileWrite.close()
 
@@ -93,8 +98,8 @@ def srand(min = 2, max = 5, stype = "char"):
 		charset = string.digits
 	
 	min, max = 0, random.randint(min, max)
-	return ''.join(random.choice(charset) for _ in xrange(min, max))
+	return ''.join(random.choice(charset) for _ in range(min, max))
 
 
 if __name__ == "__main__":
-	utils.die("Oops! Wrong place", "Find other place")
+	events.error("File is not working")

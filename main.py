@@ -24,17 +24,19 @@ def attack(options, loginInfo):
 		from modules import loginbrute
 		attack_module = loginbrute.submit
 	else:
-		utils.die("[x] Runtime error: Invalid attack mode", "%s" % (options.attack_mode))
+		events.error("Invalid attack mode", "ARGS")
+		sys.exit(1)
 	
 	if not loginInfo:
 		# Test for 2 steps... login?
-		utils.die("[x] Target check: URL error", "[x] No login request found")
+		events.error("No login request found")
+		sys.exit(1)
 	else:
 		if options.verbose:
-			utils.printf("[*] Login request has been found!", "good")
+			events.success("Login request has been found", "CHECK")
 	
 	tasks = len(options.passwd) * len(options.username)
-	utils.printf("[+] [Tasks: %s] [ID: %s] [Controls: %s]" % (tasks, loginInfo[0], loginInfo[1][::-1]), "good")
+	events.info("[Tasks: %s] [ID: %s] [Controls: %s]" % (tasks, loginInfo[0], loginInfo[1][::-1]))
 	
 	import threading
 	
@@ -73,15 +75,15 @@ def attack(options, loginInfo):
 		del workers[:]
 	
 	except KeyboardInterrupt:
-		utils.printf("[x] Terminated by user!", "bad")
+		events.error("Terminated by user", "STOPPED")
 		global set_break
 		set_break = True
 	
 	except SystemExit:
-		utils.printf("[x] Terminated by system!", "bad")
+		events.error("Terminated by user", "STOPPED")
 	
 	except Exception as error:
-		utils.die("[x] Runtime error", error)
+		events.error("%s" %(error))
 	
 	finally:
 		try:  # clear resource
@@ -91,15 +93,15 @@ def attack(options, loginInfo):
 			pass
 		credentials = list(result.queue)
 		if len(credentials) == 0:
-			utils.printf("[-] No match found!", "bad")
+			events.error("No match found", "RESULT")
 		
 		else:
-			utils.printf("\n[*] %s valid password[s] found:" % (len(credentials)), "norm")
+			events.success("%s valid password[s] found" % (len(credentials)))
 			if not credentials[0][1]:
 				utils.print_table(("URL", "Password"), *[creds[::2] for creds in credentials])
 			else:
 				utils.print_table(("Username", "Password"), *[creds[-2:] for creds in credentials])
-			utils.printf("")
+			print("")
 		return credentials
 
 
@@ -107,10 +109,9 @@ if __name__ == "__main__":
 	# if check_import():
 	# IMPORT GLOBALY
 	import sys, time, ssl
-	from cores import options
-	from cores import check
+	from cores import options, check
 	import utils
-	from utils import progressbar, banners
+	from utils import progressbar, banners, events
 	from extras import getproxy
 	
 	try:
@@ -132,13 +133,14 @@ if __name__ == "__main__":
 			if "--getproxy" in options.extras:
 				getproxy.getnew(options)
 				if not options.target:
-					utils.printf("[*] No URL provided! Get proxy only.", "good")
+					events.info("No URL. Get latest proxy list only", "PROXY")
 					sys.exit(0)
 				else:
 					if not options.run_options["--proxy"]:
-						utils.printf("[-] WARNING!!! Program runs without proxy! Use \"--proxy\"!", "bad")
+						events.warn("Program runs without any proxy")
 			if not options.target:
-				utils.die("[x] URL error", "An URL is required")
+				events.error("URL is required")
+				sys.exit(1)
 			
 			else:
 				# Fix SSL errors https://stackoverflow.com/a/35960702
@@ -151,7 +153,7 @@ if __name__ == "__main__":
 					# Handle target environment that doesn't support HTTPS verification
 					ssl._create_default_https_context = _create_unverified_https_context
 				
-				utils.printf(banners.start_banner(options))
+				print(banners.start_banner(options))
 				results = []
 				set_break = False
 				for idu, url in enumerate(options.target):
@@ -163,20 +165,20 @@ if __name__ == "__main__":
 						options.panel_url = None
 						options.url = check.check_url(url)
 						if "--getproxy" in options.extras and len(options.target) == 1 and options.run_options["--proxy"]:
-							utils.printf("[+] Check connection via proxy to %s! Be patient!" % (options.url))
+							events.warn("Check proxy connection")
 							getproxy.check(options)
 						if options.run_options["--proxy"]:
 							if len(options.target) > 1:
-								utils.printf("[+] Auto check proxy for multiple URLs! Target: %s!" % (options.url))
+								events.info("Check proxy connection for %s" %(options.url))
 								getproxy.check(options)
 							try:
 								options.proxy = getproxy.livelist()
 							except:
-								utils.printf("[-] Loading file error! Get new list. Please wait!", "bad")
+								events.error("Error while reading list")
 								getproxy.check(options)
 								options.proxy = getproxy.livelist()
 						
-						utils.printf("[%s / %s] [%s]" % (idu + 1, len(options.target), options.url))
+						events.info("[%s / %s] [%s]" % (idu + 1, len(options.target), options.url))
 						loginInfo = check.check_login(options)
 						if loginInfo:
 							check.check_tasks(options, loginInfo)
@@ -186,7 +188,7 @@ if __name__ == "__main__":
 									results.append(_result)
 						# results.append(result)
 						else:
-							utils.printf("[x] Error no login request found", "bad")
+							events.error("No login request found")
 				
 				if "--reauth" in options.extras:
 					from extras import reauth
@@ -194,17 +196,18 @@ if __name__ == "__main__":
 					reauth.run(options, result)
 	
 	except Exception as error:
-		utils.die("[x] Program stopped", error)
+		events.error("%s" % (error), "STOPPED")
+		sys.exit(1)
 	
 	finally:
 		runtime = time.time() - runtime
 		try:
 			if len(options.target) > 0:
 				if len(results) > 0 and len(options.target) > 1:
-					utils.printf("[*] Cracked %s target[s]" % (len(results)), "norm")
+					events.success("Cracked %s target[s]" %(len(results)), "RESULT")
 					utils.print_table(("URL", "Username", "Password"), *results)
 			else:
-				utils.printf("[x] No target has been cracked", "bad")
+				events.error("No target has been cracked", "RESULT")
 		except:
 			pass
-		utils.printf("\n[*] [Elapsed: %0.2f] [%s]" % (runtime, time.strftime("%Y-%m-%d %H:%M"),), "good")
+		events.success("[Elapsed: %0.2f] [%s]" % (runtime, time.strftime("%Y-%m-%d %H:%M")))

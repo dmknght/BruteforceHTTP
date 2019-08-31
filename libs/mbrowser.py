@@ -32,7 +32,7 @@ class Browser(StatefulBrowser):
 		self.session.proxies = ({"http": proxyaddr})
 	
 	def open_url(self, url, *args, **kwargs):
-		return self.open(url, *args, **kwargs)
+		return self.open(url, verify = False, *args, **kwargs)
 	
 	# def get_opts(self, options):
 	# 	pass

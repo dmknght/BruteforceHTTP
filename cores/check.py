@@ -1,6 +1,6 @@
 from cores.actions import lread, fread
-import utils
-import re
+from utils import events
+import re, sys
 
 
 # import sys
@@ -64,14 +64,57 @@ def parseLoginForm(allFormControl):
 
 
 def check_sqlerror(response):
-	# Parse html response to define SQL error
-	# Copyright: SQLmap
-	if re.search(r"SQL (warning|error|syntax)", response):
-		return True
+	# COPYRIGHT: wapiticd ..
+	signatures = {
+		"MySQL Injection": [
+			"You have an error in your SQL syntax",
+			"supplied argument is not a valid MySQL",
+			"mysql_fetch_array() expects parameter 1 to be resource, boolean given in"
+		],
+		"Java SQL Injection": [
+			"java.sql.SQLException: Syntax error or access violation",
+			"java.sql.SQLException: Unexpected end of command"
+		],
+		"PostgreSQL Injection": [
+			"PostgreSQL query failed: ERROR: parser:",
+		],
+		"XPathException": [
+			"XPathException",
+			"Warning: SimpleXMLElement::xpath():"
+		],
+		"MSSQL Injection": [
+			"[Microsoft][ODBC SQL Server Driver]",
+			"Microsoft OLE DB Provider for ODBC Drivers</font> <font size=\"2\" face=\"Arial\">error",
+			"Microsoft OLE DB Provider for ODBC Drivers",
+		],
+		"MSAccess SQL Injection": [
+			"[Microsoft][ODBC Microsoft Access Driver]",
+		],
+		"LDAP Injection": [
+			"supplied argument is not a valid ldap",
+			"javax.naming.NameNotFoundException"
+		],
+		"DB2 Injection": [
+			"DB2 SQL error:"
+		],
+		"Interbase Injection": [
+			"Dynamic SQL Error",
+		],
+		"Sybase Injection": [
+			"Sybase message:",
+		],
+		".NET SQL Injection": [
+			"Unclosed quotation mark after the character string",
+		],
+	}
+	
+	for injectType in signatures:
+		for error in signatures[injectType]:
+			if re.findall(re.escape(error), response):
+				events.vuln(injectType)
+				return True
 	return False
 
-
-# TODO improve condition
 
 def check_login(options):
 	try:
@@ -89,22 +132,20 @@ def check_login(options):
 				options.url = site.com/wp-login.php -> login URL
 		"""
 		if proc.url() != options.url:
-			utils.printf("[*] Website moves to: ['%s']" % (proc.url()), "norm")
+			events.info("Website moves to: ['%s']" % (proc.url()))
 			options.panel_url, options.login_url = options.url, proc.url()
 		else:
 			options.login_url = options.url
 		
-		# utils.printf("[*] Connect success!", "good")
 		options.attack_mode = "--loginbrute"
 		if options.run_options["--verbose"]:
-			utils.printf("[*] %s" % (proc.get_title()), "norm")
-		# utils.printf("[+] Analyzing login form....")
+			events.info("%s" % (proc.get_title()), "TITLE")
 		if resp.status_code == 401:
 			if "WWW-Authenticate" in resp.headers:
 				loginID = checkHTTPGetLogin(resp.headers)
 				loginInfo = (loginID, ["Password", "User Name"])
 				if options.verbose:
-					utils.printf("[+] Using HTTP GET Authentication mode", "norm")
+					events.info("HTTP GET login")
 				options.attack_mode = "--httpget"
 			else:
 				loginInfo = False
@@ -122,7 +163,8 @@ def check_login(options):
 	
 	except Exception as error:
 		loginInfo = False
-		utils.die("[x] Target check:", error)
+		events.error("%s" % (error), "TARGET")
+		sys.exit(1)
 	
 	except KeyboardInterrupt:
 		loginInfo = False
@@ -132,11 +174,11 @@ def check_login(options):
 			proc.close()
 		except:
 			pass
-		try:
-			jscheck.close()
-		except:
-			pass
-		return loginInfo
+		# try:
+		# 	jscheck.close()
+		# except:
+		# 	pass
+		# return loginInfo
 
 
 def check_url(url):
@@ -148,7 +190,8 @@ def check_url(url):
 		"""
 		if "://" in url:
 			if not url.startswith(("http://", "https://")):
-				utils.die("[x] URL error", "Invalid protocol")
+				events.error("Invalid URL format")
+				sys.exit(1)
 		else:
 			"Something.com"
 			url = "http://%s" % (url)
@@ -170,21 +213,18 @@ def check_options(options):
 		options.target = fread(options.options["-l"]).split("\n") if options.options["-l"] else [options.url]
 		options.target = list(filter(None, options.target))
 	except Exception as error:
-		utils.die("[x] Options: URL error", error)
+		events.error("%s" % (error))
+		sys.exit(1)
 	# CHECK threads option
 	try:
 		options.threads = int(options.options["-t"])
 		if options.threads < 1:
-			utils.die(
-				"[x] Options: Invalid option \"threads\"",
-				"Thread number must be larger than 1"
-			)
+			events.error("Thread must be larger than 1")
+
 	except Exception as error:
-		utils.die(
-			"[x] Options: Invalid option \"threads\"",
-			error
-		)
-	
+		events.error("%s" % (error))
+		sys.exit(1)
+
 	# CHECK timeout option
 	# try:
 	# 	options.timeout = int(options.options["-T"])

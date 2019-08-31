@@ -1,4 +1,4 @@
-import utils
+from utils import events
 from cores.actions import randomFromList
 from cores.check import parseLoginForm, check_sqlerror
 
@@ -68,13 +68,13 @@ def submit(options, loginInfo, tryCred, result):
 		
 		if not _form:
 			if options.verbose:
-				utils.printf("[x] LoginBrute: No login form found. Possibly get blocked!")
+				events.error("Get blocked", "BRUTE")
 			return False
 		else:
 			frmCtrl, frmFields = _form
 			frmLoginID, btnSubmit = frmCtrl
 		if options.verbose and loginInfo != _form:
-			utils.printf("[+] Warning: Form field has been changed!")
+			events.info("Login form has been changed", "BRUTE")
 		#	Select login form
 		# page_title = proc.title()
 		#	Send request
@@ -85,62 +85,46 @@ def submit(options, loginInfo, tryCred, result):
 		resp = proc.xsubmit(frmCtrl, frmFields, tryCred)
 		if options.verbose:
 			if len(frmFields) == 2:
-				utils.printf(
-					"[+] [%s=(%s); %s=(%s)] <--> %s" % (frmFields[1], tryUsername, frmFields[0], tryPassword, proxyAddr),
-					'norm')
+				events.warn("['%s']['%s'] <--> %s" % (tryUsername, tryPassword, proxyAddr), "TRY")
 			else:
-				utils.printf("[+] [%s=(%s)] <--> %s" % (frmFields[0], tryPassword, proxyAddr), 'norm')
+				events.warn("['%s'] <--> %s" % (tryPassword, proxyAddr), "TRY")
 		
 		if not parseLoginForm(proc.forms()):  # != loginInfo:
 			test_result = check_condition(options, proc, loginInfo)
 			if test_result == 1:
-				# utils.printf("[*] Page title: ['%s']" %(proc.title()), "good")
 				# "If we tried login form with username+password field"
 				
 				if tryUsername:
-					if resp.status_code == 403:
-						utils.printf("[x] 403 forbidden: [%s:%s] <--> %s" % (tryUsername, tryPassword, proxyAddr), "bad")
-					elif resp.status_code == 404:
-						utils.printf("[x] 404 not found: [%s:%s] <--> %s" % (tryUsername, tryPassword, proxyAddr), "bad")
-					elif resp.status_code >= 500:
-						utils.printf(
-							"[x] %s Server error [%s:%s] <--> %s" % (resp.status_code, tryUsername, tryPassword, proxyAddr),
-							"bad")
+					if resp.status_code >= 400:
+						events.error("['%s':'%s'] <--> %s" % (tryUsername, tryPassword, proxyAddr), "%s" % (resp.status_code))
 					else:
-						utils.printf("[*] Found: [%s:%s] [%s]" % (tryUsername, tryPassword, proc.get_title()), "good")
+						events.success("['%s':'%s'] [%s]" % (tryUsername, tryPassword, proc.get_title()), "FOUND")
 						result.put([options.url, tryUsername, tryPassword])
 				# "Else If we tried login form with password field only"
 				else:
-					if resp.status_code == 403:
-						utils.printf("[x] 403 forbidden: [%s:%s] %s" % (tryUsername, tryPassword, proxyAddr), "bad")
-					elif resp.status_code == 404:
-						utils.printf("[x] 404 not found: [%s:%s] %s" % (tryUsername, tryPassword, proxyAddr), "bad")
-					elif resp.status_code >= 500:
-						utils.printf(
-							"[x] %s Server error: [%s:%s] %s" % (resp.status_code, tryUsername, tryPassword, proxyAddr), "bad")
+					if resp.status_code >= 400:
+						events.error("[%s] <--> %s" % (tryPassword, proxyAddr), "%s" % (resp.status_code))
 					else:
-						utils.printf("[*] Found: [%s] [%s]" % (tryPassword, proc.get_title()), "good")
+						events.success("[%s] [%s]" % (tryPassword, proc.get_title()), "FOUND")
 						result.put([options.url, tryUsername, tryPassword])
 			elif test_result == 2 and options.verbose:
-				utils.printf("[+] SQL Injection vulnerable found")
-				utils.printf("   %s" % ([tryUsername, tryPassword]), "norm")
+				events.success("SQL Injection in login form", "BRUTE")
+				events.info("['%s': '%s']" % (tryUsername, tryPassword))
 			else:
 				# Possibly Error. But sometime it is true
 				if options.verbose:
-					utils.printf("[x] Get error page: %s" % ([tryUsername, tryPassword]), "bad")
-					utils.printf("   [x] Page title: ['%s']" % (proc.get_title()), "bad")
+					events.error("['%s': '%s'] [%s]" % (tryUsername, tryPassword, proc.get_title()), "BRUTE")
 		# "Login form is still there. Oops"
 		else:
 			# TODO test if web has similar text (static)
 			if check_sqlerror(proc.get_resp()) and options.verbose:
-				utils.printf("[+] SQL Injection vulnerable found")
-				utils.printf("   %s" % ([tryUsername, tryPassword]), "norm")
+				events.success("SQL Injection in login form", "BRUTE")
+				events.info("['%s': '%s']" % (tryUsername, tryPassword))
 			if options.verbose:
 				if tryUsername:
-					utils.printf(
-						"[-] Failed: [%s:%s] <--> %s ==> %s" % (tryUsername, tryPassword, proxyAddr, proc.get_title()), "bad")
+					events.fail("['%s':'%s'] <--> %s ==> %s" % (tryUsername, tryPassword, proxyAddr, proc.get_title()))
 				else:
-					utils.printf("[-] Failed: [%s] <--> %s ==> %s" % (tryPassword, proxyAddr, proc.get_title()), "bad")
+					events.fail("Failed: [%s] <--> %s ==> %s" % (tryPassword, proxyAddr, proc.get_title()))
 		
 		return True
 	
@@ -151,24 +135,7 @@ def submit(options, loginInfo, tryCred, result):
 			This code block showing information, for special cases
 		"""
 		
-		try:
-			# Unauthenticated
-			if type(err.code) == int and err.code == 401:
-				if options.verbose:
-					utils.printf("[-] Failed: %s" % ([tryUsername, tryPassword]), "bad")
-			# Server misconfiguration? Panel URL is deleted or wrong
-			elif error.code == 404:
-				utils.printf("[x] %s: %s" % (error, tryCred[::-1]), "bad")
-				if options.verbose:
-					utils.printf("   %s" % (proc.url()), "bad")
-			# Other error code
-			else:
-				if options.verbose:
-					utils.printf("[x] (%s): %s" % (proc.url(), tryCred[::-1]), "bad")
-		except:
-			# THIS BLOCKED BY WAF
-			utils.printf("[x] Loginbrute: %s" % (error), "bad")
-			return False
+		events.error("%s" % (error), "BRUTE")
 	
 	finally:
 		proc.close()

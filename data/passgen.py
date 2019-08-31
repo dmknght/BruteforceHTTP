@@ -4,7 +4,7 @@ import string
 def maskgen(min = 1, max = 4, charset = None):
 	charset = string.letters if not charset else charset
 	from itertools import product
-	for i in xrange(min, max):
+	for i in range(min, max):
 		for passwd in product(charset, repeat = i):
 			yield "".join(passwd)
 

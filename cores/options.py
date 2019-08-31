@@ -1,5 +1,5 @@
 import sys
-import utils
+from utils import events
 
 
 class ParseOptions(object):
@@ -106,31 +106,23 @@ class ParseOptions(object):
 						i += 1
 					
 					else:
-						utils.die(
-							"[x] Options: Arguments error",
-							"Invalid wordlist %s" % (sys.argv[i + 1])
-						)
-				
-				# elif sys.argv[i] in self.HELP_OPTIONS:
-				# 	self.help = True
+						events.error("Invalid wordlist", "ARGS")
+						sys.exit(1)
+
 				
 				else:
-					utils.die(
-						"[x] Options: Arguments error",
-						"Unknow option %s" % (sys.argv[i])
-					)
-			
+					events.error("Unknown option %s" % (sys.argv[i]), "ARGS")
+					sys.exit(1)
+
 			elif sys.argv[i].startswith("-"):
 				
 				if sys.argv[i] in self.options.keys():
 					self.options[sys.argv[i]] = sys.argv[i + 1]
 					i += 1
 				else:
-					utils.die(
-						"[x] Options: Arguments error",
-						"Unknow option %s" % (sys.argv[i])
-					)
-			
+					events.error("Unknown option %s" % (sys.argv[i], "ARGS"))
+					sys.exit(1)
+
 			else:
 				self.url = sys.argv[i]
 			
@@ -144,16 +136,13 @@ class ParseOptions(object):
 			from utils import helps
 			helps.print_fast_help()
 			
-			utils.printf(
-				"Use: %s for more infomation\n" % (self.HELP_OPTIONS)
-			)
+			events.info("Use: %s for more information" % (self.HELP_OPTIONS))
+
 			sys.exit(0)
 		
 		else:
 			try:
 				self.parse_options(szOptions)
 			except Exception as error:
-				utils.die(
-					"[x] Options: Parse options error",
-					error
-				)
+				events.error("%s" % (error), "ARGS")
+
