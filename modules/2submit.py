@@ -75,7 +75,8 @@ def submit(options, loginInfo, tryCred, result):
 				if resp.status_code >= 400:
 					events.error("['%s':'%s'] <--> %s" % (tryUsername, tryPassword, proxyAddr), "%s" % (resp.status_code))
 				else:
-					events.success("['%s':'%s'] [%s]" % (tryUsername, tryPassword, proc.get_title()), "FOUND")
+					events.found(tryUsername, tryPassword, proc.get_title())
+					# events.success("['%s':'%s'] [%s]" % (tryUsername, tryPassword, proc.get_title()), "FOUND")
 					result.put([options.url, tryUsername, tryPassword])
 			
 			else:

@@ -30,7 +30,7 @@ def submit(options, loginInfo, creds, result):
 		elif resp.status_code > 400:
 			events.error("[%s] ['%s': '%s']" % (proc.url(), tryUsername, tryPassword), "%s" % (resp.status_code))
 		else:
-			events.success("['%s':'%s'] [%s]" % (tryUsername, tryPassword, proc.get_title()), "FOUND")
+			events.found(tryUsername, tryPassword, proc.get_title())
 			result.put([options.url, tryUsername, tryPassword])
 	
 	except Exception as error:
