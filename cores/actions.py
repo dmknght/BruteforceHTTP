@@ -99,7 +99,3 @@ def srand(min = 2, max = 5, stype = "char"):
 	
 	min, max = 0, random.randint(min, max)
 	return ''.join(random.choice(charset) for _ in range(min, max))
-
-
-if __name__ == "__main__":
-	events.error("File is not working")
