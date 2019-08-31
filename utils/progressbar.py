@@ -34,9 +34,4 @@ def progress_bar(trying, completed, total, bsize = 60):
 	running = int((trying * bsize) / total - finished)
 	running = 1 if running < 1 else running
 	
-	prints("|%s%s%s| %10s" % (
-		finished * "+",
-		running * "#",
-		(bsize - finished - running) * '-',
-		completed
-	))
+	prints("|%s%s%s| %10s" % (finished * "+", running * "#", (bsize - finished - running) * '-', completed))
