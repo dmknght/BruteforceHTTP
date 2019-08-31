@@ -1,15 +1,3 @@
-import sys
-
-
-def printf(mtext, mtype = 'warn'):
-	############################################
-	#	Print text w/ color
-	#
-	###########################################
-	
-	print(craft_msg(mtext, mtype))
-
-
 def craft_msg(mtext, mtype = 'warn'):
 	# https://misc.flogisoft.com/bash/tip_colors_and_formatting
 	####################################################
@@ -29,11 +17,6 @@ def craft_msg(mtext, mtype = 'warn'):
 	return (mtext[mtype])
 
 
-def die(msg, error):
-	printf("%s\n   %s" % (msg, error), "bad")
-	sys.exit(1)
-
-
 def print_table(headers, *args, **kwargs):
 	################################################
 	#	print beautiful table in terminal style
@@ -44,8 +27,9 @@ def print_table(headers, *args, **kwargs):
 	extra_fill = kwargs.get("extra_fill", 2)
 	header_separator = kwargs.get("header_separator", "-")
 	if not all(map(lambda x: len(x) == len(headers), args)):
-		printf("[x] PrintTable: Error headers", 'bad')
-		return None
+		from utils import events
+		events.error("Error headers", "PrintTable")
+		return False
 	
 	def custom_len(x):
 		try:
@@ -101,6 +85,3 @@ def print_table(headers, *args, **kwargs):
 	# Print end line
 	print(headers_separator_line)
 
-
-if __name__ == "__main__":
-	die("Oops! Wrong place", "Find other place")
