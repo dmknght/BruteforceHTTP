@@ -33,6 +33,6 @@ def submit(options, loginInfo, creds, result):
 			events.success("['%s':'%s'] [%s]" % (tryUsername, tryPassword, proc.get_title()), "FOUND")
 			result.put([options.url, tryUsername, tryPassword])
 	
-	except Exception as err:
-		events.error("%s" % (err), "BRUTE")
+	except Exception as error:
+		events.error("%s" % (error), "BRUTE")
 		return False
