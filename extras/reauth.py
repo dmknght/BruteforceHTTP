@@ -1,7 +1,8 @@
 from modules import loginbrute
-import data, threading
-import utils
-from libs.mbrowser import startBrowser, parseLoginForm
+import data, sys
+from utils import events
+from libs.mbrowser import Browser
+from cores.check import parseLoginForm
 
 try:
 	from Queue import Queue
@@ -19,20 +20,21 @@ def do_job(jobs):
 
 def submit(url, options, tryCreds, result):
 	try:
-		proc = startBrowser()
+		proc = Browser()
 		
-		utils.printf("[+] Checking %s" % (url))
+		events.info("Checking %s" %(url), "REAUTH")
 		
 		proc.open(url)
 		loginInfo = parseLoginForm(proc.forms())
 	
-	except Exception as err:
-		if options.verbose:
-			utils.printf("[x] ReAuth: %s at %s" % (err, url), "bad")
+	except Exception as error:
+		events.error("%s" % (error), "REAUTH")
+		sys.exit(1)
 	
 	if not loginInfo:
-		if options.verbose:
-			utils.printf("[x] ReAuth: Can't find login form at %s" % (url), "bad")
+		events.error("No login form at %s" % (url), "REAUTH")
+		sys.exit(1)
+
 	else:
 		try:
 			options.url = url
@@ -41,9 +43,9 @@ def submit(url, options, tryCreds, result):
 				# Reverse username + password. Dynamic submit in loginbrute
 				options, loginInfo, tryCreds[-2:][::-1], result
 			)
-		except Exception as err:
-			if options.verbose:
-				utils.printf("[x] ReAuth: Submitting error for %s" % (err), "bad")
+		except Exception as error:
+			events.error("%s" % (error), "REAUTH")
+			sys.exit(1)
 
 
 def run(options, creds):
@@ -78,20 +80,21 @@ def run(options, creds):
 	
 	
 	except KeyboardInterrupt:
-		utils.printf("[x] Terminated by user!", "bad")
-		import os
-		os._exit(0)
+		events.error("Terminated by user", "STOPPED")
+		sys.exit(1)
 	
 	except SystemExit:
-		utils.die("[x] Terminated by system!", "SystemExit")
+		events.error("Terminated by system", "STOPPED")
 	
-	except Exception as err:
-		utils.die("[x] ReAuth: Runtime error", err)
+	except Exception as error:
+		events.error("%s" % (error), "REAUTH")
+		sys.exit(1)
 	
 	finally:
 		result = list(result.queue)
 		
 		if len(result) == 0:
-			utils.printf("[-] No extra valid password found", "bad")
+			events.error("No valid account found", "RESULT")
 		else:
-			utils.print_table(("Target", "Username", "Password"), *result)
+			from utils import print_table
+			print_table(("Target", "Username", "Password"), *result)
