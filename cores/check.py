@@ -60,7 +60,7 @@ def parseLoginForm(allFormControl):
 			elif len(txtTextControl) == 0:
 				# Possibly password field login only
 				formData = ([uint_formID, txtSubmitControl[0]], [txtPasswdControl[0]])
-		return formData
+			return formData
 
 
 def check_sqlerror(response):
@@ -174,11 +174,11 @@ def check_login(options):
 			proc.close()
 		except:
 			pass
-		# try:
-		# 	jscheck.close()
-		# except:
-		# 	pass
-		# return loginInfo
+	# try:
+	# 	jscheck.close()
+	# except:
+	# 	pass
+	# return loginInfo
 
 
 def check_url(url):
@@ -220,11 +220,11 @@ def check_options(options):
 		options.threads = int(options.options["-t"])
 		if options.threads < 1:
 			events.error("Thread must be larger than 1")
-
+	
 	except Exception as error:
 		events.error("%s" % (error))
 		sys.exit(1)
-
+	
 	# CHECK timeout option
 	# try:
 	# 	options.timeout = int(options.options["-T"])
