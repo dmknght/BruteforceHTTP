@@ -15,7 +15,7 @@ def warn(data, info = "INFO"):
 
 
 def fail(data, info = "FAILED"):
-	print("[-] [\033[31m%s\033[00m] %s" % (info, data))
+	print("[\033[31m-\033[00m] [\033[31m%s\033[00m] %s" % (info, data))
 
 
 def found(user, passwd, title):
