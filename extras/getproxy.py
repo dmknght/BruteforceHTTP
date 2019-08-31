@@ -104,6 +104,11 @@ def check(options):
 			if verbose:
 				events.success("Connected via %s" %(proxyAddr), "PROXY")
 			result.put(proxyAddr)
+			
+		except KeyboardInterrupt:
+			events.error("Terminated by user", "STOPPED")
+			global set_break
+			set_break = True
 		
 		except Exception as error:
 			if verbose:
@@ -120,7 +125,11 @@ def check(options):
 		workers = []
 		completed, total = 0, len(proxylist)
 		
+		set_break = False
 		for trying, tryProxy in enumerate(proxylist):
+			if set_break:
+				del workers[:]
+				break
 			if len(workers) == options.threads:
 				completed = run_threads(workers, trying, completed, total)
 				del workers[:]
@@ -135,12 +144,6 @@ def check(options):
 		
 		completed = run_threads(workers, trying, completed, total)
 		del workers[:]
-	
-	except KeyboardInterrupt as error:
-		events.error("Terminated by user", "PROXY")
-		# TODO new type of break
-		import os
-		os._exit(0)
 	
 	except Exception as error:
 		events.error("%s" % (error), "PROXY")
