@@ -36,11 +36,6 @@ def check_condition(options, proc, loginInfo):
 
 
 def submit(options, loginInfo, tryCred, result):
-	# if options.tech == "mechanize":
-	# 	from libs.mbrowser import mBrowser as Browser
-	# elif options.tech == "selenium":
-	# 	from libs.sbrowser import sBrowser as Browser 
-	
 	# frmLoginID, frmFields = loginInfo
 	tryPassword, tryUsername = tryCred
 	
@@ -53,7 +48,7 @@ def submit(options, loginInfo, tryCred, result):
 	if tryUsername in [x[1] for x in list(result.queue)]:
 		return True
 	
-	from libs.mbrowser import Browser
+	from cores.browser import Browser
 	try:
 		proc = Browser()
 		if options.proxy:

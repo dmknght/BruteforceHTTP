@@ -31,7 +31,7 @@ def submit(options, loginInfo, tryCred, result):
 	if tryUsername in [x[1] for x in list(result.queue)]:
 		return True
 	
-	from libs.mbrowser import Browser
+	from cores.browser import Browser
 	try:
 		proc = Browser()
 		if options.proxy:

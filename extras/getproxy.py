@@ -1,5 +1,5 @@
 import re, threading, sys
-from libs.mbrowser import Browser
+from cores.browser import Browser
 from utils import progressbar, events
 from cores.actions import fread, fwrite
 import data

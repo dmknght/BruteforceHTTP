@@ -1,7 +1,7 @@
 from modules import loginbrute
 import data, sys
 from utils import events
-from libs.mbrowser import Browser
+from cores.browser import Browser
 from cores.check import parseLoginForm
 
 try:

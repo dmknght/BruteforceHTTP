@@ -1,4 +1,4 @@
-from libs.mbrowser import Browser
+from cores.browser import Browser
 from utils import events
 from cores.actions import randomFromList
 
