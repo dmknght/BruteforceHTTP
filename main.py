@@ -210,4 +210,4 @@ if __name__ == "__main__":
 				events.error("No target has been cracked", "RESULT")
 		except:
 			pass
-		events.success("[Elapsed: %0.2f] [%s]" % (runtime, time.strftime("%Y-%m-%d %H:%M")))
+		events.success("Elapsed: %0.2f [-] %s" % (runtime, time.strftime("%Y-%m-%d %H:%M")))
