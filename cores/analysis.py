@@ -111,6 +111,6 @@ def getdiff(first, content):
 	
 
 def getredirect(src):
-	js_redirection = r"window\.location(?:.*)+\"|\'(.*)\"|\'"
+	js_redirection = r"window\.location(?:[a-zA-Z\.\ \=\(])+\"|\'(.*)\"|\'"
 	url = re.findall(r"url=(.*?)\'|\">", src.lower())
 	return list(set(url))
