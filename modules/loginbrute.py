@@ -19,7 +19,6 @@ def submit(options, loginInfo, tryCred, result):
 	
 	from cores.browser import Browser
 	try:
-		import traceback # DEBUG
 		proc = Browser()
 		if options.proxy:
 			# Set proxy connect
@@ -112,7 +111,6 @@ def submit(options, loginInfo, tryCred, result):
 			but our cred is true.
 			This code block showing information, for special cases
 		"""
-		traceback.print_exc() # DEBUG
 		events.error("%s" % (error), "BRUTE")
 	
 	finally:
