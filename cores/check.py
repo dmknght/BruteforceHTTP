@@ -246,6 +246,7 @@ def check_tasks(options, loginInfo):
 	elif options.options["-U"]:
 		options.username = list(set(lread(options.options["-U"])))
 	else:
+		import data
 		if options.options["-u"] in options.WORDLISTS:
 			if options.options["-u"] == "sqli":
 				options.username = tuple(eval("data.%s_user()" % (options.options["-u"])))
@@ -257,6 +258,7 @@ def check_tasks(options, loginInfo):
 	
 	# CHECK passlist option
 	if options.options["-p"] in options.WORDLISTS:
+		import data
 		options.passwd = tuple(eval("data.%s_pass()" % (options.options["-p"])).replace("\t", "").split("\n"))
 	else:
 		options.passwd = tuple(fread(options.options["-p"]).split("\n"))
