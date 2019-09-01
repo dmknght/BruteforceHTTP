@@ -7,12 +7,11 @@ MAINTAINER DmKnght <dmknght@parrotsec.org>
 # Install dependencies
 # Can run both python2 and 3
 
-RUN apt-get update && \
-    apt-get install python-bs4 python-regex python-lxml -y \
-    apt-get -y clean
+RUN apt update && \
+    apt install python-bs4 python-regex python-lxml -y
 
-COPY . /usr/local/share/BruteforceHTTP
+COPY . /usr/local/share/BruteforceHTTP/
 
-RUN cd /usr/local/share/BruteforceHTTP && \
+RUN cd /usr/local/share/BruteforceHTTP/
 
-ENTRYPOINT ["main"]
+ENTRYPOINT ["/bin/bash"]

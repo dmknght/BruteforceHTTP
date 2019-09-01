@@ -73,7 +73,8 @@ def webshell_pass():
 	kikicoco
 	k1r4
 	1945
-	redstar98"""
+	redstar98
+	tatsumi2k17"""
 
 def router_user():
 	return """acc
