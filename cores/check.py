@@ -65,6 +65,8 @@ def parseLoginForm(allFormControl):
 
 
 def check_sqlerror(response):
+	# if re.search(r"SQL (warning|error|syntax)", response):
+	# TODO add condition -> don't have to loop all time
 	# COPYRIGHT: wapiticd ..
 	signatures = {
 		"MySQL Injection": [
