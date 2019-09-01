@@ -75,7 +75,8 @@ def webshell_pass():
 	1945
 	redstar98
 	tatsumi2k17
-	monkey"""
+	monkey
+	xaishell"""
 
 def router_user():
 	return """acc
