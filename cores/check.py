@@ -61,6 +61,7 @@ def parseLoginForm(allFormControl):
 				# Possibly password field login only
 				formData = ([uint_formID, txtSubmitControl[0]], [txtPasswdControl[0]])
 			return formData
+	return False
 
 
 def check_sqlerror(response):
