@@ -1,38 +1,7 @@
 from utils import events
 from cores.actions import randomFromList
-from cores.check import parseLoginForm, check_sqlerror
-
-
-def check_condition(options, proc, loginInfo):
-	"""
-		Check logged in successfully condition.
-		This function will check SQL injection as well
-			return 0 -> False
-			return 1 -> True
-			return 2 -> Should be SQL Injection error-based
-	"""
-	if options.panel_url:
-		# User provided panel url (/wp-admin/ for example, repopen this url to check sess)
-		proc.open_url(options.panel_url)
-		if not parseLoginForm(proc.forms()):  # != loginInfo:
-			if check_sqlerror(proc.get_resp()):
-				return 2
-			else:
-				return 1
-		else:
-			return 0
-	else:
-		# User provided direct login URL (/wp-login.php).
-		# DEBUG
-		# proc.open(options.url)
-		# if parseLoginForm(proc.forms()) != loginInfo:
-		# 	return 1
-		# else:
-		# 	return 0
-		if check_sqlerror(proc.get_resp()):
-			return 2
-		else:
-			return 1
+from cores.check import parseLoginForm
+from cores.analysis import check_login, check_sqlerror, getredirect
 
 
 def submit(options, loginInfo, tryCred, result):
@@ -50,6 +19,7 @@ def submit(options, loginInfo, tryCred, result):
 	
 	from cores.browser import Browser
 	try:
+		import traceback # DEBUG
 		proc = Browser()
 		if options.proxy:
 			# Set proxy connect
@@ -84,8 +54,20 @@ def submit(options, loginInfo, tryCred, result):
 			else:
 				events.warn("['%s'] <--> %s" % (tryPassword, proxyAddr), "TRY")
 		
+		from cores.analysis import getdiff
+		diff, src = getdiff(options.txt.decode('utf-8'), resp.content.decode('utf-8'))
+		
+		# print(getredirect(src))
+		"""
+			if len(getredirect(src)) == 1:
+				open(url)
+			TODO craft url
+		"""
+		# TODO FOLLOW url via windows.location or any html tag HTTP-EQUIV=REFRESH, href
+		# Reopen -> analysis
+		# diff = getdiff(options.txt, resp.content)
 		if not parseLoginForm(proc.forms()):  # != loginInfo:
-			test_result = check_condition(options, proc, loginInfo)
+			test_result = check_login(options, proc, loginInfo)
 			if test_result == 1:
 				# "If we tried login form with username+password field"
 				
@@ -118,9 +100,9 @@ def submit(options, loginInfo, tryCred, result):
 				events.info("['%s': '%s']" % (tryUsername, tryPassword))
 			if options.verbose:
 				if tryUsername:
-					events.fail("['%s':'%s'] <--> %s ==> %s" % (tryUsername, tryPassword, proxyAddr, proc.get_title()))
+					events.fail("['%s':%s'] <==> %s" % (tryUsername, tryPassword, proxyAddr), diff, proc.get_title())
 				else:
-					events.fail("Failed: [%s] <--> %s ==> %s" % (tryPassword, proxyAddr, proc.get_title()))
+					events.fail("['%s'] <==> %s" % (tryPassword, proxyAddr), diff, proc.get_title())
 		
 		return True
 	
@@ -130,7 +112,7 @@ def submit(options, loginInfo, tryCred, result):
 			but our cred is true.
 			This code block showing information, for special cases
 		"""
-		
+		traceback.print_exc() # DEBUG
 		events.error("%s" % (error), "BRUTE")
 	
 	finally:

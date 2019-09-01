@@ -66,7 +66,7 @@ class ParseOptions(object):
 		self.attack_mode = "--brute"
 		self.extras = []
 		self.help = False
-		self.tech = "mechanize"
+		self.txt = ""
 		
 		# options
 		self.threads = 16

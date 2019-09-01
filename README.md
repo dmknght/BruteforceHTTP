@@ -14,6 +14,7 @@ Requirements
 | python-bs4 |
 | python-regex |
 | python-lxml |
+| python-html2text |
 
 1.
 ```

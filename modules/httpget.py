@@ -26,7 +26,7 @@ def submit(options, loginInfo, creds, result):
 		
 		if resp.status_code == 401:
 			if options.verbose:
-				events.fail("['%s':'%s'] <--> %s" % (tryUsername, tryPassword, proxyAddr))
+				events.fail("['%s':%s'] <==> %s" % (tryUsername, tryPassword, proxyAddr))
 		elif resp.status_code > 400:
 			events.error("[%s] ['%s': '%s']" % (proc.url(), tryUsername, tryPassword), "%s" % (resp.status_code))
 		else:
