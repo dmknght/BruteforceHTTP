@@ -74,7 +74,8 @@ def webshell_pass():
 	k1r4
 	1945
 	redstar98
-	tatsumi2k17"""
+	tatsumi2k17
+	monkey"""
 
 def router_user():
 	return """acc
