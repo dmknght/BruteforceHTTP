@@ -48,9 +48,9 @@ class Browser(StatefulBrowser):
 	
 	def get_title(self):
 		try:
-			return str(self.get_current_page().title.text)
+			return str(self.get_current_page().title.text.replace("\n", "").replace("\r", "").replace("\t", ""))
 		except UnicodeEncodeError:
-			return str(self.get_current_page().title.text.encode('utf-8'))
+			return str(self.get_current_page().title.text.encode('utf-8').replace("\n", "").replace("\r", "").replace("\t", ""))
 		except:
 			return "No title"
 	
