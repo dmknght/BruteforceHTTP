@@ -21,14 +21,14 @@ def submit(options, loginInfo, creds, result):
 			proxyAddr = ""
 		# proc.httpget_passwd(options.url, tryUsername, tryPassword, realm) # BUG
 		resp = proc.open_url(options.url, auth = (tryUsername, tryPassword))
-		if options.verbose:
-			events.warn("['%s']['%s'] <--> %s" % (tryUsername, tryPassword, proxyAddr), "TRY")
+		# if options.verbose:
+		# 	events.warn("['%s']['%s'] <--> %s" % (tryUsername, tryPassword, proxyAddr), "TRY")
 		
 		if resp.status_code == 401:
 			if options.verbose:
-				events.fail("['%s':%s'] <==> %s" % (tryUsername, tryPassword, proxyAddr))
+				events.fail("['%s':%s'] <==> %s" % (tryUsername, tryPassword, proxyAddr), title = proc.get_title())
 		elif resp.status_code > 400:
-			events.error("[%s] ['%s': '%s']" % (proc.url(), tryUsername, tryPassword), "%s" % (resp.status_code))
+			events.error("[%s] ['%s': '%s']" % (proc.url(), tryUsername, tryPassword), "%s" % resp.status_code)
 		else:
 			events.found(tryUsername, tryPassword, proc.get_title())
 			result.put([options.url, tryUsername, tryPassword])
