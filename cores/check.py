@@ -40,6 +40,7 @@ def checkHTTPGetLogin(strHeader):
 def parseLoginForm(allFormControl):
 	# Try detect login form from all forms in response. Return form information
 	reTextControl = r"text\((.*)\)"
+	reMailControl = r"email\((.*)\)"
 	rePasswdControl = r"password\((.*)\)"
 	reSubmitControl = r"submit\((.*)\)"
 	
@@ -52,6 +53,8 @@ def parseLoginForm(allFormControl):
 		# 	2 or more password control -> possibly register field
 		if len(txtPasswdControl) == 1:
 			txtTextControl = re.findall(reTextControl, form)
+			txtMailControl = re.findall(reMailControl, form)
+			txtTextControl = txtTextControl if txtTextControl else txtMailControl
 			txtSubmitControl = re.findall(reSubmitControl, form)
 			txtSubmitControl = ["None"] if not txtSubmitControl else txtSubmitControl
 			if len(txtTextControl) == 1:
