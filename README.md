@@ -14,11 +14,12 @@ Requirements
 | python-bs4 |
 | python-regex |
 | python-lxml |
-| python-html2text |
+| html2text |
 
 1.
 ```
 sudo apt install python python-regex git
+sudo pip install html2text
 ```
 
 2.
