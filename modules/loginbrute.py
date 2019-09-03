@@ -13,7 +13,7 @@ def submit(options, loginInfo, tryCred, result):
 	# BREAK if we had valid payload?
 	# if options.options["-p"] == "sqli" and len(list(result.queue)) > 1:
 	# 	return True
-	
+
 	if tryUsername in [x[1] for x in list(result.queue)]:
 		return True
 	
@@ -47,11 +47,11 @@ def submit(options, loginInfo, tryCred, result):
 		# proc.reload()
 		#	If no login form -> maybe success. Check conditions
 		resp = proc.xsubmit(frmCtrl, frmFields, tryCred)
-		if options.verbose:
-			if len(frmFields) == 2:
-				events.warn("['%s']['%s'] <--> %s" % (tryUsername, tryPassword, proxyAddr), "TRY")
-			else:
-				events.warn("['%s'] <--> %s" % (tryPassword, proxyAddr), "TRY")
+		# if options.verbose:
+		# 	if len(frmFields) == 2:
+		# 		events.warn("['%s']['%s'] <--> %s" % (tryUsername, tryPassword, proxyAddr), "TRY")
+		# 	else:
+		# 		events.warn("['%s'] <--> %s" % (tryPassword, proxyAddr), "TRY")
 		
 		from cores.analysis import getdiff
 		diff, src = getdiff(options.txt.decode('utf-8'), resp.content.decode('utf-8'))
