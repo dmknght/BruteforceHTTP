@@ -100,7 +100,7 @@ def getdiff(first, content):
 		source_diff += src_line if src_line not in first else ""
 		diff += line if line not in convert.handle(first) else ""
 
-	return diff, source_diff
+	return diff.encode('utf-8'), source_diff
 
 	# diff = ""
 	# print(list(convert.handle(content).split("\n")))
