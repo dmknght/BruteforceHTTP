@@ -153,7 +153,7 @@ if __name__ == "__main__":
 					# Handle target environment that doesn't support HTTPS verification
 					ssl._create_default_https_context = _create_unverified_https_context
 				
-				print(banners.start_banner(options))
+				banners.start_banner(options)
 				results = []
 				set_break = False
 				for idu, url in enumerate(options.target):

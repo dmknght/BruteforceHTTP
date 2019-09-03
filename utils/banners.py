@@ -120,4 +120,4 @@ def start_banner(options):
 		" " * 11 + "Github: https://github.com/dmknght/BruteforceHTTP"
 	)
 	
-	return banner.replace("\t", "  ")
+	print(banner.replace("\t", "  "))
