@@ -17,13 +17,13 @@ Requirements
 | html2text |
 | python-uritools |
 
-1.
+1. Install dependencies
 ```
-sudo apt install python python-regex git python-uritools
+sudo apt install python python-regex git python-uritools python-bs4
 sudo pip install html2text
 ```
 
-2.
+2. Clone the project
 ```
 git clone https://github.com/dmknght/BruteforceHTTP.git
 ```
