@@ -46,7 +46,19 @@ def submit(options, loginInfo, tryCred, result):
 		
 		# print(getredirect(srcDiff))
 		
-		if not parseLoginForm(proc.forms()):  # != loginInfo:
+		if not parseLoginForm(proc.forms()):
+			isLoginForm = False
+			for diffURL in getredirect(srcDiff):
+				if not diffURL.startswith("http"):
+					try:
+						from urllib.parse import urljoin
+					except ImportError:
+						from urlparse import urljoin
+					diffURL = urljoin(options.login_url, diffURL)
+					proc.open_url(diffURL)
+					if parseLoginForm(proc.forms()):
+						isLoginForm = True
+					break
 			# TODO craft url from element result
 			"""
 			for diffURL in srcDiff:
@@ -55,32 +67,32 @@ def submit(options, loginInfo, tryCred, result):
 				TODO craft url
 			"""
 			# TODO FOLLOW url via windows.location or any html tag HTTP-EQUIV=REFRESH, href
-			test_result = check_login(options, proc, loginInfo)
+			test_result = check_login(options, proc)
 			if test_result == 1:
 				# "If we tried login form with username+password field"
-				
 				if tryUsername:
 					if resp.status_code >= 400:
 						events.error("['%s':'%s'] <--> %s" % (tryUsername, tryPassword, proxyAddr), "%s" % (resp.status_code))
-					else:
+					elif not isLoginForm:
 						events.found(tryUsername, tryPassword, proc.get_title())
-						# events.success("['%s':'%s'] [%s]" % (tryUsername, tryPassword, proc.get_title()), "FOUND")
 						result.put([options.url, tryUsername, tryPassword])
 				# "Else If we tried login form with password field only"
 				else:
 					if resp.status_code >= 400:
 						events.error("[%s] <--> %s" % (tryPassword, proxyAddr), "%s" % (resp.status_code))
-					else:
+					elif not isLoginForm:
 						events.found('', tryPassword, proc.get_title())
-						# events.success("[%s] [%s]" % (tryPassword, proc.get_title()), "FOUND")
 						result.put([options.url, tryUsername, tryPassword])
+
 			elif test_result == 2 and options.verbose:
 				events.success("SQL Injection in login form", "BRUTE")
 				events.info("['%s': '%s']" % (tryUsername, tryPassword))
+	
 			else:
 				# Possibly Error. But sometime it is true
 				if options.verbose:
 					events.error("['%s': '%s'] [%s]" % (tryUsername, tryPassword, proc.get_title()), "BRUTE")
+
 		# "Login form is still there. Oops"
 		else:
 			if check_sqlerror(proc.get_resp()) and options.verbose:

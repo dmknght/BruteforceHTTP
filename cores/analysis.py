@@ -3,7 +3,7 @@ from utils import events
 import re
 
 
-def check_login(options, proc, loginInfo):
+def check_login(options, proc):
 	"""
 		Check logged in successfully condition.
 		This function will check SQL injection as well
@@ -15,7 +15,7 @@ def check_login(options, proc, loginInfo):
 	if options.panel_url:
 		# User provided panel url (/wp-admin/ for example, repopen this url to check sess)
 		proc.open_url(options.panel_url)
-		if not parseLoginForm(proc.forms()):  # != loginInfo:
+		if not parseLoginForm(proc.forms()):
 			if check_sqlerror(proc.get_resp()):
 				return 2
 			else:
@@ -24,8 +24,6 @@ def check_login(options, proc, loginInfo):
 			return 0
 	else:
 		# User provided direct login URL (/wp-login.php).
-		# DEBUG
-		# proc.open(options.url)
 		# if parseLoginForm(proc.forms()) != loginInfo:
 		# 	return 1
 		# else:
