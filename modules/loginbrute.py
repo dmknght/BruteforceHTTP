@@ -46,7 +46,7 @@ def submit(options, loginInfo, tryCred, result):
 			txtDiff, srcDiff = getdiff(options.txt.decode('utf-8'), resp.content.decode('utf-8'))
 			isLoginForm = False
 			for diffURL in getredirect(srcDiff):
-				if not diffURL.startswith("http"):
+				if not diffURL.startswith("http") and not diffURL.endswith(options.exceptions()):
 					try:
 						from urllib.parse import urljoin
 					except ImportError:

@@ -108,12 +108,12 @@ class ParseOptions(object):
 					else:
 						events.error("Invalid wordlist", "ARGS")
 						sys.exit(1)
-
+				
 				
 				else:
 					events.error("Unknown option %s" % (sys.argv[i]), "ARGS")
 					sys.exit(1)
-
+			
 			elif sys.argv[i].startswith("-"):
 				
 				if sys.argv[i] in self.options.keys():
@@ -122,7 +122,7 @@ class ParseOptions(object):
 				else:
 					events.error("Unknown option %s" % (sys.argv[i], "ARGS"))
 					sys.exit(1)
-
+			
 			else:
 				self.url = sys.argv[i]
 			
@@ -137,7 +137,7 @@ class ParseOptions(object):
 			helps.print_fast_help()
 			
 			events.info("Use: %s for more information" % (self.HELP_OPTIONS))
-
+			
 			sys.exit(0)
 		
 		else:
@@ -145,4 +145,6 @@ class ParseOptions(object):
 				self.parse_options(szOptions)
 			except Exception as error:
 				events.error("%s" % (error), "ARGS")
-
+	
+	def exceptions(self):
+		return (".css", ".js", ".jpg", ".png", ".jpeg", ".doc", ".docx", ".xlsx")

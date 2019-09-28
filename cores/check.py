@@ -38,41 +38,36 @@ def checkHTTPGetLogin(strHeader):
 
 
 def parseLoginForm(allFormControl):
-	try:
-		
-		# Try detect login form from all forms in response. Return form information
-		reTextControl = r"text\((.*)\)"
-		reMailControl = r"email\((.*)\)"
-		rePasswdControl = r"password\((.*)\)"
-		reSubmitControl = r"submit\((.*)\)"
-		
-		formData = None
-		
-		for uint_formID, form in enumerate(allFormControl):
-			# if not form:
-			# 	return False
-			txtPasswdControl = re.findall(rePasswdControl, form)
-			# Find password control. If has
-			# 	1 password control -> login field
-			# 	2 or more password control -> possibly register field
-			if len(txtPasswdControl) == 1:
-				txtTextControl = re.findall(reTextControl, form)
-				txtMailControl = re.findall(reMailControl, form)
-				txtTextControl = txtTextControl if txtTextControl else txtMailControl
-				txtSubmitControl = re.findall(reSubmitControl, form)
-				txtSubmitControl = ["None"] if not txtSubmitControl else txtSubmitControl
-				if len(txtTextControl) == 1:
-					# Regular login field. > 1 can be register specific field (maybe captcha)
-					formData = ([uint_formID, txtSubmitControl[0]], [txtPasswdControl[0], txtTextControl[0]])
-				elif len(txtTextControl) == 0:
-					# Possibly password field login only
-					formData = ([uint_formID, txtSubmitControl[0]], [txtPasswdControl[0]])
-				return formData
-		return False
-	except AttributeError:
-		# Fix a bug in `for uint_formID, form in enumerate(allFormControl):`
-		# allFormControl has no form -> AttributeError: 'NoneType' object has no attribute 'find_all' and crash program
-		pass
+	# Try detect login form from all forms in response. Return form information
+	reTextControl = r"text\((.*)\)"
+	reMailControl = r"email\((.*)\)"
+	rePasswdControl = r"password\((.*)\)"
+	reSubmitControl = r"submit\((.*)\)"
+	
+	formData = None
+	
+	for uint_formID, form in enumerate(allFormControl):
+		# if not form:
+		# 	return False
+		txtPasswdControl = re.findall(rePasswdControl, form)
+		# Find password control. If has
+		# 	1 password control -> login field
+		# 	2 or more password control -> possibly register field
+		if len(txtPasswdControl) == 1:
+			txtTextControl = re.findall(reTextControl, form)
+			txtMailControl = re.findall(reMailControl, form)
+			txtTextControl = txtTextControl if txtTextControl else txtMailControl
+			txtSubmitControl = re.findall(reSubmitControl, form)
+			txtSubmitControl = ["None"] if not txtSubmitControl else txtSubmitControl
+			if len(txtTextControl) == 1:
+				# Regular login field. > 1 can be register specific field (maybe captcha)
+				formData = ([uint_formID, txtSubmitControl[0]], [txtPasswdControl[0], txtTextControl[0]])
+			elif len(txtTextControl) == 0:
+				# Possibly password field login only
+				formData = ([uint_formID, txtSubmitControl[0]], [txtPasswdControl[0]])
+			return formData
+	return False
+
 
 
 def check_login(options):
