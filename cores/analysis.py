@@ -96,10 +96,21 @@ def getdiff(first, content):
 	convert = html2text.HTML2Text()
 
 	diff, source_diff = "", ""
-	for src_line, line in zip(content.split("\n"), convert.handle(content).split("\n")):
+	
+	# Fix bug lines(source) > lines(text)
+	
+	for src_line in content.split("\n"):
 		source_diff += src_line if src_line not in first else ""
+	
+	for line in convert.handle(content).split("\n"):
 		diff += line if line not in convert.handle(first) else ""
+	
 	return diff, source_diff
+
+	# for src_line, line in zip(content.split("\n"), convert.handle(content).split("\n")):
+	# 	source_diff += src_line if src_line not in first else ""
+	# 	diff += line if line not in convert.handle(first) else ""
+	# return diff, source_diff
 
 	# diff = ""
 	# print(list(convert.handle(content).split("\n")))
