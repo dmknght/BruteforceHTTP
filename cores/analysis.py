@@ -99,8 +99,7 @@ def getdiff(first, content):
 	for src_line, line in zip(content.split("\n"), convert.handle(content).split("\n")):
 		source_diff += src_line if src_line not in first else ""
 		diff += line if line not in convert.handle(first) else ""
-
-	return diff.encode('utf-8'), source_diff
+	return diff, source_diff
 
 	# diff = ""
 	# print(list(convert.handle(content).split("\n")))
@@ -111,6 +110,20 @@ def getdiff(first, content):
 	
 
 def getredirect(src):
+	# get url via windows.location or any html tag HTTP-EQUIV=REFRESH, href
 	js_redirection = r"window\.location(?:[a-zA-Z\.\ \=\(])+\"|\'(.*)\"|\'"
-	url = re.findall(r"url=(.*?)\'|\">", src.lower())
-	return list(set(url))
+	meta_redirection = r"<meta[^>]*?url=(.*?)[\"\']"
+	
+	url = list(set(re.findall(meta_redirection, src)))
+	if url:
+		return url
+	url = list(set(re.findall(js_redirection, src)))
+	if url:
+		return url
+	
+	url = get_href(src)
+	return url
+	
+def get_href(src):
+	href_redirection = r"href=[\'\"]?([^\'\" >]+)"
+	return list(set(re.findall(href_redirection, src)))

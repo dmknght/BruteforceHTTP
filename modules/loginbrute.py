@@ -13,7 +13,7 @@ def submit(options, loginInfo, tryCred, result):
 	# BREAK if we had valid payload?
 	# if options.options["-p"] == "sqli" and len(list(result.queue)) > 1:
 	# 	return True
-
+	
 	if tryUsername in [x[1] for x in list(result.queue)]:
 		return True
 	
@@ -47,22 +47,52 @@ def submit(options, loginInfo, tryCred, result):
 		# proc.reload()
 		#	If no login form -> maybe success. Check conditions
 		resp = proc.xsubmit(frmCtrl, frmFields, tryCred)
-		# if options.verbose:
-		# 	if len(frmFields) == 2:
-		# 		events.warn("['%s']['%s'] <--> %s" % (tryUsername, tryPassword, proxyAddr), "TRY")
-		# 	else:
-		# 		events.warn("['%s'] <--> %s" % (tryPassword, proxyAddr), "TRY")
-		
+		if options.verbose:
+			if len(frmFields) == 2:
+				events.warn("['%s']['%s'] <--> %s" % (tryUsername, tryPassword, proxyAddr), "TRY")
+			else:
+				events.warn("['%s'] <--> %s" % (tryPassword, proxyAddr), "TRY")
+
+
 		from cores.analysis import getdiff
 		diff, src = getdiff(options.txt.decode('utf-8'), resp.content.decode('utf-8'))
 		
-		# print(getredirect(src))
+		current_url = proc.get_url()
+		if src == resp.content: # complete new page. If not -> stay on login page
+			from cores.analysis import get_href
+			all_urls = get_href(src.lower())
+			for _url in all_urls:
+				if not _url.startswith("http"):
+					_url = "/".join(current_url.split("/"))[:-2] + _url if '.' in current_url.split("/")[-1] else current_url + _url
+				if options.url.split("/")[2] == _url.split("/")[2]: # same scope
+					proc.open(_url)
+					# If has login form -> false
+					if parseLoginForm(proc.forms()):
+						if options.verbose:
+							if tryUsername:
+								events.fail("['%s':%s'] <==> %s" % (tryUsername, tryPassword, proxyAddr), diff, proc.get_title())
+							else:
+								events.fail("['%s'] <==> %s" % (tryPassword, proxyAddr), diff, proc.get_title())
+						return False
+
+		else:
+			redirections = getredirect(src.lower())
+			# print(redirections)
+			if len(redirections) == 1:
+				redirect_url = redirections[0]
+				if not redirect_url.startswith("http"):
+					redirect_url ="/".join(current_url.split("/"))[:-2] + redirect_url if '.' in current_url.split("/")[-1] else current_url + redirect_url
+					# pass # craft url
+				# print(redirect_url)
+				resp = proc.open(redirect_url)
+				
+		
 		"""
 			if len(getredirect(src)) == 1:
 				open(url)
 			TODO craft url
 		"""
-		# TODO FOLLOW url via windows.location or any html tag HTTP-EQUIV=REFRESH, href
+		
 		# Reopen -> analysis
 		# diff = getdiff(options.txt, resp.content)
 		if not parseLoginForm(proc.forms()):  # != loginInfo:
