@@ -40,13 +40,10 @@ def submit(options, loginInfo, tryCred, result):
 			events.info("Login form has been changed", "BRUTE")
 
 		resp = proc.xsubmit(frmCtrl, frmFields, tryCred)
-
-		from cores.analysis import getdiff
-		txtDiff, srcDiff = getdiff(options.txt.decode('utf-8'), resp.content.decode('utf-8'))
-		
-		# print(getredirect(srcDiff))
 		
 		if not parseLoginForm(proc.forms()):
+			from cores.analysis import getdiff
+			txtDiff, srcDiff = getdiff(options.txt.decode('utf-8'), resp.content.decode('utf-8'))
 			isLoginForm = False
 			for diffURL in getredirect(srcDiff):
 				if not diffURL.startswith("http"):
