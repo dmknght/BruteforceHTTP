@@ -15,10 +15,11 @@ Requirements
 | python-regex |
 | python-lxml |
 | html2text |
+| python-uritools |
 
 1.
 ```
-sudo apt install python python-regex git
+sudo apt install python python-regex git python-uritools
 sudo pip install html2text
 ```
 
