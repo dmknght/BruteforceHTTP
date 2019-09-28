@@ -147,4 +147,4 @@ class ParseOptions(object):
 				events.error("%s" % (error), "ARGS")
 	
 	def exceptions(self):
-		return (".css", ".js", ".jpg", ".png", ".jpeg", ".doc", ".docx", ".xlsx")
+		return (".css", ".js", ".jpg", ".png", ".jpeg", ".doc", ".docx", ".xlsx", ".pdf", ".txt", ".rar", ".bak", ".zip", ".7z")
