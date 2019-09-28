@@ -5,7 +5,6 @@ from cores.analysis import check_login, check_sqlerror, getredirect
 
 
 def submit(options, loginInfo, tryCred, result):
-	# frmLoginID, frmFields = loginInfo
 	tryPassword, tryUsername = tryCred
 	
 	# proc = Browser(options.timeout) # TODO recovery here
@@ -36,66 +35,26 @@ def submit(options, loginInfo, tryCred, result):
 			return False
 		else:
 			frmCtrl, frmFields = _form
-			frmLoginID, btnSubmit = frmCtrl
+
 		if options.verbose and loginInfo != _form:
 			events.info("Login form has been changed", "BRUTE")
-		#	Select login form
-		# page_title = proc.title()
-		#	Send request
-		
-		#	Reload the browser. For javascript redirection and others...
-		# proc.reload()
-		#	If no login form -> maybe success. Check conditions
-		resp = proc.xsubmit(frmCtrl, frmFields, tryCred)
-		if options.verbose:
-			if len(frmFields) == 2:
-				events.warn("['%s']['%s'] <--> %s" % (tryUsername, tryPassword, proxyAddr), "TRY")
-			else:
-				events.warn("['%s'] <--> %s" % (tryPassword, proxyAddr), "TRY")
 
+		resp = proc.xsubmit(frmCtrl, frmFields, tryCred)
 
 		from cores.analysis import getdiff
-		diff, src = getdiff(options.txt.decode('utf-8'), resp.content.decode('utf-8'))
+		txtDiff, srcDiff = getdiff(options.txt.decode('utf-8'), resp.content.decode('utf-8'))
 		
-		current_url = proc.get_url()
-		if src == resp.content: # complete new page. If not -> stay on login page
-			from cores.analysis import get_href
-			all_urls = get_href(src.lower())
-			for _url in all_urls:
-				if not _url.startswith("http"):
-					_url = "/".join(current_url.split("/"))[:-2] + _url if '.' in current_url.split("/")[-1] else current_url + _url
-				if options.url.split("/")[2] == _url.split("/")[2]: # same scope
-					proc.open(_url)
-					# If has login form -> false
-					if parseLoginForm(proc.forms()):
-						if options.verbose:
-							if tryUsername:
-								events.fail("['%s':%s'] <==> %s" % (tryUsername, tryPassword, proxyAddr), diff, proc.get_title())
-							else:
-								events.fail("['%s'] <==> %s" % (tryPassword, proxyAddr), diff, proc.get_title())
-						return False
-
-		else:
-			redirections = getredirect(src.lower())
-			# print(redirections)
-			if len(redirections) == 1:
-				redirect_url = redirections[0]
-				if not redirect_url.startswith("http"):
-					redirect_url ="/".join(current_url.split("/"))[:-2] + redirect_url if '.' in current_url.split("/")[-1] else current_url + redirect_url
-					# pass # craft url
-				# print(redirect_url)
-				resp = proc.open(redirect_url)
-				
+		# print(getredirect(srcDiff))
 		
-		"""
-			if len(getredirect(src)) == 1:
-				open(url)
-			TODO craft url
-		"""
-		
-		# Reopen -> analysis
-		# diff = getdiff(options.txt, resp.content)
 		if not parseLoginForm(proc.forms()):  # != loginInfo:
+			# TODO craft url from element result
+			"""
+			for diffURL in srcDiff:
+				if len(getredirect(src)) == 1:
+					open(url)
+				TODO craft url
+			"""
+			# TODO FOLLOW url via windows.location or any html tag HTTP-EQUIV=REFRESH, href
 			test_result = check_login(options, proc, loginInfo)
 			if test_result == 1:
 				# "If we tried login form with username+password field"
@@ -129,9 +88,9 @@ def submit(options, loginInfo, tryCred, result):
 				events.info("['%s': '%s']" % (tryUsername, tryPassword))
 			if options.verbose:
 				if tryUsername:
-					events.fail("['%s':%s'] <==> %s" % (tryUsername, tryPassword, proxyAddr), diff, proc.get_title())
+					events.fail("['%s':%s'] <==> %s" % (tryUsername, tryPassword, proxyAddr), txtDiff, proc.get_title())
 				else:
-					events.fail("['%s'] <==> %s" % (tryPassword, proxyAddr), diff, proc.get_title())
+					events.fail("['%s'] <==> %s" % (tryPassword, proxyAddr), txtDiff, proc.get_title())
 		
 		return True
 	
