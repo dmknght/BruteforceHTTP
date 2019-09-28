@@ -59,14 +59,7 @@ def submit(options, loginInfo, tryCred, result):
 					if parseLoginForm(proc.forms()):
 						isLoginForm = True
 					break
-			# TODO craft url from element result
-			"""
-			for diffURL in srcDiff:
-				if len(getredirect(src)) == 1:
-					open(url)
-				TODO craft url
-			"""
-			# TODO FOLLOW url via windows.location or any html tag HTTP-EQUIV=REFRESH, href
+
 			test_result = check_login(options, proc)
 			if test_result == 1:
 				# "If we tried login form with username+password field"
