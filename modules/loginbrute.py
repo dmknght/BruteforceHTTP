@@ -41,9 +41,10 @@ def submit(options, loginInfo, tryCred, result):
 
 		resp = proc.xsubmit(frmCtrl, frmFields, tryCred)
 		
+		from cores.analysis import getdiff
+		txtDiff, srcDiff = getdiff(options.txt.decode('utf-8'), resp.content.decode('utf-8'))
+		
 		if not parseLoginForm(proc.forms()):
-			from cores.analysis import getdiff
-			txtDiff, srcDiff = getdiff(options.txt.decode('utf-8'), resp.content.decode('utf-8'))
 			isLoginForm = False
 			for diffURL in getredirect(srcDiff):
 				if not diffURL.startswith("http") and not diffURL.endswith(options.exceptions()):
