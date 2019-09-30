@@ -37,7 +37,7 @@ def submit(options, loginInfo, tryCred, result):
 		if options.proxy:
 			# Set proxy connect
 			proxyAddr = list_choose_randomly(options.proxy)
-			proc.setproxy(proxyAddr)
+			proc.set_random_proxy(proxyAddr)
 		else:
 			proxyAddr = ""
 		
@@ -60,11 +60,11 @@ def submit(options, loginInfo, tryCred, result):
 		#	Reload the browser. For javascript redirection and others...
 		# proc.reload()
 		#	If no login form -> maybe success. Check conditions
-		resp = proc.xsubmit(frmCtrl, frmFields[1], tryUsername)
+		resp = proc.form_submit(frmCtrl, frmFields[1], tryUsername)
 		if resp.status_code > 400:
 			events.error("Error while sending %s" %(frmFields[1]), "BRUTE")
 		
-		resp = proc.xsubmit(frmCtrl, frmFields[0], tryPassword)
+		resp = proc.form_submit(frmCtrl, frmFields[0], tryPassword)
 
 		if options.verbose:
 			events.warn("['%s']['%s'] <--> %s" % (tryUsername, tryPassword, proxyAddr), "TRY")

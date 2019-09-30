@@ -22,7 +22,7 @@ def submit(options, loginInfo, tryCred, result):
 		if options.proxy:
 			# Set proxy connect
 			proxyAddr = list_choose_randomly(options.proxy)
-			proc.setproxy(proxyAddr)
+			proc.set_random_proxy(proxyAddr)
 		else:
 			proxyAddr = ""
 		
@@ -39,7 +39,7 @@ def submit(options, loginInfo, tryCred, result):
 		if options.verbose and loginInfo != _form:
 			events.info("Login form has been changed", "BRUTE")
 
-		resp = proc.xsubmit(frmCtrl, frmFields, tryCred)
+		resp = proc.form_submit(frmCtrl, frmFields, tryCred)
 		
 		from cores.analysis import getdiff
 		txtDiff, srcDiff = getdiff(options.txt.decode('utf-8'), resp.content.decode('utf-8'))
@@ -86,7 +86,7 @@ def submit(options, loginInfo, tryCred, result):
 
 		# "Login form is still there. Oops"
 		else:
-			if check_sqlerror(proc.get_resp()) and options.verbose:
+			if check_sqlerror(proc.get_response()) and options.verbose:
 				events.success("SQL Injection in login form", "BRUTE")
 				events.info("['%s': '%s']" % (tryUsername, tryPassword))
 			if options.verbose:

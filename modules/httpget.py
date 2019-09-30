@@ -16,7 +16,7 @@ def submit(options, loginInfo, creds, result):
 		proc = Browser()
 		if options.proxy:
 			proxyAddr = list_choose_randomly(options.proxy)
-			proc.setproxy(proxyAddr)
+			proc.set_random_proxy(proxyAddr)
 		else:
 			proxyAddr = ""
 		# proc.httpget_passwd(options.url, tryUsername, tryPassword, realm) # BUG
@@ -28,7 +28,7 @@ def submit(options, loginInfo, creds, result):
 			if options.verbose:
 				events.fail("['%s':%s'] <==> %s" % (tryUsername, tryPassword, proxyAddr), title = proc.get_title())
 		elif resp.status_code > 400:
-			events.error("[%s] ['%s': '%s']" % (proc.url(), tryUsername, tryPassword), "%s" % resp.status_code)
+			events.error("[%s] ['%s': '%s']" % (proc.get_url(), tryUsername, tryPassword), "%s" % resp.status_code)
 		else:
 			events.found(tryUsername, tryPassword, proc.get_title())
 			result.put([options.url, tryUsername, tryPassword])

@@ -16,7 +16,7 @@ def check_login(options, proc):
 		# User provided panel url (/wp-admin/ for example, repopen this url to check sess)
 		proc.open_url(options.panel_url)
 		if not parseLoginForm(proc.forms()):
-			if check_sqlerror(proc.get_resp()):
+			if check_sqlerror(proc.get_response()):
 				return 2
 			else:
 				return 1
@@ -28,7 +28,7 @@ def check_login(options, proc):
 		# 	return 1
 		# else:
 		# 	return 0
-		if check_sqlerror(proc.get_resp()):
+		if check_sqlerror(proc.get_response()):
 			return 2
 		else:
 			return 1

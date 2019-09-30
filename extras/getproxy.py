@@ -48,7 +48,7 @@ def getnew(options):
 			
 			getproxy.open_url(url)
 			events.success("Gathering proxies completed", "PROXY")
-			return getproxy.get_resp()
+			return getproxy.get_response()
 		
 		except Exception as error:
 			events.error("%s" % (error), "PROXY")
@@ -94,7 +94,7 @@ def check(options):
 	def checProxyConn(proxyAddr, target, result, verbose):
 		try:
 			proxyTest = Browser()
-			proxyTest.setproxy(proxyAddr)
+			proxyTest.set_random_proxy(proxyAddr)
 			
 			if verbose:
 				events.info("Testing %s" % (proxyAddr))
