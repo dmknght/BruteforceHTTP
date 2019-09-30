@@ -139,4 +139,3 @@ def get_redirection(response):
 
 	url = list(set(re.findall(regex_href, response)))
 	return url
-

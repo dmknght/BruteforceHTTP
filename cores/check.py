@@ -79,6 +79,7 @@ def find_login_form(form_controls):
 	finally:
 		return form_info
 
+
 def find_login_request(options):
 	"""
 	Find and analysis login request from response
@@ -116,11 +117,11 @@ def find_login_request(options):
 				if options.verbose:
 					events.info("HTTP GET login")
 				options.attack_mode = "--httpget"
-			
+		
 		else:
 			login_request = find_login_form(proc.forms())
 			options.txt = resp.content
-		
+	
 	except KeyboardInterrupt:
 		pass
 	
