@@ -91,7 +91,7 @@ def submit(options, loginInfo, tryCred, result):
 				events.info("['%s': '%s']" % (tryUsername, tryPassword))
 			if options.verbose:
 				if tryUsername:
-					events.fail("['%s':%s'] <==> %s" % (tryUsername, tryPassword, proxyAddr), txtDiff.encode('utf-8'), proc.get_title())
+					events.fail("['%s':'%s'] <==> %s" % (tryUsername, tryPassword, proxyAddr), txtDiff.encode('utf-8'), proc.get_title())
 				else:
 					events.fail("['%s'] <==> %s" % (tryPassword, proxyAddr), txtDiff.encode('utf-8'), proc.get_title())
 		
