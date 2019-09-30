@@ -122,78 +122,73 @@ if __name__ == "__main__":
 		
 		# Get options
 		options = options.ParseOptions()
-		
-		if options.help == True:
-			from utils import helps
-			
-			helps.print_help()
-		else:
-			check.check_options(options)
-			
-			if "--getproxy" in options.extras:
-				getproxy.getnew(options)
-				if not options.target:
-					events.info("No URL. Get latest proxy list only", "PROXY")
-					sys.exit(0)
-				else:
-					if not options.run_options["--proxy"]:
-						events.warn("Program runs without any proxy")
+
+		check.check_options(options)
+
+		if "--getproxy" in options.extras:
+			getproxy.getnew(options)
 			if not options.target:
-				events.error("URL is required")
-				sys.exit(1)
-			
+				events.info("No URL. Get latest proxy list only", "PROXY")
+				sys.exit(0)
 			else:
-				# Fix SSL errors https://stackoverflow.com/a/35960702
-				try:
-					_create_unverified_https_context = ssl._create_unverified_context
-				except AttributeError:
-					# Legacy Python that doesn't verify HTTPS certificates by default
-					pass
-				else:
-					# Handle target environment that doesn't support HTTPS verification
-					ssl._create_default_https_context = _create_unverified_https_context
-				
-				banners.start_banner(options)
-				results = []
-				set_break = False
-				for idu, url in enumerate(options.target):
-					if set_break:
-						break
-					if url:
-						# Clean other URL options (Fix URL_panel and URL login bug)
-						options.login_url = None
-						options.panel_url = None
-						options.url = check.check_url(url)
-						if "--getproxy" in options.extras and len(options.target) == 1 and options.run_options["--proxy"]:
-							events.warn("Check proxy connection")
+				if not options.run_options["--proxy"]:
+					events.warn("Program runs without any proxy")
+		if not options.target:
+			events.error("URL is required")
+			sys.exit(1)
+
+		else:
+			# Fix SSL errors https://stackoverflow.com/a/35960702
+			try:
+				_create_unverified_https_context = ssl._create_unverified_context
+			except AttributeError:
+				# Legacy Python that doesn't verify HTTPS certificates by default
+				pass
+			else:
+				# Handle target environment that doesn't support HTTPS verification
+				ssl._create_default_https_context = _create_unverified_https_context
+
+			banners.start_banner(options)
+			results = []
+			set_break = False
+			for idu, url in enumerate(options.target):
+				if set_break:
+					break
+				if url:
+					# Clean other URL options (Fix URL_panel and URL login bug)
+					options.login_url = None
+					options.panel_url = None
+					options.url = check.check_url(url)
+					if "--getproxy" in options.extras and len(options.target) == 1 and options.run_options["--proxy"]:
+						events.warn("Check proxy connection")
+						getproxy.check(options)
+					if options.run_options["--proxy"]:
+						if len(options.target) > 1:
+							events.info("Check proxy connection for %s" %(options.url))
 							getproxy.check(options)
-						if options.run_options["--proxy"]:
-							if len(options.target) > 1:
-								events.info("Check proxy connection for %s" %(options.url))
-								getproxy.check(options)
-							try:
-								options.proxy = getproxy.livelist()
-							except:
-								events.error("Error while reading list")
-								getproxy.check(options)
-								options.proxy = getproxy.livelist()
-						
-						events.info("[%s / %s] [%s]" % (idu + 1, len(options.target), options.url))
-						loginInfo = check.check_login(options)
-						if loginInfo:
-							check.check_tasks(options, loginInfo)
-							result = attack(options, loginInfo)
-							if result:
-								for _result in result:
-									results.append(_result)
-						# results.append(result)
-						else:
-							events.error("No login request found")
-				
-				if "--reauth" in options.extras:
-					from extras import reauth
-					
-					reauth.run(options, result)
+						try:
+							options.proxy = getproxy.livelist()
+						except:
+							events.error("Error while reading list")
+							getproxy.check(options)
+							options.proxy = getproxy.livelist()
+
+					events.info("[%s / %s] [%s]" % (idu + 1, len(options.target), options.url))
+					loginInfo = check.check_login(options)
+					if loginInfo:
+						check.check_tasks(options, loginInfo)
+						result = attack(options, loginInfo)
+						if result:
+							for _result in result:
+								results.append(_result)
+					# results.append(result)
+					else:
+						events.error("No login request found")
+
+			if "--reauth" in options.extras:
+				from extras import reauth
+
+				reauth.run(options, result)
 	
 	except Exception as error:
 		events.error("%s" % (error), "STOPPED")

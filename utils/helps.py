@@ -132,3 +132,4 @@ def print_help():
 	]
 	utils.print_table(title, *menu)
 	print("")
+	sys.exit(0)
