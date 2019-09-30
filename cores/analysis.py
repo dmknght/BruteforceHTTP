@@ -35,9 +35,14 @@ def check_login(options, proc):
 
 
 def check_sqlerror(response):
-	# if re.search(r"SQL (warning|error|syntax)", response):
-	# TODO add condition -> don't have to loop all time
-	# COPYRIGHT: wapiti ..
+	"""
+	Check all sql error text returns in http response
+	:param response: string = response of server
+	:return:
+		True if found any result like it
+		False if not found
+	@Copyright: wapiti
+	"""
 	signatures = {
 		"MySQL Injection": [
 			"You have an error in your SQL syntax",
@@ -89,51 +94,49 @@ def check_sqlerror(response):
 	return False
 
 
-def get_response_diff(first, content):
+def get_response_diff(first_content, current_content):
+	"""
+	Analysis different in response data
+	:param first_content: string = body of server html responses in first time
+	:param current_content: string = current body of server html response
+	:return:
+		source_diff: string = New text appears in html source
+		text_diff: string = New text appears in html view [html2text]
+	"""
 	import html2text
 	convert = html2text.HTML2Text()
 
-	diff, source_diff = "", ""
+	text_diff, source_diff = "", ""
 	
-	# Fix bug lines(source) > lines(text)
+	# 2 loops: fix bug lines(source) > lines(text)
 	
-	for src_line in content.split("\n"):
-		source_diff += src_line if src_line not in first else ""
+	for src_line in current_content.split("\n"):
+		source_diff += src_line if src_line not in first_content else ""
 	
-	for line in convert.handle(content).split("\n"):
-		diff += line if line not in convert.handle(first) else ""
+	for line in convert.handle(current_content).split("\n"):
+		text_diff += line if line not in convert.handle(first_content) else ""
 	
-	return diff, source_diff
+	return text_diff, source_diff
 
-	# for src_line, line in zip(content.split("\n"), convert.handle(content).split("\n")):
-	# 	source_diff += src_line if src_line not in first else ""
-	# 	diff += line if line not in convert.handle(first) else ""
-	# return diff, source_diff
 
-	# diff = ""
-	# print(list(convert.handle(content).split("\n")))
-	# for line in convert.handle(content).split("\n"):
-	# 	diff += line if line not in convert.handle(first) else ""
-	#
-	# return diff
+def get_redirection(response):
+	"""
+	Analysis all redirection request in html response via meta tag, windows.location or href
+	:param response: string = server response html
+	:return: list of string = all possible URL
+	"""
+	regex_js = r"window\.location(?:[a-zA-Z\.\ \=\(])+\"|\'(.*)\"|\'"
+	regex_meta = r"<meta[^>]*?url=(.*?)[\"\']"
+	regex_href = r"href=[\'\"]?([^\'\" >]+)"
 	
-
-def get_redirection(src):
-	# get url via windows.location or any html tag HTTP-EQUIV=REFRESH, href
-	js_redirection = r"window\.location(?:[a-zA-Z\.\ \=\(])+\"|\'(.*)\"|\'"
-	meta_redirection = r"<meta[^>]*?url=(.*?)[\"\']"
-	
-	url = list(set(re.findall(meta_redirection, src)))
+	url = list(set(re.findall(regex_meta, response)))
 	if url:
 		return url
-	url = list(set(re.findall(js_redirection, src)))
+
+	url = list(set(re.findall(regex_js, response)))
 	if url:
 		return url
-	
-	url = get_href(src)
+
+	url = list(set(re.findall(regex_href, response)))
 	return url
 
-
-def get_href(src):
-	href_redirection = r"href=[\'\"]?([^\'\" >]+)"
-	return list(set(re.findall(href_redirection, src)))
