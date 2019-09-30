@@ -1,5 +1,5 @@
 import data, re
-from cores.actions import randomFromList
+from cores.actions import list_choose_randomly
 from mechanicalsoup.stateful_browser import StatefulBrowser
 
 """
@@ -26,7 +26,7 @@ class Browser(StatefulBrowser):
 	def useragent(self):
 		# Try random agent everytime it is called
 		# TODO better useragent with library (or create my own - takes time)
-		return randomFromList(data.getAgent().split("\n"))
+		return list_choose_randomly(data.getAgent().split("\n"))
 	
 	def setproxy(self, proxyaddr):
 		self.session.proxies = ({"http": proxyaddr})

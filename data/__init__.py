@@ -4,8 +4,8 @@ def sqli_user():
 	return sPayload()
 
 def sqli_pass():
-	from cores.actions import srand
-	return srand(min = 5, max = 12)
+	from cores.actions import string_gen_randomly
+	return string_gen_randomly(min = 5, max = 12)
 
 def social_urls():
 	# https://accounts.google.com/signin

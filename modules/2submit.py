@@ -1,5 +1,5 @@
 from utils import events
-from cores.actions import randomFromList
+from cores.actions import list_choose_randomly
 from cores.check import parseLoginForm
 
 
@@ -36,7 +36,7 @@ def submit(options, loginInfo, tryCred, result):
 		proc = Browser()
 		if options.proxy:
 			# Set proxy connect
-			proxyAddr = randomFromList(options.proxy)
+			proxyAddr = list_choose_randomly(options.proxy)
 			proc.setproxy(proxyAddr)
 		else:
 			proxyAddr = ""

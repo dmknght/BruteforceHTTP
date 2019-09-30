@@ -1,4 +1,4 @@
-from cores.actions import lread, fread
+from cores.actions import to_list, file_read
 from utils import events
 import re, sys
 
@@ -160,7 +160,7 @@ def check_options(options):
 	options.report = options.run_options["--report"]
 	options.verbose = options.run_options["--verbose"]
 	try:
-		options.target = fread(options.options["-l"]).split("\n") if options.options["-l"] else [options.url]
+		options.target = file_read(options.options["-l"]).split("\n") if options.options["-l"] else [options.url]
 		options.target = list(filter(None, options.target))
 	except Exception as error:
 		events.error("%s" % (error))
@@ -198,7 +198,7 @@ def check_tasks(options, loginInfo):
 	if len(formField) == 1:
 		options.username = [""]
 	elif options.options["-U"]:
-		options.username = list(set(lread(options.options["-U"])))
+		options.username = list(set(to_list(options.options["-U"])))
 	else:
 		import data
 		if options.options["-u"] in options.WORDLISTS:
@@ -207,7 +207,7 @@ def check_tasks(options, loginInfo):
 			else:
 				options.username = tuple(eval("data.%s_user()" % (options.options["-u"])).replace("\t", "").split("\n"))
 		else:
-			options.username = tuple(fread(options.options["-u"]).split("\n"))
+			options.username = tuple(file_read(options.options["-u"]).split("\n"))
 			options.username = tuple(filter(None, options.username))
 	
 	# CHECK passlist option
@@ -215,7 +215,7 @@ def check_tasks(options, loginInfo):
 		import data
 		options.passwd = tuple(eval("data.%s_pass()" % (options.options["-p"])).replace("\t", "").split("\n"))
 	else:
-		options.passwd = tuple(fread(options.options["-p"]).split("\n"))
+		options.passwd = tuple(file_read(options.options["-p"]).split("\n"))
 		options.passwd = tuple(filter(None, options.passwd))
 	
 	if "--replacement" in options.extras:

@@ -1,6 +1,6 @@
 from cores.browser import Browser
 from utils import events
-from cores.actions import randomFromList
+from cores.actions import list_choose_randomly
 
 
 # https://stackoverflow.com/a/4089075
@@ -15,7 +15,7 @@ def submit(options, loginInfo, creds, result):
 	try:
 		proc = Browser()
 		if options.proxy:
-			proxyAddr = randomFromList(options.proxy)
+			proxyAddr = list_choose_randomly(options.proxy)
 			proc.setproxy(proxyAddr)
 		else:
 			proxyAddr = ""
