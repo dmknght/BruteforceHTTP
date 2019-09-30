@@ -29,7 +29,7 @@ def truecon():
 			genType = list_choose_randomly(["like", "rlike", "not like", "gl"])
 			
 			if genType == "gl":
-				_stri1, _stri2 = string_gen_randomly(stype ="dig"), string_gen_randomly(stype ="dig")
+				_stri1, _stri2 = string_gen_randomly(select_type ="dig"), string_gen_randomly(select_type ="dig")
 				if int(_stri1) > int(_stri2):
 					return "%s > %s" % (_stri1, _stri2)
 				else:
@@ -37,19 +37,19 @@ def truecon():
 			
 			elif genType == "not like":
 				while True:
-					_stri1, _stri2 = string_gen_randomly(stype ="char"), string_gen_randomly(stype ="char")
+					_stri1, _stri2 = string_gen_randomly(select_type ="char"), string_gen_randomly(select_type ="char")
 					# MAKE SURE WE ARE HAVING NOT LIKE
 					if _stri1 != _stri2:
 						break
 				return "'%s' %s '%s'" % (_stri1, genType, _stri2)
 			
 			else:
-				_stri = string_gen_randomly(min = 3, max = 5, stype ="char")
+				_stri = string_gen_randomly(len_min = 3, len_max = 5, select_type ="char")
 				return "'%s' %s '%s'" % (_stri, genType, _stri)
 		
 		elif conType == "equal":
 			genType = list_choose_randomly(["char", "dig"])
-			_stri = string_gen_randomly(min = 3, max = 5, stype = genType)
+			_stri = string_gen_randomly(len_min = 3, len_max = 5, select_type = genType)
 			if genType == "char":
 				return "'%s'='%s'" % (_stri, _stri)
 			elif genType == "dig":

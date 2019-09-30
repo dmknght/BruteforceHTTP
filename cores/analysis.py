@@ -1,4 +1,4 @@
-from cores.check import parseLoginForm
+from cores.check import find_login_form
 from utils import events
 import re
 
@@ -15,7 +15,7 @@ def check_login(options, proc):
 	if options.panel_url:
 		# User provided panel url (/wp-admin/ for example, repopen this url to check sess)
 		proc.open_url(options.panel_url)
-		if not parseLoginForm(proc.forms()):
+		if not find_login_form(proc.forms()):
 			if check_sqlerror(proc.get_response()):
 				return 2
 			else:

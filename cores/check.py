@@ -29,50 +29,63 @@ import re, sys
 # 		return False
 
 
-def checkHTTPGetLogin(strHeader):
-	reg = r"WWW-Authenticate: Basic realm=\"(.*)\""
+def basic_http_request(response_header):
+	"""
+	Find basic HTTP LOGIN request from error 401 and response header
+	:param response_header: string = header of http response from server
+	:return: False or Request Realm (name)
+	"""
+	regex_http_get = r"WWW-Authenticate: Basic realm=\"(.*)\""
 	try:
-		return re.findall(reg, strHeader, re.MULTILINE)[0]
+		return re.findall(regex_http_get, response_header, re.MULTILINE)[0]
 	except:
 		return False
 
 
-def parseLoginForm(allFormControl):
+def find_login_form(form_controls):
+	"""
+	Find login form in all form objects from response
+	:param form_controls: list of string = form information
+	:return: False or login form information (form_id, text_field, password_field)
+	"""
+	form_info = False
 	try:
 		# Try detect login form from all forms in response. Return form information
-		reTextControl = r"text\((.*)\)"
-		reMailControl = r"email\((.*)\)"
-		rePasswdControl = r"password\((.*)\)"
-		reSubmitControl = r"submit\((.*)\)"
+		regex_text_control = r"text\((.*)\)"
+		regex_mail_control = r"email\((.*)\)"
+		regex_password_control = r"password\((.*)\)"
+		regex_submit_control = r"submit\((.*)\)"
 		
-		formData = None
-		
-		for uint_formID, form in enumerate(allFormControl):
-			# if not form:
-			# 	return False
-			txtPasswdControl = re.findall(rePasswdControl, form)
+		for form_id, form in enumerate(form_controls):
+			password_control = re.findall(regex_password_control, form)
 			# Find password control. If has
 			# 	1 password control -> login field
 			# 	2 or more password control -> possibly register field
-			if len(txtPasswdControl) == 1:
-				txtTextControl = re.findall(reTextControl, form)
-				txtMailControl = re.findall(reMailControl, form)
-				txtTextControl = txtTextControl if txtTextControl else txtMailControl
-				txtSubmitControl = re.findall(reSubmitControl, form)
-				txtSubmitControl = ["None"] if not txtSubmitControl else txtSubmitControl
-				if len(txtTextControl) == 1:
+			if len(password_control) == 1:
+				text_control = re.findall(regex_text_control, form)
+				mail_control = re.findall(regex_mail_control, form)
+				text_control = text_control if text_control else mail_control
+				submit_control = re.findall(regex_submit_control, form)
+				submit_control = ["None"] if not submit_control else submit_control
+				if len(text_control) == 1:
 					# Regular login field. > 1 can be register specific field (maybe captcha)
-					formData = ([uint_formID, txtSubmitControl[0]], [txtPasswdControl[0], txtTextControl[0]])
-				elif len(txtTextControl) == 0:
+					form_info = ([form_id, submit_control[0]], [password_control[0], text_control[0]])
+				elif len(text_control) == 0:
 					# Possibly password field login only
-					formData = ([uint_formID, txtSubmitControl[0]], [txtPasswdControl[0]])
-				return formData
-		return False
+					form_info = ([form_id, submit_control[0]], [password_control[0]])
+				return form_info
 	except AttributeError:
-		return False
+		pass
+	finally:
+		return form_info
 
-
-def check_login(options):
+def find_login_request(options):
+	"""
+	Find and analysis login request from response
+	:param options: object = options of user
+	:return: False or list of string = login request information
+	"""
+	login_request = False
 	try:
 		from cores.browser import Browser
 		
@@ -98,40 +111,37 @@ def check_login(options):
 			events.info("%s" % (proc.get_title()), "TITLE")
 		if resp.status_code == 401:
 			if "WWW-Authenticate" in resp.headers:
-				loginID = checkHTTPGetLogin(resp.headers)
-				loginInfo = (loginID, ["Password", "User Name"])
+				login_id = basic_http_request(resp.headers)
+				login_request = (login_id, ["Password", "User Name"])
 				if options.verbose:
 					events.info("HTTP GET login")
 				options.attack_mode = "--httpget"
-			else:
-				loginInfo = False
+			
 		else:
-			loginInfo = parseLoginForm(proc.forms())
+			login_request = find_login_form(proc.forms())
 			options.txt = resp.content
 		
-		return loginInfo
+	except KeyboardInterrupt:
+		pass
 	
 	except Exception as error:
-		loginInfo = False
 		events.error("%s" % (error), "TARGET")
 		sys.exit(1)
-	
-	except KeyboardInterrupt:
-		loginInfo = False
 	
 	finally:
 		try:
 			proc.close()
 		except:
 			pass
-	# try:
-	# 	jscheck.close()
-	# except:
-	# 	pass
-	# return loginInfo
+		return login_request
 
 
 def check_url(url):
+	"""
+	Check if url has valid format or fix it
+	:param url: string = url from option user gives
+	:return: string = url with valid format or False
+	"""
 	try:
 		# Shorter startswith https://stackoverflow.com/a/20461857
 		"""
@@ -144,9 +154,9 @@ def check_url(url):
 				sys.exit(1)
 		else:
 			"Something.com"
-			url = "http://%s" % (url)
+			url = "http://" + url
 		if len(url.split("/")) <= 3:
-			url = "%s/" % (url) if url[-1] != "/" else url
+			url = url + "/" if url[-1] != "/" else url
 	except:
 		url = None
 	return url

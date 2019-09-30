@@ -5,7 +5,7 @@ def sqli_user():
 
 def sqli_pass():
 	from cores.actions import string_gen_randomly
-	return string_gen_randomly(min = 5, max = 12)
+	return string_gen_randomly(len_min = 5, len_max = 12)
 
 def social_urls():
 	# https://accounts.google.com/signin

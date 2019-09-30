@@ -1,6 +1,6 @@
 from utils import events
 from cores.actions import list_choose_randomly
-from cores.check import parseLoginForm
+from cores.check import find_login_form
 
 
 def check_condition(options, proc, loginInfo):
@@ -14,7 +14,7 @@ def check_condition(options, proc, loginInfo):
 	if options.panel_url:
 		# User provided panel url (/wp-admin/ for example, repopen this url to check sess)
 		proc.open_url(options.panel_url)
-		if not parseLoginForm(proc.forms()):  # != loginInfo:
+		if not find_login_form(proc.forms()):  # != loginInfo:
 			return 1
 		else:
 			return 0
@@ -42,7 +42,7 @@ def submit(options, loginInfo, tryCred, result):
 			proxyAddr = ""
 		
 		proc.open_url(options.login_url)
-		_form = parseLoginForm(proc.forms())
+		_form = find_login_form(proc.forms())
 		
 		if not _form:
 			if options.verbose:
@@ -69,7 +69,7 @@ def submit(options, loginInfo, tryCred, result):
 		if options.verbose:
 			events.warn("['%s']['%s'] <--> %s" % (tryUsername, tryPassword, proxyAddr), "TRY")
 		
-		if not parseLoginForm(proc.forms()):  # != loginInfo:
+		if not find_login_form(proc.forms()):  # != loginInfo:
 			test_result = check_condition(options, proc, loginInfo)
 			if test_result == 1:
 				if resp.status_code >= 400:
