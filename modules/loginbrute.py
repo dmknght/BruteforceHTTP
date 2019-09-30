@@ -1,7 +1,7 @@
 from utils import events
 from cores.actions import list_choose_randomly
 from cores.check import parseLoginForm
-from cores.analysis import check_login, check_sqlerror, getredirect
+from cores.analysis import check_login, check_sqlerror, get_redirection
 
 
 def submit(options, loginInfo, tryCred, result):
@@ -41,12 +41,12 @@ def submit(options, loginInfo, tryCred, result):
 
 		resp = proc.form_submit(frmCtrl, frmFields, tryCred)
 		
-		from cores.analysis import getdiff
-		txtDiff, srcDiff = getdiff(options.txt.decode('utf-8'), resp.content.decode('utf-8'))
+		from cores.analysis import get_response_diff
+		txtDiff, srcDiff = get_response_diff(options.txt.decode('utf-8'), resp.content.decode('utf-8'))
 		
 		if not parseLoginForm(proc.forms()):
 			isLoginForm = False
-			for diffURL in getredirect(srcDiff):
+			for diffURL in get_redirection(srcDiff):
 				if not diffURL.startswith("http") and not diffURL.endswith(options.exceptions()):
 					try:
 						from urllib.parse import urljoin

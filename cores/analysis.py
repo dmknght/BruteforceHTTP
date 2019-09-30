@@ -89,7 +89,7 @@ def check_sqlerror(response):
 	return False
 
 
-def getdiff(first, content):
+def get_response_diff(first, content):
 	import html2text
 	convert = html2text.HTML2Text()
 
@@ -118,7 +118,7 @@ def getdiff(first, content):
 	# return diff
 	
 
-def getredirect(src):
+def get_redirection(src):
 	# get url via windows.location or any html tag HTTP-EQUIV=REFRESH, href
 	js_redirection = r"window\.location(?:[a-zA-Z\.\ \=\(])+\"|\'(.*)\"|\'"
 	meta_redirection = r"<meta[^>]*?url=(.*?)[\"\']"
@@ -132,7 +132,8 @@ def getredirect(src):
 	
 	url = get_href(src)
 	return url
-	
+
+
 def get_href(src):
 	href_redirection = r"href=[\'\"]?([^\'\" >]+)"
 	return list(set(re.findall(href_redirection, src)))
