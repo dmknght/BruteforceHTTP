@@ -174,7 +174,7 @@ if __name__ == "__main__":
 							options.proxy = getproxy.livelist()
 
 					events.info("[%s / %s] [%s]" % (idu + 1, len(options.target), options.url))
-					loginInfo = check.find_login_request(options)
+					loginInfo = check.check_login_request(options)
 					if loginInfo:
 						check.check_tasks(options, loginInfo)
 						result = attack(options, loginInfo)
