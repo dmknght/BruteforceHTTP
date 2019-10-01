@@ -2,11 +2,6 @@ from cores.actions import to_list, file_read
 from utils import events
 import re, sys
 
-
-# import sys
-# reload(sys)
-# sys.setdefaultencoding('utf8')
-
 # def check_import():
 # 	try:
 # 		import sys, threading, os, ssl, time
@@ -165,7 +160,9 @@ def check_url(url):
 
 def check_options(options):
 	"""
-		This function checks main options before create tasks, ...
+	Read common flags of user and give validate values to the program
+	:param options: object: all flags of user
+	:return: True (dummy) all validated value for brute forcing process
 	"""
 	# Read URL from list (file_path) or get URL from option
 	options.report = options.run_options["--report"]
@@ -198,15 +195,15 @@ def check_options(options):
 		options.options["-u"], options.options["-p"] = "sqli", "sqli"
 
 
-def check_tasks(options, loginInfo):
+def check_tasks(options, login_info):
 	"""
-		This fucntion check options for each brute force task
+	Check all flags that needs for a new brute force task
+	:param options: object: user options
+	:param login_info: login request information
+	:return:
 	"""
-	
-	_, formField = loginInfo
-	
 	# CHECK username list options
-	if len(formField) == 1:
+	if len(login_info[1]) == 1:
 		options.username = [""]
 	elif options.options["-U"]:
 		options.username = list(set(to_list(options.options["-U"])))
