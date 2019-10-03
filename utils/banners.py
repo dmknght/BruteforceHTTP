@@ -16,6 +16,7 @@ def fixed_length(text, limit):
 		final_text, text = final_text + " |\n  |  %.*s" % (71, text[:limit]), text[limit:]
 	return final_text
 
+
 # def report_banner(url, mode, proxy, thread, creds, daytime, runtime, regular):
 # 	# if option != "--sqli" and "--single":
 # 	def n_body(creds):
@@ -99,7 +100,7 @@ def start_banner(options):
 			options.attack_mode.replace("--", ""),
 			options.run_options["--proxy"],
 			options.threads,
-		), 68 ),
+		), 68),
 		"None" if len(options.extras) == 0 else fixed_length(str(options.extras), 51),
 		options.verbose,
 		options.report,
