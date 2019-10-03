@@ -12,7 +12,7 @@ def prints(text):
 	sys.stdout.write("%s\r" % (" " * len(text)))
 
 
-def progress_bar(trying, completed, total, bar_size = 60):
+def progress_bar(trying, completed, total, bar_size=60):
 	"""
 	Print current status of task. It will be [+++####---]
 		+ is completed threads
@@ -27,5 +27,5 @@ def progress_bar(trying, completed, total, bar_size = 60):
 	finished = int((completed * bar_size) / total)
 	running = int((trying * bar_size) / total - finished)
 	running = 1 if running < 1 else running
-	
+
 	prints("|%s%s%s| %10s" % (finished * "+", running * "#", (bar_size - finished - running) * '-', completed))
