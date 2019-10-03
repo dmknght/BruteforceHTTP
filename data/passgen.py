@@ -4,6 +4,12 @@ import string
 def maskgen(min_length = 1, max_length = 4, charset = None):
 	"""
 	Generate password using maskgen algth
+		len = 1
+		-> a, b, c, d, e
+		len = 2
+		-> aa, ab, ac, ad, ae .. zz
+		len = 3
+		-> aaa, aab, aac, aad .. zzz
 	:param min_length: int = min length of text to generate
 	:param max_length: int = max length of text to generate
 	:param charset: text = all characters to generate
