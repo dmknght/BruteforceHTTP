@@ -4,8 +4,8 @@ import string
 def maskgen(min_length = 1, max_length = 4, charset = None):
 	"""
 	Generate password using maskgen algth
-	:param min_length: int =
-	:param max_length: int
+	:param min_length: int = min length of text to generate
+	:param max_length: int = max length of text to generate
 	:param charset: text = all characters to generate
 	:return: yield text
 	"""
