@@ -12,7 +12,7 @@ def print_fast_help():
 
 
 def print_help():
-	#	Print project's help table
+	# Print project's help table
 	print_fast_help()
 	print("Options: ")
 	title = ("Formats", "Examples")
