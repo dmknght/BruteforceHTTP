@@ -1,17 +1,20 @@
-def fixLen(inpText, lim):
-	# https://stackoverflow.com/a/37422973
-	finalText, inpText = " %.*s" % (lim, inpText[:lim]), inpText[lim:]
-	lim = 68  # MAX LIM FOR TERMINAL
-	
-	while inpText:
-		
-		if len(inpText) < lim:
-			finalText += " |\n  | %s" % (inpText) + " " * (lim + 1 - len(inpText))
-			break
-		finalText, inpText = finalText + " |\n  |  %.*s" % (71, inpText[:lim]), inpText[lim:]
-	
-	return finalText
+def fixed_length(text, limit):
+	"""
+	Generate long text that fit length of terminal
+	:param text: string = data wants to print
+	:param limit: int = length of line
+	:return: string = fixed length of line
+	https://stackoverflow.com/a/37422973
+	"""
+	final_text, text = " %.*s" % (limit, text[:limit]), text[limit:]
+	limit = 68  # MAX LIM FOR TERMINAL
 
+	while text:
+		if len(text) < limit:
+			final_text += " |\n  | %s" % (text) + " " * (limit + 1 - len(text))
+			break
+		final_text, text = final_text + " |\n  |  %.*s" % (71, text[:limit]), text[limit:]
+	return final_text
 
 # def report_banner(url, mode, proxy, thread, creds, daytime, runtime, regular):
 # 	# if option != "--sqli" and "--single":
@@ -68,7 +71,7 @@ def fixLen(inpText, lim):
 
 def start_banner(options):
 	usr = options.options["-U"] if options.options["-U"] else options.options["-u"]
-	
+
 	banner = """
 	  =====================================================================
 	/%-71s\\
@@ -90,34 +93,24 @@ def start_banner(options):
 	  =====================================================================
 	""" % (
 		" " * 23 + "HTTP LOGIN BRUTE FORCER",
-		fixLen(usr, 57),
-		fixLen(options.options["-p"], 57),
-		# fixLen( "Attack mode: %-6s |  Proxy: %-5s  |  Threads: %-3s |  Timeout: %-3s" %(
-		# 		options.attack_mode.replace("--", ""),
-		# 		options.run_options["--proxy"],
-		# 		options.threads,
-		# 		options.timeout,
-		# 	),
-		# 	68
-		fixLen("   Attack mode: %-8s |   Proxy: %-8s  |   Threads: %-8s " % (
+		fixed_length(usr, 57),
+		fixed_length(options.options["-p"], 57),
+		fixed_length("   Attack mode: %-8s |   Proxy: %-8s  |   Threads: %-8s " % (
 			options.attack_mode.replace("--", ""),
 			options.run_options["--proxy"],
 			options.threads,
-		),
-		       68
-		       ),
-		"None" if len(options.extras) == 0 else fixLen(str(options.extras), 51),
+		), 68 ),
+		"None" if len(options.extras) == 0 else fixed_length(str(options.extras), 51),
 		options.verbose,
 		options.report,
-		fixLen("%s target[s]: %-53s" % (
+		fixed_length("%s target[s]: %-53s" % (
 			len(options.target),
 			options.options["-l"] if options.options["-l"] else (
-				options.url.split("/")[2] if options.url.startswith(("http://", "https://")) else options.url.split("/")[0]
+				options.url.split("/")[2] if options.url.startswith(("http://", "https://")) else
+				options.url.split("/")[0]
 			)
-		),
-		       67
-		       ),
+		), 67),
 		" " * 11 + "Github: https://github.com/dmknght/BruteforceHTTP"
 	)
-	
+
 	print(banner.replace("\t", "  "))
