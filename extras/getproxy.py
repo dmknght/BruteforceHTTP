@@ -1,7 +1,7 @@
 import re, threading, sys
 from cores.browser import Browser
 from utils import progressbar, events
-from cores.actions import fread, fwrite
+from cores.actions import file_read, file_write
 import data
 
 if sys.version_info[0] == 2:
@@ -23,11 +23,11 @@ LIVE_PATH = "%s%s" % (ROOT_FOLDER, "/liveproxy.txt")
 
 
 def livelist():
-	return fread(LIVE_PATH).split("\n")
+	return file_read(LIVE_PATH).split("\n")
 
 
 def getlist():
-	return fread(PROXY_PATH).split("\n")
+	return file_read(PROXY_PATH).split("\n")
 
 
 def getnew(options):
@@ -48,7 +48,7 @@ def getnew(options):
 			
 			getproxy.open_url(url)
 			events.success("Gathering proxies completed", "PROXY")
-			return getproxy.get_resp()
+			return getproxy.get_response()
 		
 		except Exception as error:
 			events.error("%s" % (error), "PROXY")
@@ -67,7 +67,7 @@ def getnew(options):
 			listproxy = "\n".join(listproxy)
 			
 			events.info("Saving result to %s" %(PROXY_PATH), "PROXY")
-			fwrite(PROXY_PATH, listproxy)
+			file_write(PROXY_PATH, listproxy)
 			events.success("New proxy list saved", "PROXY")
 		
 		except Exception as error:
@@ -94,7 +94,7 @@ def check(options):
 	def checProxyConn(proxyAddr, target, result, verbose):
 		try:
 			proxyTest = Browser()
-			proxyTest.setproxy(proxyAddr)
+			proxyTest.set_random_proxy(proxyAddr)
 			
 			if verbose:
 				events.info("Testing %s" % (proxyAddr))
@@ -120,7 +120,7 @@ def check(options):
 				pass
 	
 	try:
-		proxylist = fread(PROXY_PATH).split("\n")
+		proxylist = file_read(PROXY_PATH).split("\n")
 		
 		workers = []
 		completed, total = 0, len(proxylist)
@@ -154,7 +154,7 @@ def check(options):
 			_data = "\n".join(list(result.queue))
 			events.success("%s proxy alive" %(len(_data.split("\n"))))
 			events.info("Saving success list", "PROXY")
-			fwrite(LIVE_PATH, _data)
+			file_write(LIVE_PATH, _data)
 			events.success("New alive list is saved", "PROXY")
 		except Exception as error:
 			events.error("%s" % (error), "PROXY")

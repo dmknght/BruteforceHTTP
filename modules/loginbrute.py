@@ -1,7 +1,7 @@
 from utils import events
-from cores.actions import randomFromList
-from cores.check import parseLoginForm
-from cores.analysis import check_login, check_sqlerror, getredirect
+from cores.actions import list_choose_randomly
+from cores.check import find_login_form
+from cores.analysis import check_login, check_sqlerror, get_redirection
 
 
 def submit(options, loginInfo, tryCred, result):
@@ -21,13 +21,13 @@ def submit(options, loginInfo, tryCred, result):
 		proc = Browser()
 		if options.proxy:
 			# Set proxy connect
-			proxyAddr = randomFromList(options.proxy)
-			proc.setproxy(proxyAddr)
+			proxyAddr = list_choose_randomly(options.proxy)
+			proc.set_random_proxy(proxyAddr)
 		else:
 			proxyAddr = ""
 		
 		proc.open_url(options.login_url)
-		_form = parseLoginForm(proc.forms())
+		_form = find_login_form(proc.forms())
 		
 		if not _form:
 			if options.verbose:
@@ -39,14 +39,14 @@ def submit(options, loginInfo, tryCred, result):
 		if options.verbose and loginInfo != _form:
 			events.info("Login form has been changed", "BRUTE")
 
-		resp = proc.xsubmit(frmCtrl, frmFields, tryCred)
+		resp = proc.form_submit(frmCtrl, frmFields, tryCred)
 		
-		from cores.analysis import getdiff
-		txtDiff, srcDiff = getdiff(options.txt.decode('utf-8'), resp.content.decode('utf-8'))
+		from cores.analysis import get_response_diff
+		txtDiff, srcDiff = get_response_diff(options.txt.decode('utf-8'), resp.content.decode('utf-8'))
 		
-		if not parseLoginForm(proc.forms()):
+		if not find_login_form(proc.forms()):
 			isLoginForm = False
-			for diffURL in getredirect(srcDiff):
+			for diffURL in get_redirection(srcDiff):
 				if not diffURL.startswith("http") and not diffURL.endswith(options.exceptions()):
 					try:
 						from urllib.parse import urljoin
@@ -54,7 +54,7 @@ def submit(options, loginInfo, tryCred, result):
 						from urlparse import urljoin
 					diffURL = urljoin(options.login_url, diffURL)
 					proc.open_url(diffURL)
-					if parseLoginForm(proc.forms()):
+					if find_login_form(proc.forms()):
 						isLoginForm = True
 					break
 
@@ -86,12 +86,12 @@ def submit(options, loginInfo, tryCred, result):
 
 		# "Login form is still there. Oops"
 		else:
-			if check_sqlerror(proc.get_resp()) and options.verbose:
+			if check_sqlerror(proc.get_response()) and options.verbose:
 				events.success("SQL Injection in login form", "BRUTE")
 				events.info("['%s': '%s']" % (tryUsername, tryPassword))
 			if options.verbose:
 				if tryUsername:
-					events.fail("['%s':%s'] <==> %s" % (tryUsername, tryPassword, proxyAddr), txtDiff.encode('utf-8'), proc.get_title())
+					events.fail("['%s':'%s'] <==> %s" % (tryUsername, tryPassword, proxyAddr), txtDiff.encode('utf-8'), proc.get_title())
 				else:
 					events.fail("['%s'] <==> %s" % (tryPassword, proxyAddr), txtDiff.encode('utf-8'), proc.get_title())
 		

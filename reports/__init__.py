@@ -1,4 +1,4 @@
 from cores import actions
 
 def makeReport(data, path):
-	actions.fwrite(path, data)
+	actions.file_write(path, data)

@@ -2,7 +2,7 @@ from modules import loginbrute
 import data, sys
 from utils import events
 from cores.browser import Browser
-from cores.check import parseLoginForm
+from cores.check import find_login_form
 
 try:
 	from Queue import Queue
@@ -25,7 +25,7 @@ def submit(url, options, tryCreds, result):
 		events.info("Checking %s" %(url), "REAUTH")
 		
 		proc.open(url)
-		loginInfo = parseLoginForm(proc.forms())
+		loginInfo = find_login_form(proc.forms())
 	
 	except Exception as error:
 		events.error("%s" % (error), "REAUTH")

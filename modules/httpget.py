@@ -1,6 +1,6 @@
 from cores.browser import Browser
 from utils import events
-from cores.actions import randomFromList
+from cores.actions import list_choose_randomly
 
 
 # https://stackoverflow.com/a/4089075
@@ -15,8 +15,8 @@ def submit(options, loginInfo, creds, result):
 	try:
 		proc = Browser()
 		if options.proxy:
-			proxyAddr = randomFromList(options.proxy)
-			proc.setproxy(proxyAddr)
+			proxyAddr = list_choose_randomly(options.proxy)
+			proc.set_random_proxy(proxyAddr)
 		else:
 			proxyAddr = ""
 		# proc.httpget_passwd(options.url, tryUsername, tryPassword, realm) # BUG
@@ -28,7 +28,7 @@ def submit(options, loginInfo, creds, result):
 			if options.verbose:
 				events.fail("['%s':%s'] <==> %s" % (tryUsername, tryPassword, proxyAddr), title = proc.get_title())
 		elif resp.status_code > 400:
-			events.error("[%s] ['%s': '%s']" % (proc.url(), tryUsername, tryPassword), "%s" % resp.status_code)
+			events.error("[%s] ['%s': '%s']" % (proc.get_url(), tryUsername, tryPassword), "%s" % resp.status_code)
 		else:
 			events.found(tryUsername, tryPassword, proc.get_title())
 			result.put([options.url, tryUsername, tryPassword])

