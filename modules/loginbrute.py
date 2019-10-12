@@ -11,6 +11,7 @@ def submit(options, login_field, tryCred, result):
 		return True
 	
 	from cores.browser import Browser
+	isLoginSuccess = "False"
 	try:
 		proc = Browser()
 		if options.proxy:
@@ -45,7 +46,6 @@ def submit(options, login_field, tryCred, result):
 			== > Behavior: Login fail, click here or windows.location = login_page
 		"""
 		isLoginForm = False
-		isLoginSuccess = "False"
 		
 		if not find_login_form(proc.forms()):
 			for new_urls in get_redirection(source_changed):
@@ -96,6 +96,7 @@ def submit(options, login_field, tryCred, result):
 			but our cred is true.
 			This code block showing information, for special cases
 		"""
+		isLoginSuccess = "exception"
 		events.error("%s" % (error), "BRUTE")
 	
 	finally:
