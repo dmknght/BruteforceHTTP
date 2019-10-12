@@ -20,7 +20,7 @@ def submit(options, login_field, tryCred, result):
 		else:
 			proxy_address = ""
 		
-		proc.open_url(options.login_url)
+		proc.open_url(options.url)
 		_form = find_login_form(proc.forms())
 		
 		if not _form:
@@ -52,7 +52,7 @@ def submit(options, login_field, tryCred, result):
 						from urllib.parse import urljoin
 					except ImportError:
 						from urlparse import urljoin
-					new_urls = urljoin(options.login_url, new_urls)
+					new_urls = urljoin(options.url, new_urls)
 					proc.open_url(new_urls)
 					if find_login_form(proc.forms()):
 						isLoginForm = True

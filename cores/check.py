@@ -98,9 +98,6 @@ def find_login_request(options):
 		"""
 		if proc.get_url() != options.url:
 			events.info("Website moves to: ['%s']" % (proc.get_url()))
-			options.panel_url, options.login_url = options.url, proc.get_url()
-		else:
-			options.login_url = options.url
 		
 		options.attack_mode = "--loginbrute"
 		if options.run_options["--verbose"]:

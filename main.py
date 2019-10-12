@@ -157,8 +157,6 @@ if __name__ == "__main__":
 					break
 				if url:
 					# Clean other URL options (Fix URL_panel and URL login bug)
-					options.login_url = None
-					options.panel_url = None
 					options.url = check.check_url(url)
 					if "--getproxy" in options.extras and len(options.target) == 1 and options.run_options["--proxy"]:
 						events.warn("Check proxy connection")

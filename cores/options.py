@@ -62,8 +62,6 @@ class ParseOptions(object):
 	def __init__(self):
 		self.url = None
 		self.target = None
-		self.login_url = None
-		self.panel_url = None
 		self.attack_mode = "--brute"
 		self.extras = []
 		self.txt = ""
