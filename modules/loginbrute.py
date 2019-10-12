@@ -4,16 +4,10 @@ from cores.check import find_login_form
 from cores.analysis import check_login, check_sqlerror, get_redirection
 
 
-def submit(options, loginInfo, tryCred, result):
-	tryPassword, tryUsername = tryCred
+def submit(options, login_field, tryCred, result):
+	password, username = tryCred
 	
-	# proc = Browser(options.timeout) # TODO recovery here
-	
-	# BREAK if we had valid payload?
-	# if options.options["-p"] == "sqli" and len(list(result.queue)) > 1:
-	# 	return True
-	
-	if tryUsername in [x[1] for x in list(result.queue)]:
+	if username in [x[1] for x in list(result.queue)]:
 		return True
 	
 	from cores.browser import Browser
@@ -21,10 +15,10 @@ def submit(options, loginInfo, tryCred, result):
 		proc = Browser()
 		if options.proxy:
 			# Set proxy connect
-			proxyAddr = list_choose_randomly(options.proxy)
-			proc.set_random_proxy(proxyAddr)
+			proxy_address = list_choose_randomly(options.proxy)
+			proc.set_random_proxy(proxy_address)
 		else:
-			proxyAddr = ""
+			proxy_address = ""
 		
 		proc.open_url(options.login_url)
 		_form = find_login_form(proc.forms())
@@ -34,66 +28,81 @@ def submit(options, loginInfo, tryCred, result):
 				events.error("Get blocked", "BRUTE")
 			return False
 		else:
-			frmCtrl, frmFields = _form
+			form_control, form_fields = _form
 
-		if options.verbose and loginInfo != _form:
+		if options.verbose and login_field != _form:
 			events.info("Login form has been changed", "BRUTE")
 
-		resp = proc.form_submit(frmCtrl, frmFields, tryCred)
+		resp = proc.form_submit(form_control, form_fields, tryCred)
 		
 		from cores.analysis import get_response_diff
-		txtDiff, srcDiff = get_response_diff(options.txt.decode('utf-8'), resp.content.decode('utf-8'))
+		text_changed, source_changed = get_response_diff(options.txt.decode('utf-8'), resp.content.decode('utf-8'))
+		
+		"""
+			If there is no other login form, check all changes in response
+			If there is no login request from all new urls -> successfully
+			== > Behavior: Login fail, click here or windows.location = login_page
+		"""
+		isLoginForm = False
 		
 		if not find_login_form(proc.forms()):
-			isLoginForm = False
-			for diffURL in get_redirection(srcDiff):
-				if not diffURL.startswith("http") and not diffURL.endswith(options.exceptions()):
+			for new_urls in get_redirection(source_changed):
+				if not new_urls.startswith("http") and not new_urls.endswith(options.exceptions()):
 					try:
 						from urllib.parse import urljoin
 					except ImportError:
 						from urlparse import urljoin
-					diffURL = urljoin(options.login_url, diffURL)
-					proc.open_url(diffURL)
+					new_urls = urljoin(options.login_url, new_urls)
+					proc.open_url(new_urls)
 					if find_login_form(proc.forms()):
 						isLoginForm = True
 					break
 
-			test_result = check_login(options, proc)
-			if test_result == 1:
-				# "If we tried login form with username+password field"
-				if tryUsername:
-					if resp.status_code >= 400:
-						events.error("['%s':'%s'] <--> %s" % (tryUsername, tryPassword, proxyAddr), "%s" % (resp.status_code))
-					elif not isLoginForm:
-						events.found(tryUsername, tryPassword, proc.get_title())
-						result.put([options.url, tryUsername, tryPassword])
-				# "Else If we tried login form with password field only"
+			if not isLoginForm:
+				"""
+					Check SQL Injection
+					1. SQL Injection
+					2. Login successfully: No SQLi + No Login form
+				"""
+				
+				if check_sqlerror(proc.get_response()):
+					events.success("SQL Injection bypass", "BRUTE")
+					events.info("['%s': '%s']" % (username, password))
 				else:
-					if resp.status_code >= 400:
-						events.error("[%s] <--> %s" % (tryPassword, proxyAddr), "%s" % (resp.status_code))
-					elif not isLoginForm:
-						events.found('', tryPassword, proc.get_title())
-						result.put([options.url, tryUsername, tryPassword])
-
-			elif test_result == 2 and options.verbose:
-				events.success("SQL Injection in login form", "BRUTE")
-				events.info("['%s': '%s']" % (tryUsername, tryPassword))
-	
+					# "If we tried login form with username+password field"
+					if username:
+						if resp.status_code >= 400:
+							events.error("['%s':'%s'] <--> %s" % (username, password, proxy_address), "%s" % (resp.status_code))
+						else:
+							events.found(username, password, proc.get_title())
+							result.put([options.url, username, password])
+					# "Else If we tried login form with password field only"
+					else:
+						if resp.status_code >= 400:
+							events.error("[%s] <--> %s" % (password, proxy_address), "%s" % (resp.status_code))
+						else:
+							events.found('', password, proc.get_title())
+							result.put([options.url, username, password])
 			else:
-				# Possibly Error. But sometime it is true
-				if options.verbose:
-					events.error("['%s': '%s'] [%s]" % (tryUsername, tryPassword, proc.get_title()), "BRUTE")
+				if username:
+					events.fail("['%s':'%s'] <==> %s" % (username, password, proxy_address), text_changed.encode('utf-8'), proc.get_title())
+				else:
+					events.fail("['%s'] <==> %s" % (password, proxy_address), text_changed.encode('utf-8'), proc.get_title())
 
 		# "Login form is still there. Oops"
 		else:
-			if check_sqlerror(proc.get_response()) and options.verbose:
-				events.success("SQL Injection in login form", "BRUTE")
-				events.info("['%s': '%s']" % (tryUsername, tryPassword))
+			"""
+				Possibly SQL injection or fail
+			"""
 			if options.verbose:
-				if tryUsername:
-					events.fail("['%s':'%s'] <==> %s" % (tryUsername, tryPassword, proxyAddr), txtDiff.encode('utf-8'), proc.get_title())
+				if check_sqlerror(proc.get_response()):
+					events.success("Possibly SQL Injection", "BRUTE")
+					events.info("['%s': '%s']" % (username, password))
 				else:
-					events.fail("['%s'] <==> %s" % (tryPassword, proxyAddr), txtDiff.encode('utf-8'), proc.get_title())
+					if username:
+						events.fail("['%s':'%s'] <==> %s" % (username, password, proxy_address), text_changed.encode('utf-8'), proc.get_title())
+					else:
+						events.fail("['%s'] <==> %s" % (password, proxy_address), text_changed.encode('utf-8'), proc.get_title())
 		
 		return True
 	
