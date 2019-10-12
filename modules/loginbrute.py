@@ -1,7 +1,7 @@
 from utils import events
 from cores.actions import list_choose_randomly
 from cores.check import find_login_form
-from cores.analysis import check_login, check_sqlerror, get_redirection
+from cores.analysis import check_sqlerror, get_redirection
 
 
 def submit(options, login_field, tryCred, result):
@@ -85,9 +85,9 @@ def submit(options, login_field, tryCred, result):
 							result.put([options.url, username, password])
 			else:
 				if username:
-					events.fail("['%s':'%s'] <==> %s" % (username, password, proxy_address), text_changed.encode('utf-8'), proc.get_title())
+					events.fail("['%s':'%s'] <==> %s" % (username, password, proxy_address), text_changed, proc.get_title())
 				else:
-					events.fail("['%s'] <==> %s" % (password, proxy_address), text_changed.encode('utf-8'), proc.get_title())
+					events.fail("['%s'] <==> %s" % (password, proxy_address), text_changed, proc.get_title())
 
 		# "Login form is still there. Oops"
 		else:
@@ -100,9 +100,9 @@ def submit(options, login_field, tryCred, result):
 					events.info("['%s': '%s']" % (username, password))
 				else:
 					if username:
-						events.fail("['%s':'%s'] <==> %s" % (username, password, proxy_address), text_changed.encode('utf-8'), proc.get_title())
+						events.fail("['%s':'%s'] <==> %s" % (username, password, proxy_address), text_changed, proc.get_title())
 					else:
-						events.fail("['%s'] <==> %s" % (password, proxy_address), text_changed.encode('utf-8'), proc.get_title())
+						events.fail("['%s'] <==> %s" % (password, proxy_address), text_changed, proc.get_title())
 		
 		return True
 	

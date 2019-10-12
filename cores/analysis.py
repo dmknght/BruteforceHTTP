@@ -1,5 +1,5 @@
 from utils import events
-import re
+import re, sys
 
 
 def check_sqlerror(response):
@@ -84,7 +84,10 @@ def get_response_diff(first_content, current_content):
 	for line in convert.handle(current_content).split("\n"):
 		text_diff += line if line not in convert.handle(first_content) else ""
 	
-	return text_diff, source_diff
+	if sys.version_info[0] == 3:
+		return text_diff, source_diff
+	else:
+		return text_diff.encode('utf-8'), source_diff.encode('utf-8')
 
 
 def get_redirection(response):
