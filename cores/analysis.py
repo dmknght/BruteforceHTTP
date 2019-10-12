@@ -1,37 +1,5 @@
-from cores.check import find_login_form
 from utils import events
 import re
-
-
-def check_login(options, proc):
-	"""
-		Check logged in successfully condition.
-		This function will check SQL injection as well
-			return 0 -> False
-			return 1 -> True
-			return 2 -> Should be SQL Injection error-based
-	"""
-	# TODO check diff response instead of whole
-	if options.panel_url:
-		# User provided panel url (/wp-admin/ for example, repopen this url to check sess)
-		proc.open_url(options.panel_url)
-		if not find_login_form(proc.forms()):
-			if check_sqlerror(proc.get_response()):
-				return 2
-			else:
-				return 1
-		else:
-			return 0
-	else:
-		# User provided direct login URL (/wp-login.php).
-		# if parseLoginForm(proc.forms()) != loginInfo:
-		# 	return 1
-		# else:
-		# 	return 0
-		if check_sqlerror(proc.get_response()):
-			return 2
-		else:
-			return 1
 
 
 def check_sqlerror(response):
