@@ -26,9 +26,8 @@ def submit(options, login_field, tryCred, result):
 		
 		if not _form:
 			options.block_text = proc.get_response() # TODO check if block text changes
-			from cores.analysis import get_response_diff
-			text_changed, source_changed = get_response_diff(options.txt.decode('utf-8'), resp.content.decode('utf-8'))
 			if options.verbose:
+				isLoginSuccess = "blocked"
 				events.error("Get blocked", "BRUTE")
 			return False
 		else:
