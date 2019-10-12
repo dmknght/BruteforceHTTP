@@ -65,6 +65,7 @@ class ParseOptions(object):
 		self.attack_mode = "--brute"
 		self.extras = []
 		self.txt = ""
+		self.block_text = None
 
 		# options
 		self.threads = 16

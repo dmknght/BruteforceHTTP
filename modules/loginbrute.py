@@ -24,6 +24,7 @@ def submit(options, login_field, tryCred, result):
 		_form = find_login_form(proc.forms())
 		
 		if not _form:
+			options.block_text = proc.get_response() # TODO check if block text changes
 			if options.verbose:
 				events.error("Get blocked", "BRUTE")
 			return False
@@ -44,6 +45,7 @@ def submit(options, login_field, tryCred, result):
 			== > Behavior: Login fail, click here or windows.location = login_page
 		"""
 		isLoginForm = False
+		isLoginSuccess = "False"
 		
 		if not find_login_form(proc.forms()):
 			for new_urls in get_redirection(source_changed):
@@ -64,31 +66,18 @@ def submit(options, login_field, tryCred, result):
 					1. SQL Injection
 					2. Login successfully: No SQLi + No Login form
 				"""
-				
 				if check_sqlerror(proc.get_response()):
-					events.success("SQL Injection bypass", "BRUTE")
-					events.info("['%s': '%s']" % (username, password))
+					isLoginSuccess = "SQLi"
+				elif text_changed == source_changed and text_changed != options.block_text and options.block_text:
+					pass
 				else:
-					# "If we tried login form with username+password field"
-					if username:
-						if resp.status_code >= 400:
-							events.error("['%s':'%s'] <--> %s" % (username, password, proxy_address), "%s" % (resp.status_code))
-						else:
-							events.found(username, password, proc.get_title())
-							result.put([options.url, username, password])
-					# "Else If we tried login form with password field only"
+					if resp.status_code >= 400:
+						isLoginSuccess = "error"
 					else:
-						if resp.status_code >= 400:
-							events.error("[%s] <--> %s" % (password, proxy_address), "%s" % (resp.status_code))
-						else:
-							events.found('', password, proc.get_title())
-							result.put([options.url, username, password])
+						isLoginSuccess = "True"
+					# "If we tried login form with username+password field"
 			else:
-				if username:
-					events.fail("['%s':'%s'] <==> %s" % (username, password, proxy_address), text_changed, proc.get_title())
-				else:
-					events.fail("['%s'] <==> %s" % (password, proxy_address), text_changed, proc.get_title())
-
+				pass
 		# "Login form is still there. Oops"
 		else:
 			"""
@@ -96,13 +85,8 @@ def submit(options, login_field, tryCred, result):
 			"""
 			if options.verbose:
 				if check_sqlerror(proc.get_response()):
-					events.success("Possibly SQL Injection", "BRUTE")
-					events.info("['%s': '%s']" % (username, password))
-				else:
-					if username:
-						events.fail("['%s':'%s'] <==> %s" % (username, password, proxy_address), text_changed, proc.get_title())
-					else:
-						events.fail("['%s'] <==> %s" % (password, proxy_address), text_changed, proc.get_title())
+					isLoginSuccess = "SQLi"
+				# else pass
 		
 		return True
 	
@@ -115,4 +99,24 @@ def submit(options, login_field, tryCred, result):
 		events.error("%s" % (error), "BRUTE")
 	
 	finally:
+		if isLoginSuccess == "SQLi":
+			events.success("SQL Injection bypass", "BRUTE")
+			events.info("['%s': '%s']" % (username, password))
+		elif isLoginSuccess == "error" and options.verbose:
+			if username:
+				events.error("['%s':'%s'] <--> %s" % (username, password, proxy_address), "%s" % (resp.status_code))
+			else:
+				events.error("[%s] <--> %s" % (password, proxy_address), "%s" % (resp.status_code))
+		elif isLoginSuccess == "True":
+			if username:
+				events.found(username, password, proc.get_title())
+				result.put([options.url, username, password])
+			else:
+				events.found('', password, proc.get_title())
+				result.put([options.url, username, password])
+		elif isLoginSuccess == "False" and options.verbose:
+			if username:
+				events.fail("['%s':'%s'] <==> %s" % (username, password, proxy_address), text_changed, proc.get_title())
+			else:
+				events.fail("['%s'] <==> %s" % (password, proxy_address), text_changed, proc.get_title())
 		proc.close()
