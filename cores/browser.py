@@ -1,4 +1,4 @@
-import data
+import data, sys
 from mechanicalsoup.stateful_browser import StatefulBrowser
 
 
@@ -61,13 +61,33 @@ class Browser(StatefulBrowser):
 		:return: string = title of the page
 		"""
 		try:
-			page_title = str(self.get_current_page().title.text)
-		except UnicodeEncodeError:
-			page_title = str(self.get_current_page().title.text.encode('utf-8'))
+			if sys.version_info[0] == 3:
+				page_title = str(self.get_current_page().title.text)
+			else:
+				page_title = str(self.get_current_page().title.text.encode('utf-8'))
 		except:
 			page_title = "No title"
 		finally:
 			return page_title.replace("\n", "").replace("\r", "").replace("\t", "")
+		
+	def forms(self):
+		"""
+		Get a summary of the form with classic mechanize style
+		"""
+
+		for form in self.get_current_page().find_all('form'):
+			info = "<%s[%s]>\n" %(form.get('method'), form.get('action'))
+			for fields in form.find_all(("input", "textarea", "select", "button")):
+				fType = fields.get('type') or None
+				fID = fields.get('id') or None
+				fValue = fields.get('value') or None
+				fName = fields.get('name') or None
+
+				fID = fName if fName else fID
+				info += "  %s(%s)=\'%s\'\n" %(fType, fID, fValue)
+
+			yield info
+
 
 	def form_submit(self, controls, fields, send_data):
 		"""
