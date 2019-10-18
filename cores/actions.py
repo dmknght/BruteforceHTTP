@@ -114,7 +114,7 @@ def string_gen_randomly(len_min=2, len_max=5, select_type="char"):
 
 	# Generate charset range from select_type
 	if select_type == "char":
-		charset = string.ascii_letters # string.letters in python 2. TODO fix here
+		charset = string.ascii_letters if sys.version_info[0] == 3 else string.letters
 	elif select_type == "dig":
 		charset = string.digits
 
