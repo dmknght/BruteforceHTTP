@@ -46,18 +46,11 @@ def submit(options, login_field, tryCred, result):
 			If there is no login request from all new urls -> successfully
 			== > Behavior: Login fail, click here or windows.location = login_page
 		"""
-		isLoginForm = False
 		# "Login form is still there. Oops"
 		
 		if find_login_form(proc.forms()):
-			"""
-				Possibly SQL injection or fail
-			"""
-			if check_sqlerror(proc.get_response()):
-				isLoginSuccess = "SQLi"
-			# else pass
-		
-		else:
+			isLoginForm = True
+			
 			for new_url in get_redirection(source_changed):
 				if not new_url.startswith("http") and not new_url.endswith(options.exceptions()):
 					try:
@@ -66,7 +59,34 @@ def submit(options, login_field, tryCred, result):
 						from urlparse import urljoin
 					new_url = urljoin(options.url, new_url)
 				
-				if get_domain(options.url) == get_domain(new_url):
+				if new_url and get_domain(options.url) == get_domain(new_url):
+					proc.open_url(new_url)
+					if find_login_form(proc.forms()):
+						isLoginForm = True
+						break
+					else:
+						isLoginForm = False
+
+			if not isLoginForm:
+				isLoginSuccess = "True"
+			"""
+				Possibly SQL injection or fail
+			"""
+			if check_sqlerror(proc.get_response()):
+				isLoginSuccess = "SQLi"
+			# else pass
+		
+		else:
+			isLoginForm = False
+			for new_url in get_redirection(source_changed):
+				if not new_url.startswith("http") and not new_url.endswith(options.exceptions()):
+					try:
+						from urllib.parse import urljoin
+					except ImportError:
+						from urlparse import urljoin
+					new_url = urljoin(options.url, new_url)
+				
+				if new_url and get_domain(options.url) == get_domain(new_url):
 					proc.open_url(new_url)
 					if find_login_form(proc.forms()):
 						isLoginForm = True
