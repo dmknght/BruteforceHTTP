@@ -1,5 +1,7 @@
-import data, sys
 from mechanicalsoup.stateful_browser import StatefulBrowser
+
+import data
+import sys
 
 
 def random_user_agent():
