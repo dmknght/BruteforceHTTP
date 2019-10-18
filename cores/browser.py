@@ -15,6 +15,8 @@ def random_user_agent():
 class Browser(StatefulBrowser):
 	def __init__(self, *args, **kwargs):
 		super(Browser, self).__init__()
+		import requests
+		requests.packages.urllib3.disable_warnings()
 		# Create browser object. All browser settings should be here
 		# https://stackoverflow.com/a/27096416
 		# self.set_handle_robots(False)

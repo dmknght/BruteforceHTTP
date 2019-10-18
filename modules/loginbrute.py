@@ -38,6 +38,8 @@ def submit(options, login_field, tryCred, result):
 
 		resp = proc.form_submit(form_control, form_fields, tryCred)
 		
+		if password == "hehe":
+			print(resp)
 		from cores.analysis import get_response_diff
 		text_changed, source_changed = get_response_diff(options.txt.decode('utf-8'), resp.content.decode('utf-8'))
 		
