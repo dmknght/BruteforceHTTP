@@ -54,9 +54,9 @@ class Browser(StatefulBrowser):
 		Get server response for the request
 		:return: string = server response
 		"""
-		try:
+		if sys.version_info[0] == 3:
 			return str(self.get_current_page())
-		except UnicodeEncodeError:
+		else:
 			return str(self.get_current_page().encode('utf-8'))
 
 	def get_title(self):
