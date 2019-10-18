@@ -116,6 +116,7 @@ if __name__ == "__main__":
 	from extras import getproxy
 
 	try:
+		import traceback
 		# Setting new session
 		runtime = time.time()
 		# reload(sys)
@@ -190,6 +191,7 @@ if __name__ == "__main__":
 				reauth.run(options, result)
 
 	except Exception as error:
+		traceback.print_exc()
 		events.error("%s" % (error), "STOPPED")
 		sys.exit(1)
 
