@@ -1,6 +1,9 @@
+import re
+import sys
+
 from cores.actions import to_list, file_read
 from utils import events
-import re, sys
+
 
 # def check_import():
 # 	try:
@@ -205,7 +208,6 @@ def check_tasks(options, login_info):
 	elif options.options["-U"]:
 		options.username = list(set(to_list(options.options["-U"])))
 	else:
-		import data
 		if options.options["-u"] in options.WORDLISTS:
 			if options.options["-u"] == "sqli":
 				options.username = tuple(eval("data.%s_user()" % (options.options["-u"])))
@@ -217,7 +219,6 @@ def check_tasks(options, login_info):
 	
 	# CHECK passlist option
 	if options.options["-p"] in options.WORDLISTS:
-		import data
 		options.passwd = tuple(eval("data.%s_pass()" % (options.options["-p"])).replace("\t", "").split("\n"))
 	else:
 		options.passwd = tuple(file_read(options.options["-p"]).split("\n"))

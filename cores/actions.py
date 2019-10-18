@@ -1,4 +1,6 @@
-import random, sys
+import random
+import sys
+
 from utils import events
 
 

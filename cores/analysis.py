@@ -1,5 +1,7 @@
+import re
+import sys
+
 from utils import events
-import re, sys
 
 
 def check_sqlerror(response):
