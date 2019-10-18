@@ -50,66 +50,43 @@ def submit(options, login_field, tryCred, result):
 		
 		if find_login_form(proc.forms()):
 			isLoginForm = True
+		else:
+			isLoginForm = False
 			
-			for new_url in get_redirection(source_changed):
-				if not new_url.startswith("http") and not new_url.endswith(options.exceptions()):
-					try:
-						from urllib.parse import urljoin
-					except ImportError:
-						from urlparse import urljoin
-					new_url = urljoin(options.url, new_url)
-				
-				if new_url and get_domain(options.url) == get_domain(new_url):
-					proc.open_url(new_url)
-					if find_login_form(proc.forms()):
-						isLoginForm = True
-						break
-					else:
-						isLoginForm = False
+		for new_url in get_redirection(source_changed):
+			if not new_url.startswith("http") and not new_url.endswith(options.exceptions()):
+				try:
+					from urllib.parse import urljoin
+				except ImportError:
+					from urlparse import urljoin
+				new_url = urljoin(options.url, new_url)
+			
+			if new_url and get_domain(options.url) == get_domain(new_url):
+				proc.open_url(new_url)
+				if find_login_form(proc.forms()):
+					isLoginForm = True
+					break
+				else:
+					isLoginForm = False
 
-			if not isLoginForm:
-				isLoginSuccess = "True"
+		if not isLoginForm:
 			"""
-				Possibly SQL injection or fail
+				Check SQL Injection
+				1. SQL Injection
+				2. Login successfully: No SQLi + No Login form
 			"""
 			if check_sqlerror(proc.get_response()):
 				isLoginSuccess = "SQLi"
-			# else pass
-		
-		else:
-			isLoginForm = False
-			for new_url in get_redirection(source_changed):
-				if not new_url.startswith("http") and not new_url.endswith(options.exceptions()):
-					try:
-						from urllib.parse import urljoin
-					except ImportError:
-						from urlparse import urljoin
-					new_url = urljoin(options.url, new_url)
-				
-				if new_url and get_domain(options.url) == get_domain(new_url):
-					proc.open_url(new_url)
-					if find_login_form(proc.forms()):
-						isLoginForm = True
-						break
-
-			if not isLoginForm:
-				"""
-					Check SQL Injection
-					1. SQL Injection
-					2. Login successfully: No SQLi + No Login form
-				"""
-				if check_sqlerror(proc.get_response()):
-					isLoginSuccess = "SQLi"
-				elif text_changed == source_changed and text_changed != options.block_text and options.block_text:
-					pass
-				else:
-					if resp.status_code >= 400:
-						isLoginSuccess = "error"
-					else:
-						isLoginSuccess = "True"
-					# "If we tried login form with username+password field"
-			else:
+			elif text_changed == source_changed and text_changed != options.block_text and options.block_text:
 				pass
+			else:
+				if resp.status_code >= 400:
+					isLoginSuccess = "error"
+				else:
+					isLoginSuccess = "True"
+				# "If we tried login form with username+password field"
+		else:
+			pass
 		
 		return True
 	
