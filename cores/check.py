@@ -202,6 +202,7 @@ def check_tasks(options, login_info):
 	:param login_info: login request information
 	:return:
 	"""
+	import data
 	# CHECK username list options
 	if len(login_info[1]) == 1:
 		options.username = [""]
