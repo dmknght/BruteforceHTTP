@@ -121,3 +121,6 @@ def string_gen_randomly(len_min=2, len_max=5, select_type="char"):
 
 	# return string value
 	return ''.join(random.choice(charset) for _ in range(len_min, len_max))
+
+def get_domain(url):
+	return url.split("/")[2]

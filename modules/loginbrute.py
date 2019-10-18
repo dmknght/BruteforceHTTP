@@ -1,5 +1,5 @@
 from utils import events
-from cores.actions import list_choose_randomly
+from cores.actions import list_choose_randomly, get_domain
 from cores.check import find_login_form
 from cores.analysis import check_sqlerror, get_redirection
 
@@ -47,16 +47,27 @@ def submit(options, login_field, tryCred, result):
 			== > Behavior: Login fail, click here or windows.location = login_page
 		"""
 		isLoginForm = False
+		# "Login form is still there. Oops"
 		
-		if not find_login_form(proc.forms()):
-			for new_urls in get_redirection(source_changed):
-				if not new_urls.startswith("http") and not new_urls.endswith(options.exceptions()):
+		if find_login_form(proc.forms()):
+			"""
+				Possibly SQL injection or fail
+			"""
+			if check_sqlerror(proc.get_response()):
+				isLoginSuccess = "SQLi"
+			# else pass
+		
+		else:
+			for new_url in get_redirection(source_changed):
+				if not new_url.startswith("http") and not new_url.endswith(options.exceptions()):
 					try:
 						from urllib.parse import urljoin
 					except ImportError:
 						from urlparse import urljoin
-					new_urls = urljoin(options.url, new_urls)
-					proc.open_url(new_urls)
+					new_url = urljoin(options.url, new_url)
+				
+				if get_domain(options.url) == get_domain(new_url):
+					proc.open_url(new_url)
 					if find_login_form(proc.forms()):
 						isLoginForm = True
 						break
@@ -79,14 +90,6 @@ def submit(options, login_field, tryCred, result):
 					# "If we tried login form with username+password field"
 			else:
 				pass
-		# "Login form is still there. Oops"
-		else:
-			"""
-				Possibly SQL injection or fail
-			"""
-			if check_sqlerror(proc.get_response()):
-				isLoginSuccess = "SQLi"
-			# else pass
 		
 		return True
 	
