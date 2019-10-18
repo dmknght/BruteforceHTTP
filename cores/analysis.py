@@ -98,7 +98,7 @@ def get_redirection(response):
 	:param response: string = server response html
 	:return: list of string = all possible URL
 	"""
-	regex_js = r"window\.location(?:[a-zA-Z\.\ \=\(])+\"|\'(.*)\"|\'"
+	regex_js = r"[window\.]?location(?:.*)=[ \'\"]?([a-zA-Z\._\/]+)[ \'\"]?"
 	regex_meta = r"<meta[^>]*?url=(.*?)[\"\']"
 	regex_href = r"href=[\'\"]?([^\'\" >]+)"
 	
