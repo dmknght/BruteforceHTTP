@@ -84,10 +84,9 @@ def submit(options, login_field, tryCred, result):
 			"""
 				Possibly SQL injection or fail
 			"""
-			if options.verbose:
-				if check_sqlerror(proc.get_response()):
-					isLoginSuccess = "SQLi"
-				# else pass
+			if check_sqlerror(proc.get_response()):
+				isLoginSuccess = "SQLi"
+			# else pass
 		
 		return True
 	
