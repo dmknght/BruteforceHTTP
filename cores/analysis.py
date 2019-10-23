@@ -1,37 +1,7 @@
-from cores.check import find_login_form
-from utils import events
 import re
+import sys
 
-
-def check_login(options, proc):
-	"""
-		Check logged in successfully condition.
-		This function will check SQL injection as well
-			return 0 -> False
-			return 1 -> True
-			return 2 -> Should be SQL Injection error-based
-	"""
-	# TODO check diff response instead of whole
-	if options.panel_url:
-		# User provided panel url (/wp-admin/ for example, repopen this url to check sess)
-		proc.open_url(options.panel_url)
-		if not find_login_form(proc.forms()):
-			if check_sqlerror(proc.get_response()):
-				return 2
-			else:
-				return 1
-		else:
-			return 0
-	else:
-		# User provided direct login URL (/wp-login.php).
-		# if parseLoginForm(proc.forms()) != loginInfo:
-		# 	return 1
-		# else:
-		# 	return 0
-		if check_sqlerror(proc.get_response()):
-			return 2
-		else:
-			return 1
+from utils import events
 
 
 def check_sqlerror(response):
@@ -116,7 +86,10 @@ def get_response_diff(first_content, current_content):
 	for line in convert.handle(current_content).split("\n"):
 		text_diff += line if line not in convert.handle(first_content) else ""
 	
-	return text_diff, source_diff
+	if sys.version_info[0] == 3:
+		return text_diff, source_diff
+	else:
+		return text_diff.encode('utf-8'), source_diff.encode('utf-8')
 
 
 def get_redirection(response):
@@ -125,7 +98,7 @@ def get_redirection(response):
 	:param response: string = server response html
 	:return: list of string = all possible URL
 	"""
-	regex_js = r"window\.location(?:[a-zA-Z\.\ \=\(])+\"|\'(.*)\"|\'"
+	regex_js = r"[window\.]?location(?:.*)=[ \'\"]?([a-zA-Z\._\/]+)[ \'\"]?"
 	regex_meta = r"<meta[^>]*?url=(.*?)[\"\']"
 	regex_href = r"href=[\'\"]?([^\'\" >]+)"
 	

@@ -44,6 +44,7 @@ def webshell_pass():
 	root
 	niemdamme
 	123
+	hehe
 	0987654321
 	admin
 	antichat

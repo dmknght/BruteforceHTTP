@@ -116,6 +116,7 @@ if __name__ == "__main__":
 	from extras import getproxy
 
 	try:
+		import traceback
 		# Setting new session
 		runtime = time.time()
 		# reload(sys)
@@ -157,8 +158,6 @@ if __name__ == "__main__":
 					break
 				if url:
 					# Clean other URL options (Fix URL_panel and URL login bug)
-					options.login_url = None
-					options.panel_url = None
 					options.url = check.check_url(url)
 					if "--getproxy" in options.extras and len(options.target) == 1 and options.run_options["--proxy"]:
 						events.warn("Check proxy connection")
@@ -192,6 +191,7 @@ if __name__ == "__main__":
 				reauth.run(options, result)
 
 	except Exception as error:
+		traceback.print_exc()
 		events.error("%s" % (error), "STOPPED")
 		sys.exit(1)
 

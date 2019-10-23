@@ -1,99 +1,92 @@
 from utils import events
-from cores.actions import list_choose_randomly
+from cores.actions import list_choose_randomly, get_domain
 from cores.check import find_login_form
-from cores.analysis import check_login, check_sqlerror, get_redirection
+from cores.analysis import check_sqlerror, get_redirection
 
 
-def submit(options, loginInfo, tryCred, result):
-	tryPassword, tryUsername = tryCred
+def submit(options, login_field, tryCred, result):
+	password, username = tryCred
 	
-	# proc = Browser(options.timeout) # TODO recovery here
-	
-	# BREAK if we had valid payload?
-	# if options.options["-p"] == "sqli" and len(list(result.queue)) > 1:
-	# 	return True
-	
-	if tryUsername in [x[1] for x in list(result.queue)]:
+	if username in [x[1] for x in list(result.queue)]:
 		return True
 	
 	from cores.browser import Browser
+	isLoginSuccess = "False"
 	try:
 		proc = Browser()
 		if options.proxy:
 			# Set proxy connect
-			proxyAddr = list_choose_randomly(options.proxy)
-			proc.set_random_proxy(proxyAddr)
+			proxy_address = list_choose_randomly(options.proxy)
+			proc.set_random_proxy(proxy_address)
 		else:
-			proxyAddr = ""
+			proxy_address = ""
 		
-		proc.open_url(options.login_url)
+		proc.open_url(options.url)
 		_form = find_login_form(proc.forms())
 		
 		if not _form:
+			options.block_text = proc.get_response() # TODO check if block text changes
 			if options.verbose:
+				isLoginSuccess = "blocked"
 				events.error("Get blocked", "BRUTE")
 			return False
 		else:
-			frmCtrl, frmFields = _form
+			form_control, form_fields = _form
 
-		if options.verbose and loginInfo != _form:
+		if options.verbose and login_field != _form:
 			events.info("Login form has been changed", "BRUTE")
 
-		resp = proc.form_submit(frmCtrl, frmFields, tryCred)
+		resp = proc.form_submit(form_control, form_fields, tryCred)
 		
 		from cores.analysis import get_response_diff
-		txtDiff, srcDiff = get_response_diff(options.txt.decode('utf-8'), resp.content.decode('utf-8'))
+		text_changed, source_changed = get_response_diff(options.txt.decode('utf-8'), resp.content.decode('utf-8'))
 		
-		if not find_login_form(proc.forms()):
-			isLoginForm = False
-			for diffURL in get_redirection(srcDiff):
-				if not diffURL.startswith("http") and not diffURL.endswith(options.exceptions()):
-					try:
-						from urllib.parse import urljoin
-					except ImportError:
-						from urlparse import urljoin
-					diffURL = urljoin(options.login_url, diffURL)
-					proc.open_url(diffURL)
-					if find_login_form(proc.forms()):
-						isLoginForm = True
-					break
-
-			test_result = check_login(options, proc)
-			if test_result == 1:
-				# "If we tried login form with username+password field"
-				if tryUsername:
-					if resp.status_code >= 400:
-						events.error("['%s':'%s'] <--> %s" % (tryUsername, tryPassword, proxyAddr), "%s" % (resp.status_code))
-					elif not isLoginForm:
-						events.found(tryUsername, tryPassword, proc.get_title())
-						result.put([options.url, tryUsername, tryPassword])
-				# "Else If we tried login form with password field only"
-				else:
-					if resp.status_code >= 400:
-						events.error("[%s] <--> %s" % (tryPassword, proxyAddr), "%s" % (resp.status_code))
-					elif not isLoginForm:
-						events.found('', tryPassword, proc.get_title())
-						result.put([options.url, tryUsername, tryPassword])
-
-			elif test_result == 2 and options.verbose:
-				events.success("SQL Injection in login form", "BRUTE")
-				events.info("['%s': '%s']" % (tryUsername, tryPassword))
-	
-			else:
-				# Possibly Error. But sometime it is true
-				if options.verbose:
-					events.error("['%s': '%s'] [%s]" % (tryUsername, tryPassword, proc.get_title()), "BRUTE")
-
+		"""
+			If there is no other login form, check all changes in response
+			If there is no login request from all new urls -> successfully
+			== > Behavior: Login fail, click here or windows.location = login_page
+		"""
 		# "Login form is still there. Oops"
+		
+		if find_login_form(proc.forms()):
+			isLoginForm = True
 		else:
-			if check_sqlerror(proc.get_response()) and options.verbose:
-				events.success("SQL Injection in login form", "BRUTE")
-				events.info("['%s': '%s']" % (tryUsername, tryPassword))
-			if options.verbose:
-				if tryUsername:
-					events.fail("['%s':'%s'] <==> %s" % (tryUsername, tryPassword, proxyAddr), txtDiff.encode('utf-8'), proc.get_title())
+			isLoginForm = False
+			
+		for new_url in get_redirection(source_changed):
+			if not new_url.startswith("http") and not new_url.endswith(options.exceptions()):
+				try:
+					from urllib.parse import urljoin
+				except ImportError:
+					from urlparse import urljoin
+				new_url = urljoin(options.url, new_url)
+			
+			if new_url and get_domain(options.url) == get_domain(new_url):
+				proc.open_url(new_url)
+				if find_login_form(proc.forms()):
+					isLoginForm = True
+					break
 				else:
-					events.fail("['%s'] <==> %s" % (tryPassword, proxyAddr), txtDiff.encode('utf-8'), proc.get_title())
+					isLoginForm = False
+
+		if not isLoginForm:
+			"""
+				Check SQL Injection
+				1. SQL Injection
+				2. Login successfully: No SQLi + No Login form
+			"""
+			if check_sqlerror(proc.get_response()):
+				isLoginSuccess = "SQLi"
+			elif text_changed == source_changed and text_changed != options.block_text and options.block_text:
+				pass
+			else:
+				if resp.status_code >= 400:
+					isLoginSuccess = "error"
+				else:
+					isLoginSuccess = "True"
+				# "If we tried login form with username+password field"
+		else:
+			pass
 		
 		return True
 	
@@ -103,7 +96,28 @@ def submit(options, loginInfo, tryCred, result):
 			but our cred is true.
 			This code block showing information, for special cases
 		"""
+		isLoginSuccess = "exception"
 		events.error("%s" % (error), "BRUTE")
 	
 	finally:
+		if isLoginSuccess == "SQLi":
+			events.success("SQL Injection bypass", "BRUTE")
+			events.info("['%s': '%s']" % (username, password))
+		elif isLoginSuccess == "error" and options.verbose:
+			if username:
+				events.error("['%s':'%s'] <--> %s" % (username, password, proxy_address), "%s" % (resp.status_code))
+			else:
+				events.error("[%s] <--> %s" % (password, proxy_address), "%s" % (resp.status_code))
+		elif isLoginSuccess == "True":
+			if username:
+				events.found(username, password, proc.get_title())
+				result.put([options.url, username, password])
+			else:
+				events.found('', password, proc.get_title())
+				result.put([options.url, username, password])
+		elif isLoginSuccess == "False" and options.verbose:
+			if username:
+				events.fail("['%s':'%s'] <==> %s" % (username, password, proxy_address), text_changed, proc.get_title())
+			else:
+				events.fail("['%s'] <==> %s" % (password, proxy_address), text_changed, proc.get_title())
 		proc.close()

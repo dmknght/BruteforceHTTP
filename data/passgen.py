@@ -15,7 +15,8 @@ def maskgen(min_length = 1, max_length = 4, charset = None):
 	:param charset: text = all characters to generate
 	:return: yield text
 	"""
-	charset = string.letters if not charset else charset
+	import sys
+	charset = charset or string.ascii_letters if sys.version_info[0] == 3 else string.letters
 	from itertools import product
 	for i in range(min_length, max_length):
 		for password in product(charset, repeat = i):

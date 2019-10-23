@@ -10,23 +10,40 @@ Requirements
 
 | name        |
 |-------------|
-| python     |
-| python-bs4 |
-| python-regex |
-| python-lxml |
+| python / python3 / pypy |
+| bs4 [beautifulsoup] |
+| python-regex (optional) |
+| python-lxml (optional) |
 | html2text |
-| python-uritools |
+| python-uritools (optional) |
+| mechanicalsoup |
 
-1. Install dependencies
+
+1. On Debian distros:
+This project should work on both python2, python3 and pypy. But, unfortunately Debian and pip has mechanicalsoup for python3 only.
+ - Install for python3:
 ```
-sudo apt install python python-regex git python-uritools python-bs4
-sudo pip install html2text
+sudo apt install python3 python3-regex git python3-uritools python3-bs4 python3-mechanicalsoup
+sudo pip3 install html2text
+```
+ - Install for pypy:
+```
+sudo apt install pypy python-uritools python-bs4 python-regex git
+sudo pip2 install html2text mechanicalsoup
 ```
 
-2. Clone the project
+Python2 could have error `ImportError: No module named mechanicalsoup.stateful_browser`
+
+2. Clone the project:
 ```
 git clone https://github.com/dmknght/BruteforceHTTP.git
 ```
+
+3. Run project
+- Pypy:
+`pypy main.py`
+- Python3:
+`python3 main.py`
 
 ## Options
 ```
@@ -77,6 +94,7 @@ Further improvement (See TODO.md)
 ## Limitation
 - Javascript website (mechanize library problem)
 - Login with captcha
+- There is a bug makes project can't detect login form (bs4 parse problem)
 (Please read WEBNOTE.md for test cases)
 
 ## Why this / that (FAQ)
