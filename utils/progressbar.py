@@ -7,9 +7,9 @@ def prints(text):
 	:param text: string = text to screen
 	:return: True (dummy)
 	"""
-	sys.stdout.write("%s\r" % (text))
-	sys.stdout.flush()
 	sys.stdout.write("%s\r" % (" " * len(text)))
+	sys.stdout.flush()
+	sys.stdout.write("%s\r" % (text))
 
 
 def progress_bar(trying, completed, total, bar_size=60):
