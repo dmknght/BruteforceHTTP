@@ -53,21 +53,22 @@ def submit(options, login_field, tryCred, result):
 		else:
 			isLoginForm = False
 			
-		for new_url in get_redirection(source_changed):
-			if not new_url.startswith("http") and not new_url.endswith(options.exceptions()):
-				try:
-					from urllib.parse import urljoin
-				except ImportError:
-					from urlparse import urljoin
-				new_url = urljoin(options.url, new_url)
-			
-			if new_url and get_domain(options.url) == get_domain(new_url):
-				proc.open_url(new_url)
-				if find_login_form(proc.forms()):
-					isLoginForm = True
-					break
-				else:
-					isLoginForm = False
+		if not isLoginForm:
+			for new_url in get_redirection(source_changed):
+				if not new_url.startswith("http") and not new_url.endswith(options.exceptions()):
+					try:
+						from urllib.parse import urljoin
+					except ImportError:
+						from urlparse import urljoin
+					new_url = urljoin(options.url, new_url)
+				
+				if new_url and get_domain(options.url) == get_domain(new_url):
+					proc.open_url(new_url)
+					if find_login_form(proc.forms()):
+						isLoginForm = True
+						break
+					else:
+						isLoginForm = False
 
 		if not isLoginForm:
 			"""
