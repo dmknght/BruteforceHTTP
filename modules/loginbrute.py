@@ -98,7 +98,7 @@ def submit(options, login_field, tryCred, result):
 			This code block showing information, for special cases
 		"""
 		isLoginSuccess = "exception"
-		events.error("%s" % (error), "BRUTE")
+		events.error("%s [%s:%s]" % (error, username, password), "BRUTE")
 	
 	finally:
 		if isLoginSuccess == "SQLi":

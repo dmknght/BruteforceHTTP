@@ -31,7 +31,7 @@ def submit(options, login_field, creds, result):
 			result.put([options.url, username, password])
 	
 	except Exception as error:
-		events.error("%s" % (error), "BRUTE")
+		events.error("%s [%s:%s]" % (error, username, password), "BRUTE")
 		return False
 	
 	finally:
