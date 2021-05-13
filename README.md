@@ -3,6 +3,7 @@
 
 ## About this project
 A HTTP brute force tool bases on Mechanize browser.
+I'm rewriting some modules and it will be on Parrot OS
 
 ## Installation
 
